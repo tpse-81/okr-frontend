@@ -1,23 +1,28 @@
 <script lang="ts">
 import { loginUser } from "$lib";
 import { goto } from "$app/navigation";
-import { _ } from 'svelte-i18n'
+import { token } from "$lib/stores";
+import { _ } from "svelte-i18n";
 
 let username: string = $state("");
 let password: string = $state("");
-let token: string = $state("");
 
 async function login() {
-    if (username == "" || password == "") {
-      alert("Empty username or password.")
-      return;
-    };
+	if (username === "" || password === "") {
+		alert("Empty username or password.");
+		return;
+	}
 
-    // Todo: Error handling missing for wrong username / PW
-    token = await loginUser(username, password);
+	// Todo: Error handling missing for wrong username / PW
+	try {
+		const authtoken = await loginUser(username, password);
+		token.set(authtoken);
 
-    // redirect to main page
-    goto("/");
+		await goto("/");
+	} catch (e) {
+		console.error(e);
+		await goto("/expected");
+	}
 }
 </script>
 
@@ -27,17 +32,14 @@ async function login() {
   <input type="submit" value={$_('login')}>
 </form>
 
-<p>{ token }</p>
-
 <style>
-#login-submit {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  * {
-    width: min-content;
+  #login-submit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    * {
+      width: min-content;
+    }
   }
-}
 </style>
 
