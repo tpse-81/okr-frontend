@@ -19,23 +19,34 @@ async function login() {
 }
 </script>
 
-<form id="login-submit" onsubmit={login}>
-  <input type="text" bind:value={username} placeholder="Username" >
-  <input type="password" bind:value={password} placeholder="Password" >
-  <input type="submit" value="Login">
-</form>
+<div class="window">
+  <div class="title-bar">
+    <div class="title-bar-text">Login</div>
+    <div class="title-bar-controls">
+      <button aria-label="Minimize"></button>
+      <button aria-label="Maximize"></button>
+      <button aria-label="Close"></button>
+    </div>
+  </div>
+  <form id="login-submit" class="window-body" onsubmit={login}>
+    <input type="text" bind:value={username} placeholder="Username" >
+    <input type="password" bind:value={password} placeholder="Password" >
+    <input type="submit" value="Login">
+  </form>
+</div>
 
 <p>{ token }</p>
 
 <style>
+.window {
+  max-width: 200px;
+  margin: 0 auto;
+}
+  
 #login-submit {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-
-  * {
-    width: min-content;
-  }
 }
 </style>
 
