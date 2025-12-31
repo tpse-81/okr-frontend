@@ -19,23 +19,14 @@ async function login() {
 }
 </script>
 
+<h1>Login</h1>
 <form id="login-submit" onsubmit={login}>
   <input type="text" bind:value={username} placeholder="Username" >
   <input type="password" bind:value={password} placeholder="Password" >
-  <input type="submit" value="Login">
+  <fieldset class="grid">
+    <input type="reset" value="Clear" class="outline">
+    <input type="submit" value="Login">
+  </fieldset>
 </form>
 
 <p>{ token }</p>
-
-<style>
-#login-submit {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  * {
-    width: min-content;
-  }
-}
-</style>
-
