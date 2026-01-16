@@ -12,5 +12,5 @@ export const load: PageLoad = async ({ params }) => {
     if (!objective) {
         throw error(404, 'Not found');
     }
-    return { objectiveID: objective.id, objectiveName: objective.name, parentID: objective.parentID};
+    return { objectiveID: objective.id, objectiveName: objective.name, parentID: objective.parent_id};
 };
