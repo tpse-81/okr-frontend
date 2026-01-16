@@ -26,20 +26,11 @@ async function login() {
 }
 </script>
 
-<form id="login-submit" onsubmit={login}>
-  <input type="text" id="username" bind:value={username} placeholder={$_('username')} >
-  <input type="password" id="password" bind:value={password} placeholder={$_('password')} >
-  <input type="submit" value={$_('login')}>
-</form>
-
-<style>
-  #login-submit {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    * {
-      width: min-content;
-    }
-  }
-</style>
-
+<div class="h-screen flex align-center">
+	<form id="login-submit" onsubmit={login} class="flex flex-col justify-center gap-3 w-8/10 m-auto">
+		<h1>Login</h1>
+	  <input type="text" id="username" bind:value={username} placeholder={$_('username')} class="input w-full" >
+	  <input type="password" id="password" bind:value={password} placeholder={$_('password')} class="input w-full" >
+	  <input type="submit" value={$_('login')} class="btn btn-primary">
+	</form>
+</div>
