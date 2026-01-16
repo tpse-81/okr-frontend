@@ -10,7 +10,7 @@ export interface Objective {
     id: string;
     name: string;
     description: string;
-    parentID: string;
+    parent_id: string;
 }
 
 export interface KeyResult {
