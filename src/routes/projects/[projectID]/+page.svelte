@@ -37,19 +37,19 @@
 
 <h1>Create an Objective for {project_name}</h1>
 
-<form id="objective-submit" onsubmit={handleSubmit}>
-    <input type="text" bind:value={name} placeholder="Name" >
-    <input type="text" bind:value={description} placeholder="description" >
-    <input type="submit" value="Create">
+<form id="objective-submit" onsubmit={handleSubmit} class="flex p-3 gap-3">
+    <input type="text" bind:value={name} placeholder="Name" class="input w-full">
+    <input type="text" bind:value={description} placeholder="description" class="input w-full">
+    <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
-
+<div class="p-3">
     <h1>Objectives for {project_name}</h1>
     {#if objectivelist.length > 0}
-        <ul class="objective-list">
+        <ul class="grid grid-auto p-3">
             {#each objectivelist as objective}
-                <li>
-                    <a href={`/objectives/${objective.id}`} class="objective-box">
+                <li class="card card-border">
+                    <a href={`/objectives/${objective.id}`} class="card-body">
                         Name: <strong>{objective.name}</strong><br>
                         Beschreibung: {objective.description}<br>
                         <small>(ID: {objective.id})</small><br><br>
@@ -60,14 +60,4 @@
     {:else}
         <p>Keine Objectives geladen</p>
     {/if}
-
-    <style>
-        #objective-submit {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            * {
-                width: min-content;
-            }
-        }
-    </style>
+</div>

@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+	themes:
+		cupcake --default,
+		luxury --prefersdark;
+	root: ":root";
+	logs: true;
+}
+
+/* Base styles for tailwind: these get automatically
+applied on all elements */
+@layer base {
+	h1 {
+		font-size: var(--text-2xl);
+		font-weight: var(--font-weight-bold);
+	}
+	h2 {
+		font-size: var(--text-xl);
+	}
+
+	/* Custom Tailwind classes start here */
+	.grid-auto {
+		/* Automatically choose amount of grid items per row based on the display size */
+		@apply xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1;
+	}
+}

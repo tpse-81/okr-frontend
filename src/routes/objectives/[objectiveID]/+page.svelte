@@ -50,37 +50,29 @@
 
 <h1>Create a Key Result for {objectiveName}</h1>
 
-<form id="keyResultSubmit" onsubmit={handleSubmit}>
-    <input type="text" bind:value={description} placeholder="description">
-    <input type="number" bind:value={startValue} placeholder="start value">
-    <input type="number" bind:value={endValue} placeholder="end value">
-    <input type="submit" value="Create">
+<form id="keyResultSubmit" onsubmit={handleSubmit} class="flex gap-3 p-3">
+    <input type="text" bind:value={description} placeholder="description" class="input w-full">
+    <input type="number" bind:value={startValue} placeholder="start value" class="input w-full">
+    <input type="number" bind:value={endValue} placeholder="end value" class="input w-full">
+    <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
-<h1>Key Results for {objectiveName}</h1>
-
-{#if keyResultList.length > 0}
-    <ul class="keyResultList">
-        {#each keyResultList as keyResult}
-            <li class="keyResultBox">
-                Beschreibung: <strong>{keyResult.description}</strong><br>
-                Start Value: {keyResult.startValue}<br>
-                End Value: {keyResult.endValue}<br>
-                <small>(ID: {keyResult.id})</small><br><br>
-            </li>
-        {/each}
-    </ul>
-{:else}
-    <p>Keine Key Results geladen</p>
-{/if}
-
-<style>
-    #keyResultSubmit {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        * {
-            width: min-content;
-        }
-    }
-</style>
+<div class="p-3">
+    <h1>Key Results for {objectiveName}</h1>
+    {#if keyResultList.length > 0}
+        <ul class="grid grid-auto gap-3">
+            {#each keyResultList as keyResult}
+                <li class="card card-border">
+                    <div class="card-body">
+                        Beschreibung: <strong>{keyResult.description}</strong><br>
+                        Start Value: {keyResult.startValue}<br>
+                        End Value: {keyResult.endValue}<br>
+                        <small>(ID: {keyResult.id})</small><br><br>
+                    </div>
+                </li>
+            {/each}
+        </ul>
+    {:else}
+        <p>Keine Key Results geladen</p>
+    {/if}
+</div>
