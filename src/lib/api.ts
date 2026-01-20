@@ -1,6 +1,8 @@
 import {token} from "$lib/stores";
 import {get} from "svelte/store";
 import type { Project } from "$lib/types";
+// load api url from .env file
+import { PUBLIC_API_URL } from "$env/static/public"
 
 enum TaskState {
   open,
@@ -11,7 +13,7 @@ enum TaskState {
 }
 
 export async function createUser(name: string, email: string, password: string){
-  const response = await fetch(`http://127.0.0.1:8000/users/create`
+  const response = await fetch(`${PUBLIC_API_URL}/users/create`
       , {
         method: "POST",
         body: JSON.stringify({
@@ -27,7 +29,7 @@ export async function getUsers(){
   const t = get(token);
   if (!t) throw new Error("Token ist leer");
 
-  const response = await fetch("http://127.0.0.1:8000/users", {
+  const response = await fetch(`${PUBLIC_API_URL}/users`, {
     method: "GET",
     headers: {
       "Authorization": t,
@@ -43,7 +45,7 @@ export async function getUsers(){
 }
 
 export async function loginUser(username: string, password: string) {
-  const response = await fetch("http://127.0.0.1:8000/login", {
+  const response = await fetch(`${PUBLIC_API_URL}/login`, {
     method: "POST",
     body: JSON.stringify({
       "email": username,
@@ -59,7 +61,7 @@ export async function loginUser(username: string, password: string) {
 
 export async function createProject(name: string, deadline: number, creation_date: number){
   const t = get(token);
-  const response = await fetch("http://127.0.0.1:8000/projects", {
+  const response = await fetch(`${PUBLIC_API_URL}/projects`, {
     method: "POST",
     headers: {
       "Authorization": t,
@@ -81,7 +83,7 @@ export async function getProjects() {
   const t = get(token);
   if (!t) throw new Error("Token ist leer");
 
-  const response = await fetch("http://127.0.0.1:8000/projects", {
+  const response = await fetch(`${PUBLIC_API_URL}/projects`, {
     method: "GET",
     headers: {
       "Authorization": t,
@@ -103,7 +105,7 @@ export async function getProjectById(projectId: string): Promise<Project> {
     if (!t) throw new Error("Token ist leer");
 
     const response = await fetch(
-        `http://127.0.0.1:8000/projects/${projectId}`,
+        `${PUBLIC_API_URL}/projects/${projectId}`,
         {
             method: "GET",
             headers: {
@@ -124,7 +126,7 @@ export async function getProjectById(projectId: string): Promise<Project> {
 
 export async function createObjective(name: string, description: string, project_id: string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/projects/${project_id}/objectives`
+  const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}/objectives`
       , {
         method: "POST",
         headers: {
@@ -143,7 +145,7 @@ export async function createObjective(name: string, description: string, project
 export async function getObjectives() {
   const t = get(token);
 
-  const response = await fetch("http://127.0.0.1:8000/objectives", {
+  const response = await fetch(`${PUBLIC_API_URL}/objectives`, {
     method: "GET",
     headers: {
       "Authorization": t,
@@ -160,7 +162,7 @@ export async function getObjectives() {
 
 export async function getObjectiveProject(project_id: string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/projects/${project_id}/objectives`
+  const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}/objectives`
       , {
         method: "GET",
         headers: {
@@ -175,7 +177,7 @@ export async function getObjectiveProject(project_id: string){
 
 export async function createKeyResult(description:string, end_value:number, start_value: number, objective_id:string, project_id:string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/key_results`
+  const response = await fetch(`${PUBLIC_API_URL}/key_results`
       , {
         method: "POST",
         headers: {
@@ -196,7 +198,7 @@ export async function createKeyResult(description:string, end_value:number, star
 export async function getKeyResults() {
   const t = get(token);
 
-  const response = await fetch("http://127.0.0.1:8000/key_results", {
+  const response = await fetch(`${PUBLIC_API_URL}/key_results`, {
     method: "GET",
     headers: {
       "Authorization": t,
@@ -213,7 +215,7 @@ export async function getKeyResults() {
 
 export async function getKeyResultObjective(objective_id: string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/objectives/${objective_id}/key_results`
+  const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`
       , {
         method: "GET",
         headers: {
@@ -228,7 +230,7 @@ export async function getKeyResultObjective(objective_id: string){
 
 export async function createTaskKeyResult(key_result_id: string, description: string, task_state: TaskState){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/key_results/${key_result_id}/tasks`, {
+  const response = await fetch(`${PUBLIC_API_URL}/key_results/${key_result_id}/tasks`, {
     method: "POST",
     headers: {
       "Authorization": t,
@@ -246,7 +248,7 @@ export async function createTaskKeyResult(key_result_id: string, description: st
 
 export async function getTasksKeyResult(key_result_id: string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/key_results/${key_result_id}/tasks`
+  const response = await fetch(`${PUBLIC_API_URL}/key_results/${key_result_id}/tasks`
       , {
         method: "GET",
         headers: {
@@ -261,7 +263,7 @@ export async function getTasksKeyResult(key_result_id: string){
 
 export async function addUserProject(project_id: string, user_id: string, role: string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/projects/${project_id}/users/${user_id}?role?=${role}`
+  const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}/users/${user_id}?role?=${role}`
       , {
         method: "Post",
         headers: {
@@ -275,7 +277,7 @@ export async function addUserProject(project_id: string, user_id: string, role: 
 
 export async function getUsersProject(project_id: string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/projects/${project_id}/users`
+  const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}/users`
       , {
         method: "GET",
         headers: {
@@ -289,7 +291,7 @@ export async function getUsersProject(project_id: string){
 
 export async function addObjectiveProject(project_id: string, objective_id: string){
   const t = get(token);
-  const response = await fetch(`http://127.0.0.1:8000/projects/${project_id}/objectives/${objective_id}`
+  const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}/objectives/${objective_id}`
       , {
         method: "Post",
         headers: {
