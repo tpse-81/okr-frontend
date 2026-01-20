@@ -7,6 +7,8 @@ let projectsList: Project[] = $state([]);
 let name: string = $state("");
 let deadline: number = $state(0);
 
+let iconFiles: FileList;
+
 onMount(async () => {
 	try {
 		projectsList = await getProjects();
@@ -16,7 +18,7 @@ onMount(async () => {
 });
 
 async function handleSubmit() {
-	await createProject(name, new Date(deadline));
+	await createProject(name, new Date(deadline), iconFiles.item(0));
 	projectsList = await getProjects();
 }
 </script>
@@ -24,6 +26,7 @@ async function handleSubmit() {
 <h1>Create a Project</h1>
 
 <form id="project-submit" onsubmit={handleSubmit} class="flex gap-3 p-3">
+    <input type="file" bind:files={iconFiles} placeholder="Icon" class="file-input w-full">
     <input type="text" bind:value={name} placeholder="Name" class="input w-full">
     <input type="date" bind:value={deadline} placeholder="Deadline" class="input w-full">
     <input type="submit" value="Create" class="btn btn-primary">
