@@ -57,7 +57,7 @@ export async function loginUser(username: string, password: string) {
 }
 
 
-export async function createProject(name: string, deadline: number, creation_date: number){
+export async function createProject(name: string, deadline: Date){
   const t = get(token);
   const response = await fetch("http://127.0.0.1:8000/projects", {
     method: "POST",
@@ -67,8 +67,7 @@ export async function createProject(name: string, deadline: number, creation_dat
     },
     body : JSON.stringify({
       "name": name,
-      "creation_date": deadline,
-      "deadline": creation_date,
+      "deadline": deadline.toISOString(),
       "done": false
     })
   });
