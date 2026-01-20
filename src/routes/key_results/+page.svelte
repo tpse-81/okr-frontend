@@ -64,8 +64,8 @@ async function handleSubmit() {
 	            <li class="card card-border">
 	            		<div class="card-body">
 		                Beschreibung: <strong>{key_result.description}</strong><br>
-		                Start Value: {key_result.startValue}<br>
-		                End Value: {key_result.endValue}<br>
+		                Start Value: {key_result.start_value}<br>
+		                End Value: {key_result.end_value}<br>
 		                <small>(ID: {key_result.id})</small><br><br>
 	                </div>
 	            </li>

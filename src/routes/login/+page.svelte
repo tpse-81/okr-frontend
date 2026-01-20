@@ -1,8 +1,7 @@
 <script lang="ts">
-// biome-ignore lint: All imports used
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
-import { loginUser } from "$lib";
+import { loginUser } from "$lib/api";
 import { token } from "$lib/stores";
 
 let username: string = $state("");

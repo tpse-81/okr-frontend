@@ -3,6 +3,7 @@ import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { createKeyResult, getKeyResultObjective } from "$lib/api";
 import type { KeyResult } from "$lib/types";
+import KeyResultComponent from "../../../components/KeyResult.svelte";
 
 let { data } = $props();
 
@@ -59,14 +60,7 @@ async function handleSubmit() {
     {#if keyResultList.length > 0}
         <ul class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}
-                <li class="card card-border">
-                    <a href={`/key_results/${keyResult.id}`} class="card-body">
-                        Beschreibung: <strong>{keyResult.description}</strong><br>
-                        Start Value: {keyResult.startValue}<br>
-                        End Value: {keyResult.endValue}<br>
-                        <small>(ID: {keyResult.id})</small><br><br>
-                    </a>
-                </li>
+            	<KeyResultComponent keyResult={keyResult} />
             {/each}
         </ul>
     {:else}
