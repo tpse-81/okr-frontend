@@ -2,6 +2,7 @@
 import { onMount } from "svelte";
 import { createProject, getProjects } from "$lib/api";
 import type { Project } from "$lib/types";
+import ProjectComponent from "../../components/Project.svelte";
 
 let projectsList: Project[] = $state([]);
 let name: string = $state("");
@@ -156,38 +157,8 @@ async function handleSubmit() {
   {#if projectsList.length > 0}
       <ul class="grid gap-3 grid-auto">
           {#each projectsList as project}
-              <li class="card card-border">
-                 <a href={`/projects/${project.id}`} class="card-body p-4">
-                     <div class="flex items-center gap-4">
-
-                        <!-- Avatar -->
-                        <div class="avatar">
-                            <div class="w-12 h-12 rounded bg-base-200">
-                            {#if project.icon}
-                                <img src={project.icon} alt="Project logo" class="object-contain" />
-                            {:else}
-                                <div class="flex items-center justify-center h-full text-sm opacity-60">
-                                    {project.name[0]}
-                                    </div>
-                            {/if}
-                        </div>
-                    </div>
-
-                <!-- Text -->
-                <div class="flex flex-col">
-                    <strong>{project.name}</strong>
-                    <span class="text-sm opacity-70">
-                        Created: {project.creation_date} · Deadline: {project.deadline}
-                    </span>
-                    <span class="text-sm">
-                        Done: {project.done ? "Yes" : "No"}
-                        <small>(ID: {project.id})</small>
-                    </span>
-                </div>
-            </div>
-        </a>
-    </li>
-    {/each}
+            <ProjectComponent project={project} />
+          {/each}
       </ul>
   {:else}
       <p>Keine Projekte geladen</p>

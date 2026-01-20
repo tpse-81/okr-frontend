@@ -18,8 +18,8 @@ export interface KeyResult {
 	id: string;
 	projectID: string;
 	description: string;
-	startValue: number;
-	endValue: number;
+	start_value: number;
+	end_value: number;
 }
 
 export type TaskState =

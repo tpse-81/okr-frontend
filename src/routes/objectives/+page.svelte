@@ -3,6 +3,7 @@ import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { createObjective, getObjectives } from "$lib/api";
 import type { Objective } from "$lib/types";
+import ObjectiveComponent from "../../components/Objective.svelte";
 
 let objectivelist: Objective[] = $state([]);
 let name: string = $state("");
@@ -44,13 +45,7 @@ async function createProjects() {
 	{#if objectivelist.length > 0}
 	    <ul class="grid grid-auto gap-3">
 	        {#each objectivelist as objective}
-	            <li class="card card-border">
-	                <a href={`/objectives/${objective.id}`} class="card-body">
-	                    Name: <strong>{objective.name}</strong><br>
-	                    Beschreibung: {objective.description}<br>
-	                    <small>(ID: {objective.id})</small><br><br>
-	                </a>
-	            </li>
+	        	<ObjectiveComponent objective={objective} />
 	        {/each}
 	    </ul>
 	{:else}

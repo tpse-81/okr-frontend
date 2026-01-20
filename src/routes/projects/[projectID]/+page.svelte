@@ -3,6 +3,8 @@ import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { createObjective, getObjectiveProject } from "$lib/api";
 import type { Objective } from "$lib/types";
+import AvatarComponent from "../../../components/Avatar.svelte";
+import ObjectiveComponent from "../../../components/Objective.svelte";
 
 let { data } = $props();
 
@@ -44,18 +46,7 @@ async function handleSubmit() {
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body">
       <div class="flex items-center gap-4">
-        <div class="avatar">
-          <div class="w-16 h-16 rounded bg-base-200">
-            {#if project_icon}
-              <img src={project_icon} alt="Project logo" class="object-contain" />
-            {:else}
-              <div class="flex items-center justify-center h-full text-lg opacity-60">
-                {project_name?.[0] ?? "?"}
-              </div>
-            {/if}
-          </div>
-        </div>
-
+        <AvatarComponent icon={project_icon ?? null} name={project_name} big={true} />
         <div class="min-w-0">
           <div class="text-2xl font-bold truncate">Objectives</div>
           <div class="opacity-70">{project_name}</div>
@@ -99,13 +90,7 @@ async function handleSubmit() {
       {#if objectivelist.length > 0}
         <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
           {#each objectivelist as objective}
-            <li class="card card-border hover:bg-base-200 transition-colors">
-              <a href={`/objectives/${objective.id}`} class="card-body">
-                <strong class="text-lg">{objective.name}</strong>
-                <div class="opacity-80">{objective.description}</div>
-                <div class="text-sm opacity-60">(ID: {objective.id})</div>
-              </a>
-            </li>
+            <ObjectiveComponent objective={objective} />
           {/each}
         </ul>
       {:else}

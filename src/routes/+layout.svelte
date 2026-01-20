@@ -1,7 +1,5 @@
 <script lang="ts">
-// biome-ignore lint: All imports used
 import { EllipsisIcon, MenuIcon, X } from "@lucide/svelte";
-// biome-ignore lint: All imports used
 import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
