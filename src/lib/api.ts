@@ -58,9 +58,18 @@ export async function loginUser(username: string, password: string) {
   return response_body.jwt_token;
 }
 
+async function getFileBytes(file: File) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+}
 
-export async function createProject(name: string, deadline: Date){
+export async function createProject(name: string, deadline: Date, imageInput: File | null){
   const t = get(token);
+  const imageAsBase64 = imageInput ? await getFileBytes(imageInput) : null;
   const response = await fetch(`${PUBLIC_API_URL}/projects`, {
     method: "POST",
     headers: {
@@ -70,7 +79,8 @@ export async function createProject(name: string, deadline: Date){
     body : JSON.stringify({
       "name": name,
       "deadline": deadline.toISOString(),
-      "done": false
+      "done": false,
+      "icon": imageAsBase64
     })
   });
   console.log(response)
