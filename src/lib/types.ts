@@ -1,8 +1,8 @@
 export interface Project {
     id: string;
     name: string;
-    creation_date: number;
-    deadline: number;
+    creation_date: Date;
+    deadline: Date;
     done: boolean;
 }
 
