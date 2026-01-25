@@ -7,6 +7,7 @@ let { children } = $props();
 let title = "OKR Project";
 </script>
 
+<!--
 <script context="module">
 	import { waitLocale } from 'svelte-i18n'
 	import { getLocaleFromNavigator, init, register, } from 'svelte-i18n';
@@ -24,7 +25,7 @@ let title = "OKR Project";
     return waitLocale()
   }
 </script>
-
+-->
 <svelte:head>
 	<link rel="icon" href={favicon} />
 	<title>{title}</title>

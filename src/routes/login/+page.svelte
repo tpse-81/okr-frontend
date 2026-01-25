@@ -15,7 +15,7 @@ async function login(e: SubmitEvent) {
 		errorMessage = "Empty username or password.";
 		return;
 	}
-
+/* 
 	try {
 		const authtoken = await loginUser(username, password);
 		token.set(authtoken);
@@ -24,7 +24,25 @@ async function login(e: SubmitEvent) {
 		console.error(e);
 		errorMessage = "Wrong username or password.";
 	}
+
+	*/ 
+
+	try {
+	const authtoken = await loginUser(username, password);
+
+	if (!authtoken) {
+		throw new Error("no token");
+	}
+
+	token.set(authtoken);
+	await goto("/");
+	} catch (e) {
+	console.error(e);
+	errorMessage = "Wrong username or password.";
+	}
+
 }
+
 </script>
 
 <div class="h-screen flex align-center">
