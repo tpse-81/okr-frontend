@@ -1,7 +1,7 @@
 <script lang="ts">
-import { getKeyResultObjective, createKeyResult } from "$lib/api";
-import { goto } from "$app/navigation";
 import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { createKeyResult, getKeyResultObjective } from "$lib/api";
 import type { KeyResult } from "$lib/types";
 
 let { data } = $props();

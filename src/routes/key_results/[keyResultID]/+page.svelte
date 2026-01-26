@@ -1,46 +1,39 @@
 <script lang="ts">
-    import {
-        getTasksKeyResult,
-        createTaskKeyResult
-    } from "$lib/api";
-    import { goto } from "$app/navigation";
-    import { onMount } from "svelte";
-    import type { Task, TaskState } from "$lib/types";
+import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { createTaskKeyResult, getTasksKeyResult } from "$lib/api";
+import type { Task, TaskState } from "$lib/types";
 
-    let { data } = $props();
+let { data } = $props();
 
-    let keyResultID = $derived(data.keyResultID);
+let keyResultID = $derived(data.keyResultID);
 
-    let taskList: Task[] = $state([]);
+let taskList: Task[] = $state([]);
 
-    let description: string = $state("");
-    let taskState: TaskState = $state("open");
+let description: string = $state("");
+let taskState: TaskState = $state("open");
 
-    onMount(async () => {
-        try {
-            await loadTasks();
-        } catch (err) {
-            console.error(err);
-        }
-    });
+onMount(async () => {
+	try {
+		await loadTasks();
+	} catch (err) {
+		console.error(err);
+	}
+});
 
-    async function loadTasks() {
-        try {
-            taskList = await getTasksKeyResult(keyResultID);
-        } catch (err) {
-            await goto("/expected");
-        }
-    }
+async function loadTasks() {
+	try {
+		taskList = await getTasksKeyResult(keyResultID);
+	} catch (err) {
+		await goto("/expected");
+	}
+}
 
-    async function handleSubmit() {
-        await createTaskKeyResult(
-            keyResultID,
-            description,
-            taskState 
-        );
+async function handleSubmit() {
+	await createTaskKeyResult(keyResultID, description, taskState);
 
-        taskList = await getTasksKeyResult(keyResultID);
-    }
+	taskList = await getTasksKeyResult(keyResultID);
+}
 </script>
 
 <h1>Create a Task</h1>

@@ -1,6 +1,6 @@
 <script lang="ts">
-import { getProjects, createProject } from "$lib/api";
 import { onMount } from "svelte";
+import { createProject, getProjects } from "$lib/api";
 import type { Project } from "$lib/types";
 
 let projectsList: Project[] = $state([]);
@@ -14,7 +14,6 @@ let pendingIcon: File | null = $state(null);
 let confirmedIcon: File | null = $state(null);
 let previewUrl: string | null = $state(null);
 let needsConfirm = $state(false);
-
 
 onMount(async () => {
 	try {
@@ -49,16 +48,15 @@ function discardIcon() {
 	if (previewUrl) URL.revokeObjectURL(previewUrl);
 	previewUrl = null;
 
-  iconInput.value ="";
+	iconInput.value = "";
 }
-
 
 async function handleSubmit() {
 	await createProject(name, new Date(deadline), iconFiles?.item(0) ?? null);
 	projectsList = await getProjects();
-  name = "";
-  deadline = 0;
-  discardIcon();
+	name = "";
+	deadline = 0;
+	discardIcon();
 }
 </script>
 

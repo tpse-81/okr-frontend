@@ -1,8 +1,9 @@
 <script lang="ts">
-import { loginUser } from "$lib";
-import { goto } from "$app/navigation";
-import { token } from "$lib/stores";
+// biome-ignore lint: All imports used
 import { _ } from "svelte-i18n";
+import { goto } from "$app/navigation";
+import { loginUser } from "$lib";
+import { token } from "$lib/stores";
 
 let username: string = $state("");
 let password: string = $state("");

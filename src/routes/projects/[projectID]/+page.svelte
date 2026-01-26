@@ -1,14 +1,14 @@
 <script lang="ts">
-import { createObjective, getObjectiveProject } from "$lib/api";
-import { goto } from "$app/navigation";
 import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { createObjective, getObjectiveProject } from "$lib/api";
 import type { Objective } from "$lib/types";
 
 let { data } = $props();
 
-    let project_id = $derived(data.project_id);
-    let project_name = $derived(data.project_name);
-    let project_icon = $derived(data.project_icon)
+let project_id = $derived(data.project_id);
+let project_name = $derived(data.project_name);
+let project_icon = $derived(data.project_icon);
 
 let objectivelist: Objective[] = $state([]);
 let name: string = $state("");
@@ -30,12 +30,12 @@ async function objectives() {
 	}
 }
 
-    async function handleSubmit() {
-        await createObjective(name, description, project_id);
-        objectivelist = await getObjectiveProject(project_id);
-        name = "";
-        description = "";
-    }
+async function handleSubmit() {
+	await createObjective(name, description, project_id);
+	objectivelist = await getObjectiveProject(project_id);
+	name = "";
+	description = "";
+}
 </script>
 
 <div class="p-3 space-y-6">

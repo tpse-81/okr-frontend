@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
-import type { PageLoad } from "./$types";
 import { getObjectives } from "$lib/api";
 import type { Objective } from "$lib/types";
+import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ params }) => {
 	const objectiveList: Objective[] = await getObjectives();

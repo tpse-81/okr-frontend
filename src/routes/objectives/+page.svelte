@@ -1,7 +1,7 @@
 <script lang="ts">
-import { getObjectives, createObjective } from "$lib/api";
-import { goto } from "$app/navigation";
 import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { createObjective, getObjectives } from "$lib/api";
 import type { Objective } from "$lib/types";
 
 let objectivelist: Objective[] = $state([]);
