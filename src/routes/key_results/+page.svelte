@@ -1,11 +1,11 @@
 <script lang="ts">
+import { onMount } from "svelte";
+import { goto } from "$app/navigation";
 import {
-	getKeyResultObjective,
 	createKeyResult,
+	getKeyResultObjective,
 	getKeyResults,
 } from "$lib/api";
-import { goto } from "$app/navigation";
-import { onMount } from "svelte";
 import type { KeyResult } from "$lib/types";
 
 let keyResultList: KeyResult[] = $state([]);
@@ -32,7 +32,7 @@ async function keyResults() {
 }
 
 async function handleSubmit() {
-	console.log("liste" + keyResultList);
+	console.log(`liste${keyResultList}`);
 	await createKeyResult(
 		description,
 		endValue,

@@ -1,7 +1,7 @@
 <script lang="ts">
-import { getTasksKeyResult, createTaskKeyResult } from "$lib/api";
-import { goto } from "$app/navigation";
 import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { createTaskKeyResult, getTasksKeyResult } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
 
 let tasklist: Task[] = $state([]);

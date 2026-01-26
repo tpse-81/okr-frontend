@@ -1,0 +1,95 @@
+name: Run tests, linter and formatter
+
+on:
+  push:
+    paths-ignore:
+      - "README*.md"
+  pull_request:
+    paths-ignore:
+      - "README*.md"
+  workflow_dispatch:
+
+jobs:
+  check-code:
+    name: Run tests, linter and formatter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout frontend
+        uses: actions/checkout@v4
+
+      - name: Checkout backend
+        uses: actions/checkout@v4
+        with:
+          repository: tpse-81/okr
+          path: backend
+          token: ${{ secrets.BACKEND_REPO_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (svelte-check)
+        run: pnpm run check
+
+      - name: Biome (linter + formatter check)
+        run: pnpm run biome:ci
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: uv sync --all-extras --dev
+
+      - name: Start backend (uvicorn)
+        working-directory: backend
+        run: |
+          nohup uv run uvicorn app:app --host 127.0.0.1 --port 8000 > backend.log 2>&1 &
+          echo "Backend started"
+
+      - name: Wait for backend
+        run: pnpm dlx wait-on tcp:127.0.0.1:8000 --timeout 60000
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run Playwright tests
+        env:
+          CI: "true"
+        run: pnpm run test:e2e
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+
+      # don' know if these are necessary, maybe only useful in certain scenarios 
+      # HTML-report
+      #- name: Upload Playwright report
+      #  if: always()
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: playwright-report
+      #    path: playwright-report/
+
+      # Backend-log
+      # - name: Upload backend log
+      #  if: always()
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: backend-log
+      #    path: backend/backend.log
+

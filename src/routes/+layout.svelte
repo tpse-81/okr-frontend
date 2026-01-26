@@ -1,33 +1,18 @@
 <script lang="ts">
+// biome-ignore lint: All imports used
+import { EllipsisIcon, MenuIcon, X } from "@lucide/svelte";
+// biome-ignore lint: All imports used
 import favicon from "$lib/assets/favicon.svg";
-import { MenuIcon, MoreHorizontalIcon, X } from "@lucide/svelte";
 import "../app.css";
+import "$lib/i18n";
 
 let { children } = $props();
 let title = "OKR Project";
 </script>
 
-<script context="module">
-	import { waitLocale } from 'svelte-i18n'
-	import { getLocaleFromNavigator, init, register, } from 'svelte-i18n';
-
-	register('en', () => import('../translations/en.json'));
-	register('de', () => import('../translations/de.json'));
-
-  init({
-    fallbackLocale: 'en',
-    initialLocale: getLocaleFromNavigator()
-  });
-
-	export async function preload() {
-    // awaits for the loading of the 'en-US' and 'en' dictionaries
-    return waitLocale()
-  }
-</script>
-
 <svelte:head>
-	<link rel="icon" href={favicon} />
-	<title>{title}</title>
+  <link rel="icon" href={favicon} />
+  <title>{title}</title>
 </svelte:head>
 
 <div class="navbar bg-base-100 shadow-sm">
@@ -46,8 +31,14 @@ let title = "OKR Project";
 
       <div class="bg-base-200 min-h-full w-80 p-4 flex flex-col">
         <!-- button to manually close the navigation drawer -->
-        <label for="navigation-drawer" aria-label="close sidebar" class="btn btn-ghost w-min self-end"><X /></label>
-        
+        <label
+          for="navigation-drawer"
+          aria-label="close sidebar"
+          class="btn btn-ghost w-min self-end"
+        >
+          <X />
+        </label>
+
         <ul class="menu w-full">
         	<li><a href="/">Home</a></li>
         	<li><a href="/login">Login</a></li>
@@ -57,15 +48,19 @@ let title = "OKR Project";
         	<li><a href="/key_results">Key results</a></li>
           <li><a href="/tasks">Tasks</a></li>
         </ul>
-       </div>
+      </div>
     </div>
   </div>
+
   <div class="flex-1">
     <a class="btn btn-ghost text-xl" href="/">OKR-ng</a>
   </div>
+
   <!-- button with more options, e.g. logout -->
   <div class="dropdown dropdown-end">
-    <div tabindex="0" role="button" class="btn btn-square btn-ghost m-1"><MoreHorizontalIcon /></div>
+    <div tabindex="0" role="button" class="btn btn-square btn-ghost m-1">
+      <EllipsisIcon />
+    </div>
     <ul tabindex="-1" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
       <li class="btn btn-ghost">Logout <!-- TODO: logout actually --></li>
       <li class="btn btn-ghost">Something else</li>
@@ -74,3 +69,4 @@ let title = "OKR Project";
 </div>
 
 {@render children()}
+
