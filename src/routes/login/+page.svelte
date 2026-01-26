@@ -6,7 +6,7 @@ import { _ } from "svelte-i18n";
 
 let username: string = $state("");
 let password: string = $state("");
-let errorMessage: string = $state(""); 
+let errorMessage: string = $state("");
 
 async function login(e: SubmitEvent) {
 	e.preventDefault();

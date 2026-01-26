@@ -1,5 +1,5 @@
-import { error } from '@sveltejs/kit';
+import { error } from "@sveltejs/kit";
 
 export function load() {
-    error(500, 'etwas ist schief gegangen :/');
+	error(500, "etwas ist schief gegangen :/");
 }

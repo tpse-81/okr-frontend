@@ -17,9 +17,9 @@ export async function createUser(name: string, email: string, password: string){
   return response.json();
 }
 
-export async function getUsers(){
-  const t = get(token);
-  if (!t) throw new Error("Token ist leer");
+export async function getUsers() {
+	const t = get(token);
+	if (!t) throw new Error("Token ist leer");
 
   const response = await fetch(`${PUBLIC_API_URL}/users`, {
     method: "GET",
@@ -29,11 +29,11 @@ export async function getUsers(){
     }
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
 
-  return response.json();
+	return response.json();
 }
 
 export async function loginUser(username: string, password: string) {
@@ -46,8 +46,8 @@ export async function loginUser(username: string, password: string) {
     })
   })
 
-  const response_body = await response.json();
-  return response_body.jwt_token;
+	const response_body = await response.json();
+	return response_body.jwt_token;
 }
 
 async function getFileBytes(file: File) {
@@ -81,8 +81,8 @@ export async function createProject(name: string, deadline: Date, imageInput: Fi
 }
 
 export async function getProjects() {
-  const t = get(token);
-  if (!t) throw new Error("Token ist leer");
+	const t = get(token);
+	if (!t) throw new Error("Token ist leer");
 
   const response = await fetch(`${PUBLIC_API_URL}/projects`, {
     method: "GET",
@@ -92,18 +92,18 @@ export async function getProjects() {
     }
   });
 
-  console.log("Aktueller Token:", get(token));
+	console.log("Aktueller Token:", get(token));
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
 
-  return response.json();
+	return response.json();
 }
 
 export async function getProjectById(projectId: string): Promise<Project> {
-    const t = get(token);
-    if (!t) throw new Error("Token ist leer");
+	const t = get(token);
+	if (!t) throw new Error("Token ist leer");
 
     const response = await fetch(
         `${PUBLIC_API_URL}/projects/${projectId}`,
@@ -116,13 +116,12 @@ export async function getProjectById(projectId: string): Promise<Project> {
         }
     );
 
-    if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
 
-    return response.json();
+	return response.json();
 }
-
 
 
 export async function createObjective(name: string, description: string, project_id: string){
@@ -144,7 +143,7 @@ export async function createObjective(name: string, description: string, project
 }
 
 export async function getObjectives() {
-  const t = get(token);
+	const t = get(token);
 
   const response = await fetch(`${PUBLIC_API_URL}/objectives`, {
     method: "GET",
@@ -154,11 +153,11 @@ export async function getObjectives() {
     }
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
 
-  return response.json();
+	return response.json();
 }
 
 export async function getObjectiveProject(project_id: string){
@@ -172,7 +171,7 @@ export async function getObjectiveProject(project_id: string){
         },
       });
 
-  return response.json();
+	return response.json();
 }
 
 
@@ -197,7 +196,7 @@ export async function createKeyResult(description:string, end_value:number, star
 }
 
 export async function getKeyResults() {
-  const t = get(token);
+	const t = get(token);
 
   const response = await fetch(`${PUBLIC_API_URL}/key_results`, {
     method: "GET",
@@ -207,11 +206,11 @@ export async function getKeyResults() {
     }
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
 
-  return response.json();
+	return response.json();
 }
 
 export async function getKeyResultObjective(objective_id: string){
@@ -225,7 +224,7 @@ export async function getKeyResultObjective(objective_id: string){
         },
       });
 
-  return response.json();
+	return response.json();
 }
 
 
@@ -258,7 +257,7 @@ export async function getTasksKeyResult(key_result_id: string){
         },
       });
 
-  return response.json();
+	return response.json();
 }
 
 
@@ -287,7 +286,7 @@ export async function getUsersProject(project_id: string){
         },
       });
 
-  return response.json();
+	return response.json();
 }
 
 export async function addObjectiveProject(project_id: string, objective_id: string){

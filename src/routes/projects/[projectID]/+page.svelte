@@ -1,34 +1,34 @@
 <script lang="ts">
-    import { createObjective, getObjectiveProject} from "$lib/api";
-    import {goto} from "$app/navigation";
-    import {onMount} from "svelte";
-    import type { Objective } from "$lib/types";
+import { createObjective, getObjectiveProject } from "$lib/api";
+import { goto } from "$app/navigation";
+import { onMount } from "svelte";
+import type { Objective } from "$lib/types";
 
-    let { data } = $props();
+let { data } = $props();
 
     let project_id = $derived(data.project_id);
     let project_name = $derived(data.project_name);
     let project_icon = $derived(data.project_icon)
 
-    let objectivelist: Objective[] = $state([]);
-    let name: string = $state("");
-    let description: string = $state("");
+let objectivelist: Objective[] = $state([]);
+let name: string = $state("");
+let description: string = $state("");
 
-    onMount(async () => {
-        try {
-            await objectives();
-        } catch (err) {
-            console.error(err);
-        }
-    });
+onMount(async () => {
+	try {
+		await objectives();
+	} catch (err) {
+		console.error(err);
+	}
+});
 
-    async function objectives() {
-        try {
-            objectivelist = await getObjectiveProject(project_id);
-        } catch (err) {
-            await goto("/expected")
-        }
-    }
+async function objectives() {
+	try {
+		objectivelist = await getObjectiveProject(project_id);
+	} catch (err) {
+		await goto("/expected");
+	}
+}
 
     async function handleSubmit() {
         await createObjective(name, description, project_id);
