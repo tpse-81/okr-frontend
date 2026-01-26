@@ -1,51 +1,48 @@
 <script lang="ts">
-    import {
-        getKeyResultObjective,
-        createKeyResult
-    } from "$lib/api";
-    import { goto } from "$app/navigation";
-    import { onMount } from "svelte";
-    import type { KeyResult } from "$lib/types";
+import { getKeyResultObjective, createKeyResult } from "$lib/api";
+import { goto } from "$app/navigation";
+import { onMount } from "svelte";
+import type { KeyResult } from "$lib/types";
 
-    let { data } = $props();
+let { data } = $props();
 
-    let objectiveID = $derived(data.objectiveID);
-    let objectiveName = $derived(data.objectiveName);
-    let projectID = $derived(data.parentID);
+let objectiveID = $derived(data.objectiveID);
+let objectiveName = $derived(data.objectiveName);
+let projectID = $derived(data.parentID);
 
-    let keyResultList: KeyResult[] = $state([]);
+let keyResultList: KeyResult[] = $state([]);
 
-    let description: string = $state("");
-    let startValue: number = $state(0);
-    let endValue: number = $state(0);
+let description: string = $state("");
+let startValue: number = $state(0);
+let endValue: number = $state(0);
 
-    onMount(async () => {
-        try {
-            await loadKeyResults();
-        } catch (err) {
-            console.error(err);
-        }
-    });
+onMount(async () => {
+	try {
+		await loadKeyResults();
+	} catch (err) {
+		console.error(err);
+	}
+});
 
-    async function loadKeyResults() {
-        try {
-            keyResultList = await getKeyResultObjective(objectiveID);
-        } catch (err) {
-            await goto("/expected");
-        }
-    }
+async function loadKeyResults() {
+	try {
+		keyResultList = await getKeyResultObjective(objectiveID);
+	} catch (err) {
+		await goto("/expected");
+	}
+}
 
-    async function handleSubmit() {
-        await createKeyResult(
-            description,
-            endValue,
-            startValue,
-            objectiveID,
-            projectID
-        );
+async function handleSubmit() {
+	await createKeyResult(
+		description,
+		endValue,
+		startValue,
+		objectiveID,
+		projectID,
+	);
 
-        keyResultList = await getKeyResultObjective(objectiveID);
-    }
+	keyResultList = await getKeyResultObjective(objectiveID);
+}
 </script>
 
 <h1>Create a Key Result for {objectiveName}</h1>

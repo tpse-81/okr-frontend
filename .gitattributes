@@ -1,0 +1,8 @@
+# BiomeJS forces us to use a specific line ending (LF or CRLF (that is /n or /r/n)) ("auto" seems to be in the works)
+# Windows: CRLF typically, Linux/Mac: LF
+# This line ensures that the line ending will be LF in GitHub
+# Do this once inside the folder to ensure LF as line ending for local checking (just 3. is enough generally though)
+# 1. git config core.autocrlf false
+# 2. git reset --hard
+# 3. Now "pnpm exec biome format . --write" will turn line endings into LF
+* text=auto eol=lf
