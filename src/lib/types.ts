@@ -4,6 +4,7 @@ export interface Project {
     creation_date: Date;
     deadline: Date;
     done: boolean;
+    icon?: string | null;
 }
 
 export interface Objective {
