@@ -14,5 +14,5 @@ export const load: PageLoad = async ({ params }) => {
         throw error(404, 'Not found');
     }
 
-    return { project_id: project.id, project_name: project.name};
+    return { project_id: project.id, project_name: project.name, project_icon: project.icon};
 };

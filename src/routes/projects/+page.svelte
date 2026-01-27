@@ -7,12 +7,14 @@ let projectsList: Project[] = $state([]);
 let name: string = $state("");
 let deadline: number = $state(0);
 
-let iconFiles: FileList;
+let iconInput: HTMLInputElement;
+let iconFiles: FileList | null;
 
 let pendingIcon: File | null = $state(null);
 let confirmedIcon: File | null = $state(null);
 let previewUrl: string | null = $state(null);
 let needsConfirm = $state(false);
+
 
 onMount(async () => {
 	try {
@@ -28,7 +30,7 @@ function onIconChange() {
 	// reset
 	pendingIcon = f;
 	confirmedIcon = null;
-	needsConfirm = !!f;
+	needsConfirm = f != null;
 
 	if (previewUrl) URL.revokeObjectURL(previewUrl);
 	previewUrl = f ? URL.createObjectURL(f) : null;
@@ -46,55 +48,148 @@ function discardIcon() {
 
 	if (previewUrl) URL.revokeObjectURL(previewUrl);
 	previewUrl = null;
+
+  iconInput.value ="";
 }
 
+
 async function handleSubmit() {
-	await createProject(name, new Date(deadline), iconFiles.item(0));
+	await createProject(name, new Date(deadline), iconFiles?.item(0) ?? null);
 	projectsList = await getProjects();
+  name = "";
+  deadline = 0;
+  discardIcon();
 }
 </script>
 
 <h1>Create a Project</h1>
 
-<form id="project-submit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="file" accept="image/*" bind:files={iconFiles} onchange={onIconChange} class="file-input w-full">
-    {#if previewUrl}
-    <div class="card card-border p-3 gap-2">
-      <div class="font-semibold">Preview</div>
+<form id="project-submit" onsubmit={handleSubmit} class="p-3">
+  <div class="card bg-base-100 border border-base-300">
+    <div class="card-body gap-4">
 
-      <img src={previewUrl} alt="Icon preview" class="max-h-32 w-auto rounded" />
+      <h2 class="card-title">Create a Project</h2>
 
-      {#if needsConfirm}
-        <div class="flex gap-2 items-center">
-          <span>Do you want to use this logo?</span>
-          <button type="button" class="btn btn-primary" onclick={confirmIcon}>Accept</button>
-          <button type="button" class="btn" onclick={discardIcon}>Discard</button>
+      <div class="form-control">
+        <label for="project-logo" class="label">
+            <span class="label-text">Projekt-Logo</span>
+        </label>
+
+        <input
+            id="project-logo"
+            type="file"
+            accept="image/*"
+            bind:this={iconInput}
+            bind:files={iconFiles}
+            onchange={onIconChange}
+            class="file-input file-input-bordered w-full"
+        />
+      </div>
+
+
+      <!-- Preview + Confirm -->
+      {#if previewUrl}
+        <div class="alert flex flex-col gap-3">
+          <div class="w-full">
+            <div class="text-sm font-semibold mb-2">Preview</div>
+            <div class="h-32 w-full rounded bg-base-200 flex items-center justify-center overflow-hidden">
+              <img src={previewUrl} alt="Logo preview" class="h-full w-full object-contain" />
+            </div>
+          </div>
+
+          {#if needsConfirm}
+            <div class="w-full flex flex-col gap-2">
+              <div class="text-sm whitespace-normal">
+                Do you really want to use this logo?
+              </div>
+              <div class="flex gap-2 flex-wrap">
+                <button type="button" class="btn btn-primary" onclick={confirmIcon}>Accept</button>
+                <button type="button" class="btn btn-ghost" onclick={discardIcon}>Discard</button>
+              </div>
+            </div>
+          {:else if confirmedIcon}
+            <div class="w-full text-sm opacity-80">
+              Logo accepted
+            </div>
+          {/if}
         </div>
-      {:else if confirmedIcon}
-        <div class="text-sm opacity-70">Logo changed</div>
       {/if}
+
+      <!-- Inputs: nice grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="form-control">
+            <label for="project-name" class="label">
+                <span class="label-text">Name</span>
+            </label>
+            <input
+                id="project-name"
+                type="text"
+                bind:value={name}
+                placeholder="Name"
+                class="input input-bordered w-full"
+            />
+        </div>
+
+        <div class="form-control">
+            <label for="project-deadline" class="label">
+                <span class="label-text">Deadline</span>
+            </label>
+            <input
+                id="project-deadline"
+                type="text"
+                bind:value={deadline}
+                placeholder="Deadline"
+                class="input input-bordered w-full"
+            />
+        </div>
+      </div>
+
+      <div class="card-actions justify-end">
+        <button class="btn btn-primary" type="submit" disabled={needsConfirm}>
+          Create
+        </button>
+      </div>
     </div>
-  {/if}
-    <input type="text" bind:value={name} placeholder="Name" class="input w-full">
-    <input type="number" bind:value={deadline} placeholder="Deadline" class="input w-full">
-    <input type="submit" value="Create" class="btn btn-primary" disabled={needsConfirm}>
+  </div>
 </form>
 
 <div class="p-3">
-  <h1>Projekte</h1>
+  <h1>Projects</h1>
   {#if projectsList.length > 0}
       <ul class="grid gap-3 grid-auto">
           {#each projectsList as project}
               <li class="card card-border">
-                  <a href={`/projects/${project.id}`} class="card-body">
-                      <strong>{project.name}</strong><br>
-                      Erstellt: {project.creation_date}<br>
-                      Deadline: {project.deadline}<br>
-                      Fertig: {project.done ? "Ja" : "Nein"}<br>
-                      <small>(ID: {project.id})</small>
-                  </a>
-              </li>
-          {/each}
+                 <a href={`/projects/${project.id}`} class="card-body p-4">
+                     <div class="flex items-center gap-4">
+
+                        <!-- Avatar -->
+                        <div class="avatar">
+                            <div class="w-12 h-12 rounded bg-base-200">
+                            {#if project.icon}
+                                <img src={project.icon} alt="Project logo" class="object-contain" />
+                            {:else}
+                                <div class="flex items-center justify-center h-full text-sm opacity-60">
+                                    {project.name[0]}
+                                    </div>
+                            {/if}
+                        </div>
+                    </div>
+
+                <!-- Text -->
+                <div class="flex flex-col">
+                    <strong>{project.name}</strong>
+                    <span class="text-sm opacity-70">
+                        Created: {project.creation_date} · Deadline: {project.deadline}
+                    </span>
+                    <span class="text-sm">
+                        Done: {project.done ? "Yes" : "No"}
+                        <small>(ID: {project.id})</small>
+                    </span>
+                </div>
+            </div>
+        </a>
+    </li>
+    {/each}
       </ul>
   {:else}
       <p>Keine Projekte geladen</p>
