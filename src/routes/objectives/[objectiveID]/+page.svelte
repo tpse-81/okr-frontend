@@ -63,12 +63,12 @@
         <ul class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}
                 <li class="card card-border">
-                    <div class="card-body">
+                    <a href={`/key_results/${keyResult.id}`} class="card-body">
                         Beschreibung: <strong>{keyResult.description}</strong><br>
                         Start Value: {keyResult.startValue}<br>
                         End Value: {keyResult.endValue}<br>
                         <small>(ID: {keyResult.id})</small><br><br>
-                    </div>
+                    </a>
                 </li>
             {/each}
         </ul>

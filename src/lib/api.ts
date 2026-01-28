@@ -1,16 +1,8 @@
 import {token} from "$lib/stores";
 import {get} from "svelte/store";
-import type { Project } from "$lib/types";
+import type { Project, TaskState } from "$lib/types";
 // load api url from .env file
-import { PUBLIC_API_URL } from "$env/static/public"
-
-enum TaskState {
-  open,
-  planned,
-  in_progress,
-  done,
-  cancelled,
-}
+import { PUBLIC_API_URL } from "$env/static/public";
 
 export async function createUser(name: string, email: string, password: string){
   const response = await fetch(`${PUBLIC_API_URL}/users/create`

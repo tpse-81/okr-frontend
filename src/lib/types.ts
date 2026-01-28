@@ -20,3 +20,17 @@ export interface KeyResult {
     startValue: number;
     endValue: number;
 }
+
+export type TaskState =
+    | "open"
+    | "planned"
+    | "in_progress"
+    | "done"
+    | "cancelled";
+
+export interface Task {
+    id:string;
+    description: string;
+    task_state: TaskState
+    key_result_id: string;
+}

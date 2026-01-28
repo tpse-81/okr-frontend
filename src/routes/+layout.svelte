@@ -55,6 +55,7 @@ let title = "OKR Project";
         	<li><a href="/projects">Projects</a></li>
         	<li><a href="/objectives">Objectives</a></li>
         	<li><a href="/key_results">Key results</a></li>
+          <li><a href="/tasks">Tasks</a></li>
         </ul>
        </div>
     </div>
