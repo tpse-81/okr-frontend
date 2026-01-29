@@ -2,6 +2,7 @@
 import { getProjects, createProject } from "$lib/api";
 import { onMount } from "svelte";
 import type { Project } from "$lib/types";
+import { _ } from "svelte-i18n";
 
 let projectsList: Project[] = $state([]);
 let name: string = $state("");
@@ -23,17 +24,17 @@ async function handleSubmit() {
 }
 </script>
 
-<h1>Create a Project</h1>
+<h1>{$_('createProject')}</h1>
 
 <form id="project-submit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="file" bind:files={iconFiles} placeholder="Icon" class="file-input w-full">
-    <input type="text" bind:value={name} placeholder="Name" class="input w-full">
-    <input type="date" bind:value={deadline} placeholder="Deadline" class="input w-full">
+    <input type="file" bind:files={iconFiles} placeholder={$_('icon')} class="file-input w-full">
+    <input type="text" bind:value={name} placeholder={$_('name')} class="input w-full">
+    <input type="date" bind:value={deadline} placeholder={$_('deadline')} class="input w-full">
     <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
 <div class="p-3">
-  <h1>Projekte</h1>
+  <h1>{$_('projects')}</h1>
   {#if projectsList.length > 0}
       <ul class="grid gap-3 grid-auto">
           {#each projectsList as project}

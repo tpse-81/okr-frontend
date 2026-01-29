@@ -1,5 +1,29 @@
 {
   "login": "Anmelden",
+
   "username": "Benutzername",
-  "password": "Passwort"
+  "password": "Passwort",
+  "email": "E-Mail",
+  "create": "Erstellen",
+  "deadline": "Frist",
+  "projectID": "Projekt-ID",
+  "startValue": "Startwert",
+  "endValue": "Endwert",
+  "name": "Name",
+  "icon": "Symbol",
+  "description": "Beschreibung",
+
+  "createUser": "Benutzer erstellen",
+  "user": "Benutzer",
+  "createProject": "Projekt erstellen",
+  "projects": "Projekte",
+  "createObjective": "Ziel erstellen",
+  "objectives": "Ziele",
+  "createKeyResult": "Schlüsselergebnis erstellen",
+  "keyResults": "Schlüsselergebnisse",
+  "for": "für",
+
+  "noProjects": "Keine Projekte verfügbar",
+  "noObjectives": "Keine Ziele verfügbar",
+  "noKeyResults": "Keine Schlüsselergebnisse verfügbar"
 }

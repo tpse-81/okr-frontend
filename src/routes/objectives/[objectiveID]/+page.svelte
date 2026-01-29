@@ -6,6 +6,7 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import type { KeyResult } from "$lib/types";
+    import { _ } from "svelte-i18n";
 
     let { data } = $props();
 
@@ -48,17 +49,17 @@
     }
 </script>
 
-<h1>Create a Key Result for {objectiveName}</h1>
+<h1>{$_('createKeyResult')} {$_('for')} {objectiveName}</h1>
 
 <form id="keyResultSubmit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="text" bind:value={description} placeholder="description" class="input w-full">
-    <input type="number" bind:value={startValue} placeholder="start value" class="input w-full">
-    <input type="number" bind:value={endValue} placeholder="end value" class="input w-full">
+    <input type="text" bind:value={description} placeholder={$_('description')} class="input w-full">
+    <input type="number" bind:value={startValue} placeholder={$_('startValue')} class="input w-full">
+    <input type="number" bind:value={endValue} placeholder={$_('endValue')} class="input w-full">
     <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
 <div class="p-3">
-    <h1>Key Results for {objectiveName}</h1>
+    <h1>{$_('keyResults')} {$_('for')} {objectiveName}</h1>
     {#if keyResultList.length > 0}
         <ul class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}

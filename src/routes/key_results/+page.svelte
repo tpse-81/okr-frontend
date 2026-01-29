@@ -7,6 +7,7 @@ import {
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
 import type { KeyResult } from "$lib/types";
+import { _ } from "svelte-i18n";
 
 let keyResultList: KeyResult[] = $state([]);
 let description: string = $state("");
@@ -45,7 +46,7 @@ async function handleSubmit() {
 </script>
 
 
-<h1>Create a Key Result</h1>
+<h1>{$_('createKeyResult')}</h1>
 
 <form id="key_result-submit" onsubmit={handleSubmit} class="flex p-3 gap-3">
     <input type="text" bind:value={projectID} placeholder="project id" class="input w-full">
@@ -57,7 +58,7 @@ async function handleSubmit() {
 </form>
 
 <div class="p-3">
-	<h1>Key Results</h1>
+	<h1>{$_('keyResults')}</h1>
 	{#if keyResultList.length > 0}
 	    <ul class="grid grid-auto gap-3">
 	        {#each keyResultList as key_result}

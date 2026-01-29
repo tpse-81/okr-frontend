@@ -3,6 +3,7 @@ import { getObjectives, createObjective } from "$lib/api";
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
 import type { Objective } from "$lib/types";
+import { _ } from "svelte-i18n";
 
 let objectivelist: Objective[] = $state([]);
 let name: string = $state("");
@@ -30,17 +31,17 @@ async function createProjects() {
 }
 </script>
 
-<h1>Create an Objective</h1>
+<h1>{$_('createObjective')}</h1>
 
 <form id="objective-submit" onsubmit={createProjects} class="flex gap-3 p-3">
-    <input type="text" bind:value={name} placeholder="Name" class="input w-full">
-    <input type="text" bind:value={description} placeholder="Deadline" class="input w-full">
-    <input type="text" bind:value={projectID} placeholder="project id" class="input w-full">
+    <input type="text" bind:value={name} placeholder={$_('name')} class="input w-full">
+    <input type="text" bind:value={description} placeholder={$_('description')} class="input w-full">
+    <input type="text" bind:value={projectID} placeholder={$_('projectID')} class="input w-full">
     <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
 <div class="p-3">
-	<h1>Objectives</h1>
+	<h1>{$_('objectives')}</h1>
 	{#if objectivelist.length > 0}
 	    <ul class="grid grid-auto gap-3">
 	        {#each objectivelist as objective}

@@ -3,6 +3,7 @@
     import {goto} from "$app/navigation";
     import {onMount} from "svelte";
     import type { Objective } from "$lib/types";
+    import { _ } from "svelte-i18n";
 
     let { data } = $props();
 
@@ -35,16 +36,16 @@
     }
 </script>
 
-<h1>Create an Objective for {project_name}</h1>
+<h1>{$_('createObjective')} {$_('for')} {project_name}</h1>
 
 <form id="objective-submit" onsubmit={handleSubmit} class="flex p-3 gap-3">
-    <input type="text" bind:value={name} placeholder="Name" class="input w-full">
-    <input type="text" bind:value={description} placeholder="description" class="input w-full">
+    <input type="text" bind:value={name} placeholder={$_('name')} class="input w-full">
+    <input type="text" bind:value={description} placeholder={$_('description')} class="input w-full">
     <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
 <div class="p-3">
-    <h1>Objectives for {project_name}</h1>
+    <h1>{$_('objectives')} {$_('for')} {project_name}</h1>
     {#if objectivelist.length > 0}
         <ul class="grid grid-auto p-3">
             {#each objectivelist as objective}

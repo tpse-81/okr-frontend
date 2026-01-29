@@ -1,5 +1,30 @@
 {
   "login": "Login",
+
   "username": "Username",
-  "password": "Password"
+  "password": "Password",
+  "email": "E-Mail",
+  "create": "Create",
+  "deadline": "Deadline",
+  "projectID": "Project ID",
+  "startValue": "Start Value",
+  "endValue": "End Value",
+  "name": "Name",
+  "icon": "icon",
+  "description": "description",
+
+
+  "createUser": "Create User",
+  "user": "user",
+  "createProject": "Create Project",
+  "projects": "Projects",
+  "createObjective": "Create Objective",
+  "objectives": "Objectives",
+  "createKeyResult": "Create Key Result",
+  "keyResults": "Key Results",
+  "for": "for",
+
+  "noProjects": "No projects available",
+  "noObjectives": "No objectives available",
+  "noKeyResults": "No key results available"
 }
