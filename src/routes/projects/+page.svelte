@@ -9,6 +9,7 @@ let name: string = $state("");
 let deadline: number = $state(0);
 
 let iconInput: HTMLInputElement;
+// svelte-ignore non_reactive_update
 let iconFiles: FileList | null;
 
 let pendingIcon: File | null = $state(null);
