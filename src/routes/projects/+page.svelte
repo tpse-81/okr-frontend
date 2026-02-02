@@ -134,7 +134,7 @@ async function handleSubmit() {
             </label>
             <input
                 id="project-deadline"
-                type="text"
+                type="date"
                 bind:value={deadline}
                 placeholder="Deadline"
                 class="input input-bordered w-full"
