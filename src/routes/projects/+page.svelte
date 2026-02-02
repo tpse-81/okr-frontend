@@ -158,7 +158,7 @@ async function handleSubmit() {
   {#if projectsList.length > 0}
       <ul class="grid gap-3 grid-auto">
           {#each projectsList as project}
-            <ProjectComponent project={project} />
+            <ProjectComponent project={project} onProjectDeleted={() => projectsList = projectsList.filter(proj => proj.id != project.id)} />
           {/each}
       </ul>
   {:else}

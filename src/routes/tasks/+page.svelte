@@ -50,4 +50,4 @@ async function createTask() {
 	<h1>Tasks</h1>
 </div>
 
-<TaskColumns tasks={tasklist} />
+<TaskColumns tasks={tasklist} onTaskDeleted={id => tasklist = tasklist.filter(task => task.id != id)} />

@@ -45,7 +45,7 @@ async function createProjects() {
 	{#if objectivelist.length > 0}
 	    <ul class="grid grid-auto gap-3">
 	        {#each objectivelist as objective}
-	        	<ObjectiveComponent objective={objective} />
+	        	<ObjectiveComponent objective={objective} onObjectiveDeleted={() => objectivelist = objectivelist.filter(obj => objective.id != obj.id)} />
 	        {/each}
 	    </ul>
 	{:else}

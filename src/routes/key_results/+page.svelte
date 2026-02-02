@@ -7,6 +7,7 @@ import {
 	getKeyResults,
 } from "$lib/api";
 import type { KeyResult } from "$lib/types";
+import KeyResultComponent from "../../components/KeyResult.svelte";
 
 let keyResultList: KeyResult[] = $state([]);
 let description: string = $state("");
@@ -61,14 +62,7 @@ async function handleSubmit() {
 	{#if keyResultList.length > 0}
 	    <ul class="grid grid-auto gap-3">
 	        {#each keyResultList as key_result}
-	            <li class="card card-border">
-	            		<div class="card-body">
-		                Beschreibung: <strong>{key_result.description}</strong><br>
-		                Start Value: {key_result.start_value}<br>
-		                End Value: {key_result.end_value}<br>
-		                <small>(ID: {key_result.id})</small><br><br>
-	                </div>
-	            </li>
+			 	    	<KeyResultComponent keyResult={key_result} onKeyResultDeleted={() => keyResultList = keyResultList.filter(kr => kr.id != key_result.id)} />
 	        {/each}
 	    </ul>
 	{:else}

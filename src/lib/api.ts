@@ -87,6 +87,19 @@ export async function createProject(
 	return response;
 }
 
+export async function deleteProject(project_id: string) {
+	const t = get(token);
+	const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}`, {
+		method: "DELETE",
+		headers: {
+			Authorization: t,
+			"Content-Type": "application/json",
+		},
+	});
+
+	return response.ok;
+}
+
 export async function getProjects() {
 	const t = get(token);
 	if (!t) throw new Error("Token ist leer");
@@ -151,6 +164,19 @@ export async function createObjective(
 	return response;
 }
 
+export async function deleteObjective(objective_id: string) {
+	const t = get(token);
+	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective_id}`, {
+		method: "DELETE",
+		headers: {
+			Authorization: t,
+			"Content-Type": "application/json",
+		},
+	});
+
+	return response.ok;
+}
+
 export async function getObjectives() {
 	const t = get(token);
 
@@ -193,21 +219,39 @@ export async function createKeyResult(
 	project_id: string,
 ) {
 	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`, {
-		method: "POST",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
+	const response = await fetch(
+		`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`,
+		{
+			method: "POST",
+			headers: {
+				Authorization: t,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				project_id: project_id,
+				description: description,
+				start_value: start_value,
+				end_value: end_value,
+			}),
 		},
-		body: JSON.stringify({
-			objective_id: objective_id,
-			project_id: project_id,
-			description: description,
-			start_value: start_value,
-			end_value: end_value,
-		}),
-	});
+	);
 	return response.json();
+}
+
+export async function deleteKeyResult(key_result_id: string) {
+	const t = get(token);
+	const response = await fetch(
+		`${PUBLIC_API_URL}/key_results/${key_result_id}`,
+		{
+			method: "DELETE",
+			headers: {
+				Authorization: t,
+				"Content-Type": "application/json",
+			},
+		},
+	);
+
+	return response.ok;
 }
 
 export async function getKeyResults() {
@@ -280,6 +324,19 @@ export async function getTasks() {
 	});
 
 	return response.json();
+}
+
+export async function deleteTask(task_id: string) {
+	const t = get(token);
+	const response = await fetch(`${PUBLIC_API_URL}/tasks/${task_id}`, {
+		method: "DELETE",
+		headers: {
+			Authorization: t,
+			"Content-Type": "application/json",
+		},
+	});
+
+	return response.ok;
 }
 
 export async function getTasksKeyResult(key_result_id: string) {
