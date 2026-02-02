@@ -37,11 +37,11 @@ async function onDeleteProject() {
 		</div>
     <a href={`/projects/${project.id}`} class="card-body">
         {#if project.done}
-            <div class="badge badge-success self-end"><Check size="16" /> Done</div>
+            <div class="badge badge-success"><Check size="16" /> Done</div>
         {:else}
-            <div class="badge badge-info self-end"><Info size="16" /> {formatDeadline(new Date(project.deadline))}</div>
+            <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline))}</div>
         {/if}
-        <div class="card-title flex">
+        <div class="card-title flex mt-2">
             <AvatarComponent icon={project.icon ?? null} name={project.name} big={false} />
             <h2>{project.name}</h2>
         </div>
