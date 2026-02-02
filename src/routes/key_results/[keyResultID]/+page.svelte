@@ -14,10 +14,6 @@ let taskList: Task[] = $state([]);
 let description: string = $state("");
 let taskState: TaskState = $state("open");
 
-let tasksGroupedByState = $derived(
-	Object.groupBy(taskList, (task) => task.task_state),
-);
-
 onMount(async () => {
 	try {
 		await loadTasks();
@@ -58,5 +54,5 @@ async function handleSubmit() {
 
 <div class="p-3">
     <h1>Tasks</h1>
-		<TaskColumns tasks={taskList} />
+		<TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
 </div>

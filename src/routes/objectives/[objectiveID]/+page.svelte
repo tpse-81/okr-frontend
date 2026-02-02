@@ -60,7 +60,7 @@ async function handleSubmit() {
     {#if keyResultList.length > 0}
         <ul class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}
-            	<KeyResultComponent keyResult={keyResult} />
+			 	    	<KeyResultComponent keyResult={keyResult} onKeyResultDeleted={() => keyResultList = keyResultList.filter(kr => kr.id != keyResult.id)} />
             {/each}
         </ul>
     {:else}

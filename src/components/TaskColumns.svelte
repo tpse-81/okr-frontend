@@ -2,7 +2,10 @@
 import type { Task } from "$lib/types";
 import TaskComponent from "./Task.svelte";
 
-let { tasks }: { tasks: Task[] } = $props();
+let {
+	tasks,
+	onTaskDeleted,
+}: { tasks: Task[]; onTaskDeleted: (id: string) => void } = $props();
 
 let tasksGroupedByState = $derived(
 	Object.groupBy(tasks, (task) => task.task_state),
@@ -17,7 +20,7 @@ let tasksGroupedByState = $derived(
 					<h2 class="title text-bold text-accent-content">{ state }</h2>
 			    <ul class="flex flex-col gap-3">
 			        {#each tasks as task}
-			        	<TaskComponent task={task} />
+			        	<TaskComponent task={task} onTaskDeleted={() => onTaskDeleted(task.id)} />
 			        {/each}
 			    </ul>
 		    </div>
