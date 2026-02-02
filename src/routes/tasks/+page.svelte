@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
-import { createTaskKeyResult, getTasksKeyResult } from "$lib/api";
+import { createTaskKeyResult, getTasks } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
 import TaskColumns from "../../components/TaskColumns.svelte";
 
@@ -20,7 +20,7 @@ onMount(async () => {
 
 async function tasks() {
 	try {
-		tasklist = await getTasksKeyResult(keyResultID);
+		tasklist = await getTasks();
 	} catch (err) {
 		await goto("/expected");
 	}

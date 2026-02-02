@@ -269,6 +269,19 @@ export async function createTaskKeyResult(
 	return response;
 }
 
+export async function getTasks() {
+	const t = get(token);
+	const response = await fetch(`${PUBLIC_API_URL}/tasks`, {
+		method: "GET",
+		headers: {
+			Authorization: t,
+			"Content-Type": "application/json",
+		},
+	});
+
+	return response.json();
+}
+
 export async function getTasksKeyResult(key_result_id: string) {
 	const t = get(token);
 	const response = await fetch(
