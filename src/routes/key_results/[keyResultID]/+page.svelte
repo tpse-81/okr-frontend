@@ -3,7 +3,7 @@ import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { createTaskKeyResult, getTasksKeyResult } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
-import TaskComponent from "../../../components/Task.svelte";
+import TaskColumns from "../../../components/TaskColumns.svelte";
 
 let { data } = $props();
 
@@ -13,6 +13,10 @@ let taskList: Task[] = $state([]);
 
 let description: string = $state("");
 let taskState: TaskState = $state("open");
+
+let tasksGroupedByState = $derived(
+	Object.groupBy(taskList, (task) => task.task_state),
+);
 
 onMount(async () => {
 	try {
@@ -54,13 +58,5 @@ async function handleSubmit() {
 
 <div class="p-3">
     <h1>Tasks</h1>
-    {#if taskList.length > 0}
-        <ul class="grid grid-auto gap-3">
-            {#each taskList as task}
-            		<TaskComponent task={task} />
-            {/each}
-        </ul>
-    {:else}
-        <p>No Tasks loaded</p>
-    {/if}
+		<TaskColumns tasks={taskList} />
 </div>

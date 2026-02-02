@@ -116,7 +116,7 @@ async function handleSubmit() {
       {/if}
 
       <!-- Inputs: nice grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="grid grid-auto gap-3">
         <div class="form-control">
             <label for="project-name" class="label">
                 <span class="label-text">Name</span>
