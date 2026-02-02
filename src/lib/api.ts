@@ -2,7 +2,13 @@ import { get } from "svelte/store";
 // load api url from .env file
 import { PUBLIC_API_URL } from "$env/static/public";
 import { token } from "$lib/stores";
-import type { Project, TaskState } from "$lib/types";
+import type {
+	KeyResult,
+	Objective,
+	Project,
+	Task,
+	TaskState,
+} from "$lib/types";
 
 export async function createUser(
 	name: string,
@@ -53,7 +59,7 @@ export async function loginUser(username: string, password: string) {
 	return response_body.jwt_token;
 }
 
-async function getFileBytes(file: File) {
+export async function getFileBytes(file: File) {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
@@ -65,10 +71,9 @@ async function getFileBytes(file: File) {
 export async function createProject(
 	name: string,
 	deadline: Date,
-	imageInput: File | null,
+	imageInput: string | null,
 ) {
 	const t = get(token);
-	const imageAsBase64 = imageInput ? await getFileBytes(imageInput) : null;
 	const response = await fetch(`${PUBLIC_API_URL}/projects`, {
 		method: "POST",
 		headers: {
@@ -79,12 +84,26 @@ export async function createProject(
 			name: name,
 			deadline: deadline.toISOString(),
 			done: false,
-			icon: imageAsBase64,
+			icon: imageInput,
 		}),
 	});
 	console.log(response);
 
 	return response;
+}
+
+export async function updateProject(project: Project): Promise<Project> {
+	const t = get(token);
+	const response = await fetch(`${PUBLIC_API_URL}/projects/${project.id}`, {
+		method: "PATCH",
+		headers: {
+			Authorization: t,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(project),
+	});
+
+	return await response.json();
 }
 
 export async function deleteProject(project_id: string) {
@@ -164,6 +183,22 @@ export async function createObjective(
 	return response;
 }
 
+export async function updateObjective(
+	objective: Objective,
+): Promise<Objective> {
+	const t = get(token);
+	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective.id}`, {
+		method: "PATCH",
+		headers: {
+			Authorization: t,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(objective),
+	});
+
+	return await response.json();
+}
+
 export async function deleteObjective(objective_id: string) {
 	const t = get(token);
 	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective_id}`, {
@@ -236,6 +271,25 @@ export async function createKeyResult(
 		},
 	);
 	return response.json();
+}
+
+export async function updateKeyResult(
+	keyResult: KeyResult,
+): Promise<KeyResult> {
+	const t = get(token);
+	const response = await fetch(
+		`${PUBLIC_API_URL}/key_results/${keyResult.id}`,
+		{
+			method: "PATCH",
+			headers: {
+				Authorization: t,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(keyResult),
+		},
+	);
+
+	return await response.json();
 }
 
 export async function deleteKeyResult(key_result_id: string) {
@@ -311,6 +365,20 @@ export async function createTaskKeyResult(
 	console.log(response);
 
 	return response;
+}
+
+export async function updateTask(task: Task): Promise<Task> {
+	const t = get(token);
+	const response = await fetch(`${PUBLIC_API_URL}/tasks/${task.id}`, {
+		method: "PATCH",
+		headers: {
+			Authorization: t,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(task),
+	});
+
+	return await response.json();
 }
 
 export async function getTasks() {
