@@ -7,10 +7,11 @@
   ```
 -->
 <script lang="ts">
-import { Trash } from "@lucide/svelte";
+import { Edit, Trash } from "@lucide/svelte";
 import { deleteKeyResult } from "$lib/api";
 import type { KeyResult } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
+import EditKeyResultComponent from "./EditKeyResultComponent.svelte";
 
 let {
 	keyResult,
@@ -20,6 +21,7 @@ let {
 let progress = $derived((keyResult.start_value / keyResult.end_value) * 100);
 
 let showConfirmationDialog = $state(false);
+let showEditDialog = $state(false);
 
 async function onDeleteKeyResult() {
 	showConfirmationDialog = false;
@@ -29,7 +31,10 @@ async function onDeleteKeyResult() {
 </script>
 
 <li class="card card-border relative">
-    <button class="btn btn-square absolute right-2 top-2" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
+		<div class="absolute right-2 top-2 flex gap-2">
+		  <button class="btn btn-square" onclick={() => showEditDialog = true}><Edit size="16" /></button>
+		  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
+		</div>
     <a href={`/key_results/${keyResult.id}`} class="card-body">
         <h2 class="card-title">{keyResult.description}</h2>
         <div class="flex gap-4">
@@ -42,4 +47,5 @@ async function onDeleteKeyResult() {
     </a>
 </li>
 
+<EditKeyResultComponent show={showEditDialog} keyResult={keyResult} ondismiss={() => showEditDialog = false} />
 <ConfirmationDialog show={showConfirmationDialog} message="Delete key result" onconfirm={onDeleteKeyResult} ondismiss={() => showConfirmationDialog = false} />

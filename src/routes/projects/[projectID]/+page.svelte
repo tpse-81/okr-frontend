@@ -48,8 +48,8 @@ async function handleSubmit() {
       <div class="flex items-center gap-4">
         <AvatarComponent icon={project_icon ?? null} name={project_name} big={true} />
         <div class="min-w-0">
-          <div class="text-2xl font-bold truncate">Objectives</div>
-          <div class="opacity-70">{project_name}</div>
+          <div class="text-2xl font-bold truncate">{project_name}</div>
+          <div class="opacity-70">Objectives</div>
         </div>
       </div>
     </div>
