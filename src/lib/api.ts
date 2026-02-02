@@ -193,7 +193,7 @@ export async function createKeyResult(
 	project_id: string,
 ) {
 	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/key_results`, {
+	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`, {
 		method: "POST",
 		headers: {
 			Authorization: t,
