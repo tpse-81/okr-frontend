@@ -60,7 +60,7 @@ async function handleSubmit() {
     <div class="card-body gap-4">
       <h2 class="card-title">Create an Objective</h2>
 
-      <form id="objective-submit" onsubmit={handleSubmit} class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <form id="objective-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3">
         <div class="form-control">
           <label for="objective-name" class="label">
             <span class="label-text">Name</span>
@@ -88,7 +88,7 @@ async function handleSubmit() {
       <h2 class="card-title">Objectives</h2>
 
       {#if objectivelist.length > 0}
-        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <ul class="grid grid-auto">
           {#each objectivelist as objective}
             <ObjectiveComponent objective={objective} />
           {/each}
