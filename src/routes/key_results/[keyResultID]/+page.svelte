@@ -3,6 +3,7 @@ import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { createTaskKeyResult, getTasksKeyResult } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
+import TaskComponent from "../../../components/Task.svelte";
 
 let { data } = $props();
 
@@ -56,13 +57,7 @@ async function handleSubmit() {
     {#if taskList.length > 0}
         <ul class="grid grid-auto gap-3">
             {#each taskList as task}
-                <li class="card card-border">
-                    <div class="card-body">
-                        Description: <strong>{task.description}</strong><br>
-                        Task State: {task.task_state}<br>
-                        <small>(ID: {task.id})</small><br><br>
-                    </div>
-                </li>
+            		<TaskComponent task={task} />
             {/each}
         </ul>
     {:else}
