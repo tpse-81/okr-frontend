@@ -8,10 +8,8 @@ import type {
 	Task,
 	TaskState,
 } from "$lib/types";
-import {Cookie} from "@lucide/svelte";
 import {getCookie} from "$lib/utils";
 
-let token = getCookie("token") ?? ""
 
 export async function createUser(
 	name: string,
@@ -30,7 +28,7 @@ export async function createUser(
 }
 
 export async function getUsers() {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	if (!t) throw new Error("Token ist leer");
 
 	const response = await fetch(`${PUBLIC_API_URL}/users`, {
@@ -56,8 +54,8 @@ export async function loginUser(username: string, password: string) {
 			password: password,
 			two_fa_code: "",
 		}),
+		credentials: "include",
 	});
-
 	const response_body = await response.json();
 	return response_body.jwt_token;
 }
@@ -76,7 +74,7 @@ export async function createProject(
 	deadline: Date,
 	imageInput: string | null,
 ) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/projects`, {
 		method: "POST",
 		headers: {
@@ -96,7 +94,7 @@ export async function createProject(
 }
 
 export async function updateProject(project: Project): Promise<Project> {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/projects/${project.id}`, {
 		method: "PATCH",
 		headers: {
@@ -110,7 +108,7 @@ export async function updateProject(project: Project): Promise<Project> {
 }
 
 export async function deleteProject(project_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}`, {
 		method: "DELETE",
 		headers: {
@@ -123,7 +121,7 @@ export async function deleteProject(project_id: string) {
 }
 
 export async function getProjects() {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	if (!t) throw new Error("Token ist leer");
 
 	const response = await fetch(`${PUBLIC_API_URL}/projects`, {
@@ -134,7 +132,7 @@ export async function getProjects() {
 		},
 	});
 
-	console.log("Aktueller Token:", token);
+	console.log("Aktueller Token:", getCookie("token") ?? "");
 
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
@@ -144,7 +142,7 @@ export async function getProjects() {
 }
 
 export async function getProjectById(projectId: string): Promise<Project> {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	if (!t) throw new Error("Token ist leer");
 
 	const response = await fetch(`${PUBLIC_API_URL}/projects/${projectId}`, {
@@ -167,7 +165,7 @@ export async function createObjective(
 	description: string,
 	project_id: string,
 ) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/projects/${project_id}/objectives`,
 		{
@@ -189,7 +187,7 @@ export async function createObjective(
 export async function updateObjective(
 	objective: Objective,
 ): Promise<Objective> {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective.id}`, {
 		method: "PATCH",
 		headers: {
@@ -203,7 +201,7 @@ export async function updateObjective(
 }
 
 export async function deleteObjective(objective_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective_id}`, {
 		method: "DELETE",
 		headers: {
@@ -216,7 +214,7 @@ export async function deleteObjective(objective_id: string) {
 }
 
 export async function getObjectives() {
-	const t = token;
+	const t = getCookie("token") ?? "";
 
 	const response = await fetch(`${PUBLIC_API_URL}/objectives`, {
 		method: "GET",
@@ -234,7 +232,7 @@ export async function getObjectives() {
 }
 
 export async function getObjectiveProject(project_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/projects/${project_id}/objectives`,
 		{
@@ -256,7 +254,7 @@ export async function createKeyResult(
 	objective_id: string,
 	project_id: string,
 ) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`,
 		{
@@ -279,7 +277,7 @@ export async function createKeyResult(
 export async function updateKeyResult(
 	keyResult: KeyResult,
 ): Promise<KeyResult> {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/key_results/${keyResult.id}`,
 		{
@@ -296,7 +294,7 @@ export async function updateKeyResult(
 }
 
 export async function deleteKeyResult(key_result_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/key_results/${key_result_id}`,
 		{
@@ -312,7 +310,7 @@ export async function deleteKeyResult(key_result_id: string) {
 }
 
 export async function getKeyResults() {
-	const t = token;
+	const t = getCookie("token") ?? "";
 
 	const response = await fetch(`${PUBLIC_API_URL}/key_results`, {
 		method: "GET",
@@ -330,7 +328,7 @@ export async function getKeyResults() {
 }
 
 export async function getKeyResultObjective(objective_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`,
 		{
@@ -350,7 +348,7 @@ export async function createTaskKeyResult(
 	description: string,
 	task_state: TaskState,
 ) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/key_results/${key_result_id}/tasks`,
 		{
@@ -371,7 +369,7 @@ export async function createTaskKeyResult(
 }
 
 export async function updateTask(task: Task): Promise<Task> {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/tasks/${task.id}`, {
 		method: "PATCH",
 		headers: {
@@ -385,7 +383,7 @@ export async function updateTask(task: Task): Promise<Task> {
 }
 
 export async function getTasks() {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/tasks`, {
 		method: "GET",
 		headers: {
@@ -398,7 +396,7 @@ export async function getTasks() {
 }
 
 export async function deleteTask(task_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(`${PUBLIC_API_URL}/tasks/${task_id}`, {
 		method: "DELETE",
 		headers: {
@@ -411,7 +409,7 @@ export async function deleteTask(task_id: string) {
 }
 
 export async function getTasksKeyResult(key_result_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/key_results/${key_result_id}/tasks`,
 		{
@@ -431,7 +429,7 @@ export async function addUserProject(
 	user_id: string,
 	role: string,
 ) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/projects/${project_id}/users/${user_id}?role?=${role}`,
 		{
@@ -446,7 +444,7 @@ export async function addUserProject(
 }
 
 export async function getUsersProject(project_id: string) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/projects/${project_id}/users`,
 		{
@@ -465,7 +463,7 @@ export async function addObjectiveProject(
 	project_id: string,
 	objective_id: string,
 ) {
-	const t = token;
+	const t = getCookie("token") ?? "";
 	const response = await fetch(
 		`${PUBLIC_API_URL}/projects/${project_id}/objectives/${objective_id}`,
 		{
