@@ -3,15 +3,15 @@ import { EllipsisIcon, MenuIcon, X } from "@lucide/svelte";
 import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
-import {logout} from "$lib/api";
-import {goto} from "$app/navigation";
+import { logout } from "$lib/api";
+import { goto } from "$app/navigation";
 
 let { children } = $props();
 let title = "OKR Project";
 
 async function logoutUser() {
-  await logout();
-  await goto("/");
+	await logout();
+	await goto("/");
 }
 </script>
 

@@ -55,8 +55,7 @@ export async function logout() {
 export async function getUsers() {
 	const response = await baseFetch("/users");
 
-	if (!response.ok)
-		throw new Error(`HTTP error! Status: ${response.status}`);
+	if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
 	return response.json();
 }
@@ -129,13 +128,10 @@ export async function createObjective(
 	description: string,
 	project_id: string,
 ) {
-	const response = await baseFetch(
-		`/projects/${project_id}/objectives`,
-		{
-			method: "POST",
-			body: JSON.stringify({ name, description }),
-		},
-	);
+	const response = await baseFetch(`/projects/${project_id}/objectives`, {
+		method: "POST",
+		body: JSON.stringify({ name, description }),
+	});
 
 	return response;
 }
@@ -169,9 +165,7 @@ export async function getObjectives() {
 }
 
 export async function getObjectiveProject(project_id: string) {
-	const response = await baseFetch(
-		`/projects/${project_id}/objectives`,
-	);
+	const response = await baseFetch(`/projects/${project_id}/objectives`);
 
 	return response.json();
 }
@@ -183,42 +177,33 @@ export async function createKeyResult(
 	objective_id: string,
 	project_id: string,
 ) {
-	const response = await baseFetch(
-		`/objectives/${objective_id}/key_results`,
-		{
-			method: "POST",
-			body: JSON.stringify({
-				project_id,
-				description,
-				start_value,
-				end_value,
-			}),
-		},
-	);
+	const response = await baseFetch(`/objectives/${objective_id}/key_results`, {
+		method: "POST",
+		body: JSON.stringify({
+			project_id,
+			description,
+			start_value,
+			end_value,
+		}),
+	});
 	return response.json();
 }
 
 export async function updateKeyResult(
 	keyResult: KeyResult,
 ): Promise<KeyResult> {
-	const response = await baseFetch(
-		`/key_results/${keyResult.id}`,
-		{
-			method: "PATCH",
-			body: JSON.stringify(keyResult),
-		},
-	);
+	const response = await baseFetch(`/key_results/${keyResult.id}`, {
+		method: "PATCH",
+		body: JSON.stringify(keyResult),
+	});
 
 	return response.json();
 }
 
 export async function deleteKeyResult(key_result_id: string) {
-	const response = await baseFetch(
-		`/key_results/${key_result_id}`,
-		{
-			method: "DELETE",
-		},
-	);
+	const response = await baseFetch(`/key_results/${key_result_id}`, {
+		method: "DELETE",
+	});
 
 	return response.ok;
 }
@@ -233,9 +218,7 @@ export async function getKeyResults() {
 }
 
 export async function getKeyResultObjective(objective_id: string) {
-	const response = await baseFetch(
-		`/objectives/${objective_id}/key_results`,
-	);
+	const response = await baseFetch(`/objectives/${objective_id}/key_results`);
 
 	return response.json();
 }
@@ -245,16 +228,13 @@ export async function createTaskKeyResult(
 	description: string,
 	task_state: TaskState,
 ) {
-	const response = await baseFetch(
-		`/key_results/${key_result_id}/tasks`,
-		{
-			method: "POST",
-			body: JSON.stringify({
-				description: description,
-				task_state: task_state,
-			}),
-		},
-	);
+	const response = await baseFetch(`/key_results/${key_result_id}/tasks`, {
+		method: "POST",
+		body: JSON.stringify({
+			description: description,
+			task_state: task_state,
+		}),
+	});
 
 	return response;
 }
@@ -282,9 +262,7 @@ export async function deleteTask(task_id: string) {
 }
 
 export async function getTasksKeyResult(key_result_id: string) {
-	const response = await baseFetch(
-		`/key_results/${key_result_id}/tasks`,
-	);
+	const response = await baseFetch(`/key_results/${key_result_id}/tasks`);
 
 	return response.json();
 }
@@ -305,9 +283,7 @@ export async function addUserProject(
 }
 
 export async function getUsersProject(project_id: string) {
-	const response = await baseFetch(
-		`/projects/${project_id}/users`,
-	);
+	const response = await baseFetch(`/projects/${project_id}/users`);
 
 	return response.json();
 }
