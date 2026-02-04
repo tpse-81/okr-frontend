@@ -6,6 +6,7 @@ import type {
 	Project,
 	Task,
 	TaskState,
+	User,
 } from "$lib/types";
 
 const baseFetch = (url: string, options: RequestInit = {}) => {
@@ -29,7 +30,8 @@ export async function createUser(
 		body: JSON.stringify({ name, email, password }),
 	});
 
-	return response.json();
+	const user: User = await response.json();
+	return user;
 }
 
 export async function loginUser(username: string, password: string) {

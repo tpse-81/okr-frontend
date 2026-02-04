@@ -5,14 +5,26 @@ import "../app.css";
 import "$lib/i18n";
 import { logout } from "$lib/api";
 import { goto } from "$app/navigation";
+import {
+	restoreUserInfoFromStorage,
+	setUserInfo,
+	userInfoStore,
+} from "$lib/user_info";
+import { onMount } from "svelte";
 
 let { children } = $props();
 let title = "OKR Project";
 
 async function logoutUser() {
 	await logout();
+	setUserInfo(null);
 	await goto("/");
 }
+
+// run in onMount to ensure that it's run on client side (i.e. window is available)
+onMount(() => {
+	restoreUserInfoFromStorage();
+});
 </script>
 
 <svelte:head>
@@ -46,12 +58,21 @@ async function logoutUser() {
 
         <ul class="menu w-full">
         	<li><a href="/">Home</a></li>
-        	<li><a href="/login">Login</a></li>
-        	<li><a href="/user">User</a></li>
-        	<li><a href="/projects">Projects</a></li>
-        	<li><a href="/objectives">Objectives</a></li>
-        	<li><a href="/key_results">Key results</a></li>
-          <li><a href="/tasks">Tasks</a></li>
+        	<!-- sections to only show if not logged in -->
+        	{#if $userInfoStore == null}
+          	<li><a href="/login">Login</a></li>
+        	{/if}
+        	<!-- section to only show if admin -->
+        	{#if $userInfoStore?.is_admin}
+          	<li><a href="/user">User</a></li>
+        	{/if}
+        	<!-- sections to only show if logged in -->
+        	{#if $userInfoStore}
+          	<li><a href="/projects">Projects</a></li>
+          	<li><a href="/objectives">Objectives</a></li>
+          	<li><a href="/key_results">Key results</a></li>
+            <li><a href="/tasks">Tasks</a></li>
+          {/if}
         </ul>
       </div>
     </div>
