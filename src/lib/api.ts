@@ -36,7 +36,7 @@ export async function loginUser(username: string, password: string) {
 	const response = await baseFetch("/login", {
 		method: "POST",
 		body: JSON.stringify({
-			email: username,
+			name: username,
 			password: password,
 			two_fa_code: "",
 		}),
