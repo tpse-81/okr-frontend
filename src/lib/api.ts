@@ -1,7 +1,5 @@
-import { get } from "svelte/store";
 // load api url from .env file
 import { PUBLIC_API_URL } from "$env/static/public";
-import { token } from "$lib/stores";
 import type {
 	KeyResult,
 	Objective,
@@ -10,43 +8,32 @@ import type {
 	TaskState,
 } from "$lib/types";
 
+const baseFetch = (url: string, options: RequestInit = {}) => {
+	return fetch(`${PUBLIC_API_URL}${url}`, {
+		credentials: "include",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...(options.headers ?? {}),
+		},
+	});
+};
+
 export async function createUser(
 	name: string,
 	email: string,
 	password: string,
 ) {
-	const response = await fetch(`${PUBLIC_API_URL}/users/create`, {
+	const response = await baseFetch("/users/create", {
 		method: "POST",
-		body: JSON.stringify({
-			name: name,
-			email: email,
-			password: password,
-		}),
+		body: JSON.stringify({ name, email, password }),
 	});
-	return response.json();
-}
-
-export async function getUsers() {
-	const t = get(token);
-	if (!t) throw new Error("Token ist leer");
-
-	const response = await fetch(`${PUBLIC_API_URL}/users`, {
-		method: "GET",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!response.ok) {
-		throw new Error(`HTTP error! Status: ${response.status}`);
-	}
 
 	return response.json();
 }
 
 export async function loginUser(username: string, password: string) {
-	const response = await fetch(`${PUBLIC_API_URL}/login`, {
+	const response = await baseFetch("/login", {
 		method: "POST",
 		body: JSON.stringify({
 			email: username,
@@ -55,8 +42,16 @@ export async function loginUser(username: string, password: string) {
 		}),
 	});
 
-	const response_body = await response.json();
-	return response_body.jwt_token;
+	return response.json();
+}
+
+export async function getUsers() {
+	const response = await baseFetch("/users");
+
+	if (!response.ok)
+		throw new Error(`HTTP error! Status: ${response.status}`);
+
+	return response.json();
 }
 
 export async function getFileBytes(file: File) {
@@ -73,13 +68,8 @@ export async function createProject(
 	deadline: Date,
 	imageInput: string | null,
 ) {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/projects`, {
+	const response = await baseFetch("/projects", {
 		method: "POST",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 		body: JSON.stringify({
 			name: name,
 			deadline: deadline.toISOString(),
@@ -87,51 +77,29 @@ export async function createProject(
 			icon: imageInput,
 		}),
 	});
-	console.log(response);
 
 	return response;
 }
 
 export async function updateProject(project: Project): Promise<Project> {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/projects/${project.id}`, {
+	const response = await baseFetch(`/projects/${project.id}`, {
 		method: "PATCH",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 		body: JSON.stringify(project),
 	});
 
-	return await response.json();
+	return response.json();
 }
 
 export async function deleteProject(project_id: string) {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/projects/${project_id}`, {
+	const response = await baseFetch(`/projects/${project_id}`, {
 		method: "DELETE",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 	});
 
 	return response.ok;
 }
 
 export async function getProjects() {
-	const t = get(token);
-	if (!t) throw new Error("Token ist leer");
-
-	const response = await fetch(`${PUBLIC_API_URL}/projects`, {
-		method: "GET",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
-	});
-
-	console.log("Aktueller Token:", get(token));
+	const response = await baseFetch("/projects");
 
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
@@ -141,21 +109,11 @@ export async function getProjects() {
 }
 
 export async function getProjectById(projectId: string): Promise<Project> {
-	const t = get(token);
-	if (!t) throw new Error("Token ist leer");
-
-	const response = await fetch(`${PUBLIC_API_URL}/projects/${projectId}`, {
-		method: "GET",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
-	});
+	const response = await baseFetch(`/projects/${projectId}`);
 
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
 	}
-
 	return response.json();
 }
 
@@ -164,19 +122,11 @@ export async function createObjective(
 	description: string,
 	project_id: string,
 ) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/projects/${project_id}/objectives`,
+	const response = await baseFetch(
+		`/projects/${project_id}/objectives`,
 		{
 			method: "POST",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: name,
-				description: description,
-			}),
+			body: JSON.stringify({ name, description }),
 		},
 	);
 
@@ -186,13 +136,8 @@ export async function createObjective(
 export async function updateObjective(
 	objective: Objective,
 ): Promise<Objective> {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective.id}`, {
+	const response = await baseFetch(`/objectives/${objective.id}`, {
 		method: "PATCH",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 		body: JSON.stringify(objective),
 	});
 
@@ -200,47 +145,25 @@ export async function updateObjective(
 }
 
 export async function deleteObjective(objective_id: string) {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/objectives/${objective_id}`, {
+	const response = await baseFetch(`/objectives/${objective_id}`, {
 		method: "DELETE",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 	});
 
 	return response.ok;
 }
 
 export async function getObjectives() {
-	const t = get(token);
-
-	const response = await fetch(`${PUBLIC_API_URL}/objectives`, {
-		method: "GET",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
-	});
+	const response = await baseFetch("/objectives");
 
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
 	}
-
 	return response.json();
 }
 
 export async function getObjectiveProject(project_id: string) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/projects/${project_id}/objectives`,
-		{
-			method: "GET",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
-		},
+	const response = await baseFetch(
+		`/projects/${project_id}/objectives`,
 	);
 
 	return response.json();
@@ -253,20 +176,15 @@ export async function createKeyResult(
 	objective_id: string,
 	project_id: string,
 ) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`,
+	const response = await baseFetch(
+		`/objectives/${objective_id}/key_results`,
 		{
 			method: "POST",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
 			body: JSON.stringify({
-				project_id: project_id,
-				description: description,
-				start_value: start_value,
-				end_value: end_value,
+				project_id,
+				description,
+				start_value,
+				end_value,
 			}),
 		},
 	);
@@ -276,32 +194,22 @@ export async function createKeyResult(
 export async function updateKeyResult(
 	keyResult: KeyResult,
 ): Promise<KeyResult> {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/key_results/${keyResult.id}`,
+	const response = await baseFetch(
+		`/key_results/${keyResult.id}`,
 		{
 			method: "PATCH",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
 			body: JSON.stringify(keyResult),
 		},
 	);
 
-	return await response.json();
+	return response.json();
 }
 
 export async function deleteKeyResult(key_result_id: string) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/key_results/${key_result_id}`,
+	const response = await baseFetch(
+		`/key_results/${key_result_id}`,
 		{
 			method: "DELETE",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
 		},
 	);
 
@@ -309,34 +217,17 @@ export async function deleteKeyResult(key_result_id: string) {
 }
 
 export async function getKeyResults() {
-	const t = get(token);
-
-	const response = await fetch(`${PUBLIC_API_URL}/key_results`, {
-		method: "GET",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
-	});
+	const response = await baseFetch("/key_results");
 
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
 	}
-
 	return response.json();
 }
 
 export async function getKeyResultObjective(objective_id: string) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/objectives/${objective_id}/key_results`,
-		{
-			method: "GET",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
-		},
+	const response = await baseFetch(
+		`/objectives/${objective_id}/key_results`,
 	);
 
 	return response.json();
@@ -347,77 +238,45 @@ export async function createTaskKeyResult(
 	description: string,
 	task_state: TaskState,
 ) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/key_results/${key_result_id}/tasks`,
+	const response = await baseFetch(
+		`/key_results/${key_result_id}/tasks`,
 		{
 			method: "POST",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
 			body: JSON.stringify({
 				description: description,
 				task_state: task_state,
 			}),
 		},
 	);
-	console.log(response);
 
 	return response;
 }
 
 export async function updateTask(task: Task): Promise<Task> {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/tasks/${task.id}`, {
+	const response = await baseFetch(`/tasks/${task.id}`, {
 		method: "PATCH",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 		body: JSON.stringify(task),
-	});
-
-	return await response.json();
-}
-
-export async function getTasks() {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/tasks`, {
-		method: "GET",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 	});
 
 	return response.json();
 }
 
+export async function getTasks() {
+	const response = await baseFetch("/tasks");
+	return response.json();
+}
+
 export async function deleteTask(task_id: string) {
-	const t = get(token);
-	const response = await fetch(`${PUBLIC_API_URL}/tasks/${task_id}`, {
+	const response = await baseFetch(`/tasks/${task_id}`, {
 		method: "DELETE",
-		headers: {
-			Authorization: t,
-			"Content-Type": "application/json",
-		},
 	});
 
 	return response.ok;
 }
 
 export async function getTasksKeyResult(key_result_id: string) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/key_results/${key_result_id}/tasks`,
-		{
-			method: "GET",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
-		},
+	const response = await baseFetch(
+		`/key_results/${key_result_id}/tasks`,
 	);
 
 	return response.json();
@@ -428,31 +287,19 @@ export async function addUserProject(
 	user_id: string,
 	role: string,
 ) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/projects/${project_id}/users/${user_id}?role?=${role}`,
+	const response = await baseFetch(
+		`/projects/${project_id}/users/${user_id}?role=${role}`,
 		{
-			method: "Post",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
+			method: "POST",
 		},
 	);
+
 	return response.json();
 }
 
 export async function getUsersProject(project_id: string) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/projects/${project_id}/users`,
-		{
-			method: "GET",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
-		},
+	const response = await baseFetch(
+		`/projects/${project_id}/users`,
 	);
 
 	return response.json();
@@ -462,16 +309,12 @@ export async function addObjectiveProject(
 	project_id: string,
 	objective_id: string,
 ) {
-	const t = get(token);
-	const response = await fetch(
-		`${PUBLIC_API_URL}/projects/${project_id}/objectives/${objective_id}`,
+	const response = await baseFetch(
+		`/projects/${project_id}/objectives/${objective_id}`,
 		{
-			method: "Post",
-			headers: {
-				Authorization: t,
-				"Content-Type": "application/json",
-			},
+			method: "POST",
 		},
 	);
+
 	return response.json();
 }
