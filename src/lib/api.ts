@@ -87,6 +87,12 @@ export async function createProject(
 	return response;
 }
 
+export async function getProject(project_id: string): Promise<Project> {
+	const response = await baseFetch(`/projects/${project_id}`);
+
+	return response.json();
+}
+
 export async function updateProject(project: Project): Promise<Project> {
 	const response = await baseFetch(`/projects/${project.id}`, {
 		method: "PATCH",
@@ -134,6 +140,12 @@ export async function createObjective(
 	});
 
 	return response;
+}
+
+export async function getObjective(objective_id: string): Promise<Objective> {
+	const response = await baseFetch(`/objectives/${objective_id}`);
+
+	return response.json();
 }
 
 export async function updateObjective(
@@ -189,6 +201,12 @@ export async function createKeyResult(
 	return response.json();
 }
 
+export async function getKeyResult(key_result_id: string): Promise<KeyResult> {
+	const response = await baseFetch(`/key_results/${key_result_id}`);
+
+	return response.json();
+}
+
 export async function updateKeyResult(
 	keyResult: KeyResult,
 ): Promise<KeyResult> {
@@ -237,6 +255,12 @@ export async function createTaskKeyResult(
 	});
 
 	return response;
+}
+
+export async function getTask(task_id: string): Promise<Task> {
+	const response = await baseFetch(`/tasks/${task_id}`);
+
+	return response.json();
 }
 
 export async function updateTask(task: Task): Promise<Task> {
