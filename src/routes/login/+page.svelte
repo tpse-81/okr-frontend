@@ -2,7 +2,8 @@
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { loginUser } from "$lib/api";
-import { token } from "$lib/stores";
+import { setUserInfo as setUserInfoWithStorageCache } from "$lib/user_info";
+import type { User } from "$lib/types";
 
 let username: string = $state("");
 let password: string = $state("");
@@ -17,8 +18,8 @@ async function login(e: SubmitEvent) {
 	}
 
 	try {
-		const authtoken = await loginUser(username, password);
-		token.set(authtoken);
+		const userInfo: User = await loginUser(username, password);
+		setUserInfoWithStorageCache(userInfo);
 		await goto("/");
 	} catch (e) {
 		console.error(e);

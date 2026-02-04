@@ -35,3 +35,10 @@ export interface Task {
 	task_state: TaskState;
 	key_result_id: string;
 }
+
+export interface User {
+	id: string;
+	name: string;
+	email: string;
+	is_admin: boolean;
+}
