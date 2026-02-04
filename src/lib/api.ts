@@ -45,6 +45,13 @@ export async function loginUser(username: string, password: string) {
 	return response.json();
 }
 
+export async function logout() {
+	await fetch(`${PUBLIC_API_URL}/logout`, {
+		method: "POST",
+		credentials: "include",
+	});
+}
+
 export async function getUsers() {
 	const response = await baseFetch("/users");
 

@@ -3,9 +3,16 @@ import { EllipsisIcon, MenuIcon, X } from "@lucide/svelte";
 import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
+import {logout} from "$lib/api";
+import {goto} from "$app/navigation";
 
 let { children } = $props();
 let title = "OKR Project";
+
+async function logoutUser() {
+  await logout();
+  await goto("/");
+}
 </script>
 
 <svelte:head>
@@ -60,7 +67,7 @@ let title = "OKR Project";
       <EllipsisIcon />
     </div>
     <ul tabindex="-1" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
-      <li class="btn btn-ghost">Logout <!-- TODO: logout actually --></li>
+      <li class="btn btn-ghost" on:click={logoutUser}>Logout</li>
       <li class="btn btn-ghost">Something else</li>
     </ul>
   </div>
