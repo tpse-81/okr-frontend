@@ -19,6 +19,7 @@ export interface KeyResult {
 	projectID: string;
 	description: string;
 	start_value: number;
+	current_value: number;
 	end_value: number;
 }
 

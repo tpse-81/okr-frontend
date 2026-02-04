@@ -42,3 +42,7 @@ export function formatDate(date: Date): string {
 		day: "numeric",
 	});
 }
+
+export function isBetween(value: number, a: number, b: number) {
+	return value >= Math.min(a, b) && value <= Math.max(a, b);
+}
