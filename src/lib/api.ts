@@ -220,6 +220,17 @@ export async function updateKeyResult(
 	return response.json();
 }
 
+export async function updateKeyResultCurrentValue(
+	keyResultId: string,
+	currentValue: number,
+): Promise<KeyResult> {
+	const response = await baseFetch(`/key_results/${keyResultId}/current`, {
+		method: "PATCH",
+		body: JSON.stringify({ current_value: currentValue }),
+	});
+	return await response.json();
+}
+
 export async function deleteKeyResult(key_result_id: string) {
 	const response = await baseFetch(`/key_results/${key_result_id}`, {
 		method: "DELETE",
