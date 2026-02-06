@@ -4,6 +4,7 @@ import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
 import { logout } from "$lib/api";
+import { page } from "$app/state";
 import { goto } from "$app/navigation";
 import {
 	restoreUserInfoFromStorage,
@@ -15,15 +16,34 @@ import { onMount } from "svelte";
 let { children } = $props();
 let title = "OKR Project";
 
+//if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
+const excludedPaths = [
+    '/login',
+];
+
 async function logoutUser() {
 	await logout();
 	setUserInfo(null);
-	await goto("/");
+	await goto("/login");
 }
 
 // run in onMount to ensure that it's run on client side (i.e. window is available)
-onMount(() => {
-	restoreUserInfoFromStorage();
+let ready = false;
+
+onMount(async () => {
+    restoreUserInfoFromStorage();
+    ready = true;
+});
+
+$effect(() => {
+    const path = page.url.pathname;
+    if (
+        ready &&
+        $userInfoStore == null &&
+        !excludedPaths.includes(path)
+    ) {
+        goto('/login');
+    }
 });
 </script>
 
