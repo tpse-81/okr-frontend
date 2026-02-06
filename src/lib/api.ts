@@ -9,8 +9,18 @@ import type {
 	User,
 } from "$lib/types";
 
-const baseFetch = (url: string, options: RequestInit = {}) => {
-	return fetch(`${PUBLIC_API_URL}${url}`, {
+export class APIError extends Error {
+	response: Response;
+
+	constructor(response: Response) {
+		super(response.statusText);
+
+		this.response = response;
+	}
+}
+
+const baseFetch = async (url: string, options: RequestInit = {}) => {
+	const response = await fetch(`${PUBLIC_API_URL}${url}`, {
 		credentials: "include",
 		...options,
 		headers: {
@@ -18,6 +28,13 @@ const baseFetch = (url: string, options: RequestInit = {}) => {
 			...(options.headers ?? {}),
 		},
 	});
+
+	// custom error handler that parses the Litestar JSON error format
+	if (!response.ok) {
+		throw new APIError(response);
+	}
+
+	return response;
 };
 
 export async function createUser(
@@ -34,13 +51,19 @@ export async function createUser(
 	return user;
 }
 
-export async function loginUser(username: string, password: string) {
+export async function loginUser(
+	username: string,
+	password: string,
+	two_fa_code: string | null,
+	authenticationResponse: Credential | null,
+) {
 	const response = await baseFetch("/login", {
 		method: "POST",
 		body: JSON.stringify({
 			name: username,
 			password: password,
-			two_fa_code: "",
+			two_fa_code: two_fa_code,
+			webauthn_response: authenticationResponse,
 		}),
 	});
 
@@ -337,4 +360,65 @@ export async function addObjectiveProject(
 	);
 
 	return response.json();
+}
+
+export async function getWebauthnRegistrationOptions() {
+	const response = await baseFetch(`/webauthn/registration_options`, {
+		method: "POST",
+	});
+
+	return response.json();
+}
+
+// biome-ignore lint/suspicious: the webauthn-internal response mustn't be parsed, so no type hints needed
+export async function webauthnRegister(
+	registrationResponse: Record<string, any>,
+) {
+	const response = await baseFetch(`/webauthn/register`, {
+		method: "POST",
+		body: JSON.stringify(registrationResponse),
+	});
+
+	return response.json();
+}
+
+export async function getWebauthnAuthenticationOptions(userId: string) {
+	const response = await baseFetch(
+		`/webauthn/authentication_options/${userId}`,
+		{
+			method: "POST",
+		},
+	);
+
+	return response.json();
+}
+
+export async function webauthnAuthenticate(
+	userId: string,
+	// biome-ignore lint/suspicious: the webauthn-internal response mustn't be parsed, so no type hints needed
+	authenticationResponse: Record<string, any>,
+) {
+	const response = await baseFetch(`/webauthn/authenticate/${userId}`, {
+		method: "POST",
+		body: JSON.stringify(authenticationResponse),
+	});
+
+	return response.json();
+}
+
+export async function webauthnRemoveCredentials(
+	userId: string,
+	// biome-ignore lint/suspicious: the webauthn-internal response mustn't be parsed, so no type hints needed
+	authenticationResponse: Record<string, any>,
+) {
+	await baseFetch(`/webauthn/remove_credentials/${userId}`, {
+		method: "DELETE",
+		body: JSON.stringify(authenticationResponse),
+	});
+}
+
+export async function webauthnIsConfigured(): Promise<boolean> {
+	const response = await baseFetch(`/webauthn/is_configured`);
+
+	return (await response.json()).is_configured;
 }
