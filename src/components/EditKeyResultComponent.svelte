@@ -1,8 +1,8 @@
 <script lang="ts">
 import { updateKeyResult } from "$lib/api";
 import type { KeyResult } from "$lib/types";
-import {isBetween} from "$lib/utils";
-import { fade } from "svelte/transition";
+import { isBetween } from "$lib/utils";
+import ErrorMessage from "./ErrorMessage.svelte";
 
 let {
 	show,
@@ -13,8 +13,9 @@ let {
 	keyResult: KeyResult;
 	ondismiss: () => void;
 } = $props();
-let errorMessage: string = $state("");
-let errorTimeout: ReturnType<typeof setTimeout> | null = null;
+
+let errorMessage: string | null = $state(null);
+
 // svelte-ignore non_reactive_update
 let modal: HTMLDialogElement;
 // svelte-ignore state_referenced_locally
@@ -31,28 +32,16 @@ $effect(() => {
 	else modal.close();
 });
 
-function showError(message: string) {
-    errorMessage = message;
-
-    if (errorTimeout) {
-        clearTimeout(errorTimeout);
-    }
-
-    errorTimeout = setTimeout(() => {
-        errorMessage = "";
-        errorTimeout = null;
-    }, 1500);
-}
-
 async function onUpdatekeyResult() {
-    if (!isBetween(currentValue, startValue, endValue)) {
-        showError("Current value is out of bounds");
-        return;
-    }
+	if (!isBetween(currentValue, startValue, endValue)) {
+		errorMessage = null;
+		errorMessage = "Current value is out of bounds";
+		return;
+	}
 	keyResult.description = description;
 	keyResult.start_value = startValue;
 	keyResult.end_value = endValue;
-    keyResult.current_value = currentValue;
+	keyResult.current_value = currentValue;
 
 	await updateKeyResult(keyResult);
 
@@ -63,6 +52,7 @@ async function onUpdatekeyResult() {
 <dialog id="edit-key-result-modal" bind:this={modal} class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">Edit key result</h3>
+    <ErrorMessage message={errorMessage} />
     <form class="flex flex-col gap-3 mt-3">
 	    <input type="text" bind:value={description} placeholder="description" class="input w-full">
 	    <input type="number" bind:value={startValue} placeholder="start value" class="input w-full">
@@ -75,16 +65,6 @@ async function onUpdatekeyResult() {
               <button type="button" class="btn btn-primary" onclick={onUpdatekeyResult}>Confirm</button>
           </div>
       </div>
-
-      {#if errorMessage}
-          <div
-                  in:fade={{ duration: 120 }}
-                  out:fade={{ duration: 240 }}
-                  class="alert alert-error absolute bottom-2 left-2 right-2 z-10 p-2 text-sm"
-          >
-              {errorMessage}
-          </div>
-      {/if}
   </div>
 </dialog>
 

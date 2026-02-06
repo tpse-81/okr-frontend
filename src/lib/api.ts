@@ -224,11 +224,10 @@ export async function updateKeyResultCurrentValue(
 	keyResultId: string,
 	currentValue: number,
 ): Promise<KeyResult> {
-	const response = await baseFetch(`/key_results/${keyResultId}/current?current_value=${encodeURIComponent(currentValue,)}`,
-		{
-			method: "PATCH",
-		},
-	);
+	const response = await baseFetch(`/key_results/${keyResultId}/current`, {
+		method: "PATCH",
+		body: JSON.stringify({ current_value: currentValue }),
+	});
 	return await response.json();
 }
 
