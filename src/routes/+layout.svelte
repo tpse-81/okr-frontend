@@ -88,8 +88,8 @@ onMount(() => {
       <EllipsisIcon />
     </div>
     <ul tabindex="-1" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
+      <li class="btn btn-ghost" on:click={() => goto("/account")}>Account</li>
       <li class="btn btn-ghost" on:click={logoutUser}>Logout</li>
-      <li class="btn btn-ghost">Something else</li>
     </ul>
   </div>
 </div>

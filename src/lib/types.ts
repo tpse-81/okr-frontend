@@ -43,3 +43,8 @@ export interface User {
 	email: string;
 	is_admin: boolean;
 }
+
+export interface TwoFaRequiredResponse {
+	type: "webauthn" | "totp";
+	user_id: string;
+}
