@@ -179,6 +179,26 @@ export async function getProjects() {
 	return response.json();
 }
 
+export async function getArchivedProjects() {
+	const response = await baseFetch("/projects/archived");
+
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
+
+	return response.json();
+}
+
+export async function getProjectsForUser(userID: string) {
+	const response = await baseFetch(`/users/${userID}/projects`);
+
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
+
+	return response.json();
+}
+
 export async function getProjectById(projectId: string): Promise<Project> {
 	const response = await baseFetch(`/projects/${projectId}`);
 
