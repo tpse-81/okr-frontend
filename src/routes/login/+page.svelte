@@ -18,6 +18,10 @@ let webauthnRequired: boolean = $state(false);
 let userId: string | null = $state(null);
 let webauthnCredential: Credential | null = $state(null);
 
+// totp specific
+let totpRequired: boolean = $state(false);
+let twoFaCode: string | null = $state(null);
+
 async function login(e: SubmitEvent) {
 	e.preventDefault();
 	errorMessage = "";
@@ -30,7 +34,7 @@ async function login(e: SubmitEvent) {
 		const userInfo: User = await loginUser(
 			username,
 			password,
-			null,
+			twoFaCode,
 			webauthnCredential,
 		);
 		setUserInfoWithStorageCache(userInfo);
@@ -43,6 +47,7 @@ async function login(e: SubmitEvent) {
 			).extra;
 			userId = twoFaRequiredResponse.user_id;
 			if (twoFaRequiredResponse.type === "webauthn") webauthnRequired = true;
+			else if (twoFaRequiredResponse.type === "totp") totpRequired = true;
 			return;
 		}
 		console.error(e);
@@ -71,11 +76,14 @@ async function loadWebauthn() {
 			<span>{errorMessage}</span>
 		</div>
 		{/if}
-	  <input type="text" id="username" bind:value={username} placeholder={$_('username')} class="input w-full" >
-	  <input type="password" id="password" bind:value={password} placeholder={$_('password')} class="input w-full" >
+	  <input type="text" autocomplete="username" id="username" bind:value={username} placeholder={$_('username')} class="input w-full" required>
+	  <input type="password" id="password" autocomplete="current-password" bind:value={password} placeholder={$_('password')} class="input w-full" required>
 	  {#if webauthnRequired}
 		  <button type="button" class="btn btn-primary" onclick={() => loadWebauthn()}>Load passkey</button>
 		{/if}
-	  <input type="submit" value={$_('login')} class="btn btn-primary" disabled={webauthnRequired && !webauthnCredential}>
+		{#if totpRequired}
+		  <input type="text" autocomplete="one-time-code" id="two_fa_code" pattern={'\\d{3}[\\- ]?\\d{3}'} bind:value={twoFaCode} placeholder={$_('two_fa_code')} class="input w-full" required>
+		{/if}
+	  <input type="submit" value={$_('login')} class="btn btn-primary" disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && !twoFaCode)}>
 	</form>
 </div>
