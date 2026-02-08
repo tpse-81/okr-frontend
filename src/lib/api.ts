@@ -76,14 +76,27 @@ export async function deleteUser(userId: string): Promise<void> {
 }
 
 export async function changeUserPassword(
-	userId: string,
 	oldPassword: string,
 	newPassword: string,
 ): Promise<{ message: string }> {
-	const response = await baseFetch(`/users/${userId}/password/change`, {
+	const response = await baseFetch(`/users/password/change`, {
 		method: "PATCH",
 		body: JSON.stringify({
 			old_password: oldPassword,
+			new_password: newPassword,
+		}),
+	});
+	if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+	return response.json();
+}
+
+export async function resetUserPassword(
+	userId: string,
+	newPassword: string,
+): Promise<{ message: string }> {
+	const response = await baseFetch(`/users/${userId}/password/reset`, {
+		method: "PATCH",
+		body: JSON.stringify({
 			new_password: newPassword,
 		}),
 	});
