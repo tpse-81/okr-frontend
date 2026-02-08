@@ -12,7 +12,7 @@ import { generatePassword, copyToClipboard } from "$lib/utils";
 import { Check, Minus } from "@lucide/svelte";
 
 let name: string = $state("");
-let passwort: string = $state("");
+let password: string = $state("");
 let email: string = $state("");
 
 let users: User[] = $state([]);
@@ -66,24 +66,24 @@ function openPasswordDialog(title: string, text: string) {
 }
 
 // Create User
-async function screateUser(e: SubmitEvent) {
+async function onCreateUser(e: SubmitEvent) {
 	e.preventDefault();
 	errorMessage = null;
 
 	// wenn Admin nichts eingibt, nutzen wir random (8 Zeichen)
-	if (!passwort) passwort = generatePassword();
+	if (!password) password = generatePassword();
 
 	try {
-		await createUser(name, email, passwort);
+		await createUser(name, email, password);
 
 		openPasswordDialog(
 			"User erstellt",
-			`User: ${name}\nEmail: ${email}\nPasswort: ${passwort}`,
+			`User: ${name}\nEmail: ${email}\nPasswort: ${password}`,
 		);
 
 		name = "";
 		email = "";
-		passwort = generatePassword();
+		password = generatePassword();
 
 		await refreshUsers();
 	} catch (e) {
@@ -151,12 +151,16 @@ function dismissDelete() {
 	userToDelete = null;
 }
 
-onMount(() => {
-	passwort = generatePassword();
+// can't be put into onMount because it's a race condition
+// whether $userInfoStore is initialized first or we check if
+// the user is admin
+$effect(() => {
+	if ($userInfoStore?.is_admin) refreshUsers();
+	else users = [];
+});
 
-	if ($userInfoStore?.is_admin) {
-		void refreshUsers();
-	}
+onMount(() => {
+	password = generatePassword();
 });
 </script>
 
@@ -167,7 +171,7 @@ onMount(() => {
 {#if !$userInfoStore?.is_admin}
 	<p class="p-3 opacity-70">Nur Admins können User verwalten.</p>
 {:else}
-	<form id="user-submit" onsubmit={(e) => void screateUser(e)} class="flex gap-3 p-3 m-auto">
+	<form id="user-submit" onsubmit={(e) => void onCreateUser(e)} class="flex gap-3 p-3 m-auto">
 		<input
 			type="text"
 			pattern="^((?!@).)*$"
@@ -179,14 +183,14 @@ onMount(() => {
 
 		<input
 			type="text"
-			bind:value={passwort}
+			bind:value={password}
 			placeholder="Password"
 			class="input w-full"
 			required
 			title="Du kannst das Passwort ändern oder neu generieren"
 		/>
 
-		<button type="button" class="btn" onclick={() => (passwort = generatePassword())}>
+		<button type="button" class="btn" onclick={() => (password = generatePassword())}>
 			Neu generieren
 		</button>
 
