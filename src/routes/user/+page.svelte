@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Check, Minus } from "@lucide/svelte";
 import { onMount } from "svelte";
-import { changeUserPassword, createUser, deleteUser, getUsers } from "$lib/api";
+import { createUser, deleteUser, getUsers, resetUserPassword } from "$lib/api";
 import type { User } from "$lib/types";
 import { userInfoStore } from "$lib/user_info";
 import { copyToClipboard, generatePassword } from "$lib/utils";
@@ -100,7 +100,7 @@ async function confirmSetPassword() {
 	errorMessage = null;
 
 	try {
-		await changeUserPassword(userForPassword.id, "", passwordInput);
+		await resetUserPassword(userForPassword.id, passwordInput);
 
 		showSetPasswordDialog = false;
 
