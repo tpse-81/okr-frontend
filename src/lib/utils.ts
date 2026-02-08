@@ -46,3 +46,38 @@ export function formatDate(date: Date): string {
 export function isBetween(value: number, a: number, b: number) {
 	return value >= Math.min(a, b) && value <= Math.max(a, b);
 }
+
+export function generatePassword(length = 8): string {
+	const charset =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+	if (typeof crypto === "undefined" || !crypto.getRandomValues) {
+		throw new Error("crypto.getRandomValues is not available");
+	}
+
+	const buf = new Uint32Array(length);
+	crypto.getRandomValues(buf);
+	return Array.from(buf, (x) => charset[x % charset.length]).join("");
+}
+
+export async function copyToClipboard(text: string): Promise<void> {
+	if (
+		typeof navigator !== "undefined" &&
+		navigator.clipboard &&
+		navigator.clipboard.writeText
+	) {
+		await navigator.clipboard.writeText(text);
+		return;
+	}
+
+	if (typeof document === "undefined") {
+		throw new Error("Clipboard is not available");
+	}
+
+	const el = document.createElement("textarea");
+	el.value = text;
+	document.body.appendChild(el);
+	el.select();
+	document.execCommand("copy");
+	document.body.removeChild(el);
+}

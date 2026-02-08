@@ -47,8 +47,8 @@ export async function createUser(
 		body: JSON.stringify({ name, email, password }),
 	});
 
-	const user: User = await response.json();
-	return user;
+	if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+	return response.json();
 }
 
 export async function loginUser(
@@ -67,6 +67,27 @@ export async function loginUser(
 		}),
 	});
 
+	return response.json();
+}
+
+export async function deleteUser(userId: string): Promise<void> {
+	const response = await baseFetch(`/users/${userId}`, { method: "DELETE" });
+	if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+}
+
+export async function changeUserPassword(
+	userId: string,
+	oldPassword: string,
+	newPassword: string,
+): Promise<{ message: string }> {
+	const response = await baseFetch(`/users/${userId}/password/change`, {
+		method: "PATCH",
+		body: JSON.stringify({
+			old_password: oldPassword,
+			new_password: newPassword,
+		}),
+	});
+	if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 	return response.json();
 }
 
