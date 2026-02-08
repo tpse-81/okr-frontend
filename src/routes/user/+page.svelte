@@ -8,6 +8,9 @@ import ConfirmationDialog from "../../components/ConfirmationDialog.svelte";
 
 import { createUser, getUsers, deleteUser, changeUserPassword } from "$lib/api";
 
+import { generatePassword, copyToClipboard } from "$lib/utils";
+import { Check, Minus } from "@lucide/svelte";
+
 let name: string = $state("");
 let passwort: string = $state("");
 let email: string = $state("");
@@ -19,10 +22,17 @@ let errorMessage: string | null = $state(null);
 let showDeleteDialog = $state(false);
 let userToDelete: User | null = $state(null);
 
+// Passwort-Anzeige Modal (für Create + nach PW-Change)
 let passwordModal: HTMLDialogElement;
 let showPasswordDialog = $state(false);
 let passwordDialogTitle = $state("");
 let passwordDialogText = $state("");
+
+// Set-Password Modal (Admin kann tippen ODER generieren)
+let setPasswordModal: HTMLDialogElement;
+let showSetPasswordDialog = $state(false);
+let userForPassword: User | null = $state(null);
+let passwordInput = $state("");
 
 $effect(() => {
 	if (!passwordModal) return;
@@ -30,13 +40,11 @@ $effect(() => {
 	else passwordModal.close();
 });
 
-function generatePassword(length = 16) {
-	const charset =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-	const buf = new Uint32Array(length);
-	crypto.getRandomValues(buf);
-	return Array.from(buf, (x) => charset[x % charset.length]).join("");
-}
+$effect(() => {
+	if (!setPasswordModal) return;
+	if (showSetPasswordDialog) setPasswordModal.showModal();
+	else setPasswordModal.close();
+});
 
 async function refreshUsers() {
 	loading = true;
@@ -57,24 +65,12 @@ function openPasswordDialog(title: string, text: string) {
 	showPasswordDialog = true;
 }
 
-async function copyToClipboard(text: string) {
-	try {
-		await navigator.clipboard.writeText(text);
-	} catch {
-		// fallback
-		const el = document.createElement("textarea");
-		el.value = text;
-		document.body.appendChild(el);
-		el.select();
-		document.execCommand("copy");
-		document.body.removeChild(el);
-	}
-}
-
+// Create User
 async function screateUser(e: SubmitEvent) {
 	e.preventDefault();
 	errorMessage = null;
 
+	// wenn Admin nichts eingibt, nutzen wir random (8 Zeichen)
 	if (!passwort) passwort = generatePassword();
 
 	try {
@@ -96,21 +92,38 @@ async function screateUser(e: SubmitEvent) {
 	}
 }
 
-async function resetPassword(u: User) {
+function openSetPassword(u: User) {
+	userForPassword = u;
+	passwordInput = generatePassword(); // default 8
+	showSetPasswordDialog = true;
+}
+
+async function confirmSetPassword() {
+	if (!userForPassword) return;
 	errorMessage = null;
-	const newPw = generatePassword();
 
 	try {
-		await changeUserPassword(u.id, "", newPw);
+		await changeUserPassword(userForPassword.id, "", passwordInput);
+
+		showSetPasswordDialog = false;
 
 		openPasswordDialog(
-			"Passwort zurückgesetzt",
-			`User: ${u.name}\nEmail: ${u.email}\nNeues Passwort: ${newPw}`,
+			"Passwort geändert",
+			`User: ${userForPassword.name}\nEmail: ${userForPassword.email}\nNeues Passwort: ${passwordInput}`,
 		);
+
+		userForPassword = null;
+		passwordInput = "";
 	} catch (e) {
 		console.error(e);
-		errorMessage = "Passwort-Reset fehlgeschlagen.";
+		errorMessage = "Passwort ändern fehlgeschlagen.";
 	}
+}
+
+function dismissSetPassword() {
+	showSetPasswordDialog = false;
+	userForPassword = null;
+	passwordInput = "";
 }
 
 function askDelete(u: User) {
@@ -142,7 +155,7 @@ onMount(() => {
 	passwort = generatePassword();
 
 	if ($userInfoStore?.is_admin) {
-		refreshUsers();
+		void refreshUsers();
 	}
 });
 </script>
@@ -154,8 +167,7 @@ onMount(() => {
 {#if !$userInfoStore?.is_admin}
 	<p class="p-3 opacity-70">Nur Admins können User verwalten.</p>
 {:else}
-	<form id="user-submit" onsubmit={screateUser} class="flex gap-3 p-3 m-auto">
-		<!-- username pattern allows everything but '@' characters -->
+	<form id="user-submit" onsubmit={(e) => void screateUser(e)} class="flex gap-3 p-3 m-auto">
 		<input
 			type="text"
 			pattern="^((?!@).)*$"
@@ -165,23 +177,16 @@ onMount(() => {
 			required
 		/>
 
-		<!-- Password is shown in UI and generated randomly -->
 		<input
 			type="text"
 			bind:value={passwort}
-			placeholder="Passwort"
+			placeholder="Password"
 			class="input w-full"
-			readonly
 			required
-			title="Automatisch generiert"
+			title="Du kannst das Passwort ändern oder neu generieren"
 		/>
 
-		<!-- Button for generation -->
-		<button
-			type="button"
-			class="btn"
-			onclick={() => (passwort = generatePassword())}
-		>
+		<button type="button" class="btn" onclick={() => (passwort = generatePassword())}>
 			Neu generieren
 		</button>
 
@@ -219,11 +224,17 @@ onMount(() => {
 							<tr>
 								<td>{u.name}</td>
 								<td>{u.email}</td>
-								<td>{u.is_admin ? "✅" : "—"}</td>
+								<td>
+									{#if u.is_admin}
+										<Check size={16} />
+									{:else}
+										<Minus size={16} class="opacity-50" />
+									{/if}
+								</td>
 								<td class="text-right">
 									<div class="flex gap-2 justify-end">
-										<button class="btn btn-sm" onclick={() => resetPassword(u)}>
-											Reset PW
+										<button class="btn btn-sm" onclick={() => openSetPassword(u)}>
+											Set PW
 										</button>
 
 										<button
@@ -250,9 +261,43 @@ onMount(() => {
 <ConfirmationDialog
 	show={showDeleteDialog}
 	message={userToDelete ? `User "${userToDelete.name}" löschen?` : "User löschen?"}
-	onconfirm={confirmDelete}
+	onconfirm={() => void confirmDelete()}
 	ondismiss={dismissDelete}
 />
+
+<dialog bind:this={setPasswordModal} class="modal">
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">Passwort setzen</h3>
+
+		{#if userForPassword}
+			<p class="opacity-70 mb-3">
+				{userForPassword.name} ({userForPassword.email})
+			</p>
+		{/if}
+
+		<div class="flex gap-2">
+			<input
+				type="text"
+				class="input input-bordered w-full"
+				bind:value={passwordInput}
+				placeholder="Neues Passwort"
+				required
+			/>
+			<button type="button" class="btn" onclick={() => (passwordInput = generatePassword())}>
+				Random
+			</button>
+		</div>
+
+		<div class="modal-action">
+			<form method="dialog" class="flex gap-3 w-full justify-end">
+				<button class="btn" onclick={dismissSetPassword}>Cancel</button>
+				<button class="btn btn-primary" onclick={() => void confirmSetPassword()}>
+					Save
+				</button>
+			</form>
+		</div>
+	</div>
+</dialog>
 
 <dialog bind:this={passwordModal} class="modal">
 	<div class="modal-box">
@@ -260,7 +305,7 @@ onMount(() => {
 		<p class="py-4 whitespace-pre-line">{passwordDialogText}</p>
 		<div class="modal-action">
 			<form method="dialog" class="flex gap-3 w-full justify-end">
-				<button class="btn" onclick={() => copyToClipboard(passwordDialogText)}>
+				<button class="btn" onclick={() => void copyToClipboard(passwordDialogText)}>
 					Copy
 				</button>
 				<button class="btn btn-primary" onclick={() => (showPasswordDialog = false)}>

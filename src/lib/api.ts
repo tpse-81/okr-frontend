@@ -30,8 +30,8 @@ export async function createUser(
 		body: JSON.stringify({ name, email, password }),
 	});
 
-	const user: User = await response.json();
-	return user;
+	if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+	return response.json();
 }
 
 export async function loginUser(username: string, password: string) {
