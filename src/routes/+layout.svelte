@@ -17,9 +17,7 @@ let { children } = $props();
 let title = "OKR Project";
 
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
-const excludedPaths = [
-    '/login',
-];
+const excludedPaths = ["/login"];
 
 async function logoutUser() {
 	await logout();
@@ -31,19 +29,15 @@ async function logoutUser() {
 let ready = false;
 
 onMount(async () => {
-    restoreUserInfoFromStorage();
-    ready = true;
+	restoreUserInfoFromStorage();
+	ready = true;
 });
 
 $effect(() => {
-    const path = page.url.pathname;
-    if (
-        ready &&
-        $userInfoStore == null &&
-        !excludedPaths.includes(path)
-    ) {
-        goto('/login');
-    }
+	const path = page.url.pathname;
+	if (ready && $userInfoStore == null && !excludedPaths.includes(path)) {
+		goto("/login");
+	}
 });
 </script>
 
