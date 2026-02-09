@@ -1,18 +1,28 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import {getDashboard} from "$lib/api";
+    import {getDashboard, getTasks} from "$lib/api";
     import DashboardProjectComponent from "../../components/DashboardProject.svelte";
-    import type {Project, ProjectContainer} from "$lib/types";
+    import DashboardTaskComponent from "../../components/DashboardTask.svelte";
+    import type {Project, ProjectContainer, Task} from "$lib/types";
+    import {goto} from "$app/navigation";
+
+
+
 
     let projectContainers: ProjectContainer[] = $state([]);
     let projectsList: Project[] = $state([]);
     let closestDeadlineProjects: Project[] = $state([]);
 
+    let taskList: Task[] = $state([])
 
     onMount(async () => {
         try {
+            try {
+                await tasks();
+            } catch (err) {
+                console.error(err);
+            }
             projectContainers = await getDashboard();
-            console.log(projectContainers.length);
             const rawProjects = projectContainers.map(pc => pc.project);
             projectsList = rawProjects.map(p => ({
                 ...p,
@@ -24,6 +34,14 @@
         }
     });
 
+    async function tasks() {
+        try {
+            taskList = await getTasks();
+        } catch (err) {
+            await goto("/expected");
+        }
+    }
+
     $effect(() => {
         closestDeadlineProjects = [...projectsList]
             .sort((a, b) => a.deadline.getTime() - b.deadline.getTime())
@@ -33,22 +51,24 @@
 </script>
 
 
-<h1>Hallo Dashboard</h1>
+<h1 class="ml-15">Hallo Dashboard</h1>
 
-<div class="flex gap-4 ml-5">
+<div class="flex gap-4 ml-15">
     <div class="flex-1">
-        <div class="card card-border relative w-262">
+        <!-- Projects -->
+        <div class="card card-border relative w-389">
             <div class="p-3">
                 <h1>last viewed projects</h1>
                 {#if projectContainers.length > 0}
                     <ul class="flex -gap-10 overflow-x-auto pb-2">
                         {#each projectContainers as projectContainer}
                             <a
-                            href={`/projects/${projectContainer.project.id}`}
-                            class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors">
-                            <DashboardProjectComponent
-                                    projectContainer={projectContainer}
-                            />
+                                    href={`/projects/${projectContainer.project.id}`}
+                                    class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors"
+                            >
+                                <DashboardProjectComponent
+                                        projectContainer={projectContainer}
+                                />
                             </a>
                         {/each}
                     </ul>
@@ -57,8 +77,20 @@
                 {/if}
             </div>
         </div>
+
+        <!-- Tasks direkt unter den Projects -->
+        <div class="mt-6 w-389">
+            {#if taskList.length > 0}
+                <DashboardTaskComponent tasks={taskList} />
+            {:else}
+                <div class="card card-bordered p-4">
+                    No tasks loaded
+                </div>
+            {/if}
+        </div>
     </div>
 
+    <!-- Deadlines rechts -->
     <aside class="w-64 shrink-0 mr-5">
         <div class="card card-border">
             <div class="p-4">
@@ -72,12 +104,12 @@
                                     class="card card-compact card-bordered p-4 bg-base-100 hover:bg-base-200 transition-colors"
                             >
                                 <div class="flex flex-col gap-2">
-                                <span class="font-semibold text-base truncate">
-                                    {project.name}
-                                </span>
+                                    <span class="font-semibold text-base truncate">
+                                        {project.name}
+                                    </span>
                                     <span class="text-sm opacity-70">
-                                    {project.deadline.toLocaleDateString()}
-                                </span>
+                                        {project.deadline.toLocaleDateString()}
+                                    </span>
                                 </div>
                             </a>
                         {/each}
@@ -88,7 +120,4 @@
             </div>
         </div>
     </aside>
-
-
-
 </div>
