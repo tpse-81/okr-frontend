@@ -87,6 +87,7 @@ $effect(() => {
         	{/if}
         	<!-- sections to only show if logged in -->
         	{#if $userInfoStore}
+            <li><a href="/dashboard">Dashboard</a></li>
           	<li><a href="/projects">Projects</a></li>
           	<li><a href="/objectives">Objectives</a></li>
           	<li><a href="/key_results">Key results</a></li>

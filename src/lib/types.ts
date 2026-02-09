@@ -7,6 +7,13 @@ export interface Project {
 	icon?: string | null;
 }
 
+export interface ProjectContainer {
+	project: Project;
+	objectives: Objective[];
+	progress: number;
+}
+
+
 export interface Objective {
 	id: string;
 	name: string;
