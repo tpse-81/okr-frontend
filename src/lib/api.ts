@@ -3,7 +3,7 @@ import { PUBLIC_API_URL } from "$env/static/public";
 import type {
 	KeyResult,
 	Objective,
-	Project,
+	Project, ProjectContainer,
 	Task,
 	TaskState,
 } from "$lib/types";
@@ -320,6 +320,12 @@ export async function updateKeyResult(
 		body: JSON.stringify(keyResult),
 	});
 
+	return response.json();
+}
+
+export async function getDashboard(
+):Promise<ProjectContainer[]>{
+	const response = await baseFetch('/dashboard');
 	return response.json();
 }
 
