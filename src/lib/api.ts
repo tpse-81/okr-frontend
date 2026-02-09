@@ -394,7 +394,7 @@ export async function updateTask(task: Task): Promise<Task> {
 	return response.json();
 }
 
-export async function getTasks() {
+export async function getTasks(): Promise<Task[]> {
 	const response = await baseFetch("/tasks");
 	return response.json();
 }

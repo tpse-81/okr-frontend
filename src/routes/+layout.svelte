@@ -102,6 +102,10 @@ $effect(() => {
     <a class="btn btn-ghost text-xl" href="/">OKR-ng</a>
   </div>
 
+  <div>
+      { $userInfoStore?.name ?? "" }
+  </div>
+
   <!-- button with more options, e.g. logout -->
   {#if $userInfoStore}
   <div class="dropdown dropdown-end">
