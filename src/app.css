@@ -1,12 +1,12 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-	/* biome-ignore lint: Key exists even though Biome can't find it */
+	/* biome-ignore lint/correctness/noUnknownProperty: Key exists even though Biome can't find it */
 	themes:
 		cupcake --default,
 		luxury --prefersdark;
-	/* biome-ignore lint: Key exists even though Biome can't find it */
+	/* biome-ignore lint/correctness/noUnknownProperty: Key exists even though Biome can't find it */
 	root: ":root";
-	/* biome-ignore lint: Key exists even though Biome can't find it */
+	/* biome-ignore lint/correctness/noUnknownProperty: Key exists even though Biome can't find it */
 	logs: true;
 }
 

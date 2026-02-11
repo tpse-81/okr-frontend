@@ -1,4 +1,4 @@
-import { expect, uniq, keyResultBaseTest } from "./fixtures";
+import { expect, keyResultBaseTest, uniq } from "./fixtures";
 
 keyResultBaseTest(
 	"can create a task for a key result and see it in the list",

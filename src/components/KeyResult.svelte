@@ -7,13 +7,14 @@
   ```
 -->
 <script lang="ts">
-import { Edit, Trash, PlusCircle, MinusCircle } from "@lucide/svelte";
+import { Edit, MinusCircle, PlusCircle, Trash } from "@lucide/svelte";
 import { deleteKeyResult, updateKeyResultCurrentValue } from "$lib/api";
 import type { KeyResult } from "$lib/types";
+import { isBetween } from "$lib/utils";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditKeyResultComponent from "./EditKeyResultComponent.svelte";
-import { isBetween } from "$lib/utils";
 import ErrorMessage from "./ErrorMessage.svelte";
+
 let errorMessage: string | null = $state(null);
 
 let {
