@@ -258,13 +258,6 @@
                 </button>
             {/if}
         </div>
-
-        <div class="join">
-            <button class="join-item btn btn-sm btn-outline">«</button>
-            <button class="join-item btn btn-sm btn-outline">‹</button>
-            <button class="join-item btn btn-sm btn-outline">›</button>
-            <button class="join-item btn btn-sm btn-outline">»</button>
-        </div>
     </div>
 </div>
 
