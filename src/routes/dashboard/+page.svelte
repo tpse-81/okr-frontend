@@ -3,6 +3,8 @@
     import {getDashboard, getTasks} from "$lib/api";
     import DashboardProjectComponent from "../../components/DashboardProject.svelte";
     import DashboardTaskComponent from "../../components/DashboardTask.svelte";
+    import DashboardDeadlineComponent from "../../components/DashboardDeadline.svelte";
+
     import type {Project, ProjectContainer, Task} from "$lib/types";
     import {goto} from "$app/navigation";
 
@@ -55,21 +57,18 @@
 
 <div class="flex gap-4 ml-15">
     <div class="flex-1">
-        <!-- Projects -->
+
         <div class="card card-border relative w-389">
             <div class="p-3">
                 <h1>last viewed projects</h1>
                 {#if projectContainers.length > 0}
                     <ul class="flex -gap-10 overflow-x-auto pb-2">
                         {#each projectContainers as projectContainer}
-                            <a
-                                    href={`/projects/${projectContainer.project.id}`}
-                                    class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors"
-                            >
+                            <div  class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors">
                                 <DashboardProjectComponent
                                         projectContainer={projectContainer}
                                 />
-                            </a>
+                            </div>
                         {/each}
                     </ul>
                 {:else}
@@ -78,7 +77,6 @@
             </div>
         </div>
 
-        <!-- Tasks direkt unter den Projects -->
         <div class="mt-6 w-389">
             {#if taskList.length > 0}
                 <DashboardTaskComponent tasks={taskList} />
@@ -90,34 +88,6 @@
         </div>
     </div>
 
-    <!-- Deadlines rechts -->
-    <aside class="w-64 shrink-0 mr-5">
-        <div class="card card-border">
-            <div class="p-4">
-                <h2 class="text-base font-semibold mb-3">Closest deadlines</h2>
 
-                {#if closestDeadlineProjects.length > 0}
-                    <div class="flex flex-col gap-3">
-                        {#each closestDeadlineProjects as project}
-                            <a
-                                    href={`/projects/${project.id}`}
-                                    class="card card-compact card-bordered p-4 bg-base-100 hover:bg-base-200 transition-colors"
-                            >
-                                <div class="flex flex-col gap-2">
-                                    <span class="font-semibold text-base truncate">
-                                        {project.name}
-                                    </span>
-                                    <span class="text-sm opacity-70">
-                                        {project.deadline.toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </a>
-                        {/each}
-                    </div>
-                {:else}
-                    <p class="text-sm opacity-60">No upcoming deadlines</p>
-                {/if}
-            </div>
-        </div>
-    </aside>
+    <DashboardDeadlineComponent projects={closestDeadlineProjects} />
 </div>
