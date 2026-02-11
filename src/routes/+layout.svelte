@@ -3,15 +3,15 @@ import { EllipsisIcon, MenuIcon, X } from "@lucide/svelte";
 import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
-import { logout } from "$lib/api";
-import { page } from "$app/state";
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
+import { page } from "$app/state";
+import { logout } from "$lib/api";
 import {
 	restoreUserInfoFromStorage,
 	setUserInfo,
 	userInfoStore,
 } from "$lib/user_info";
-import { onMount } from "svelte";
 
 let { children } = $props();
 let title = "OKR Project";

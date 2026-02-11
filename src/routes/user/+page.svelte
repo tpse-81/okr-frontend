@@ -1,15 +1,12 @@
 <script lang="ts">
+import { Check, Minus } from "@lucide/svelte";
 import { onMount } from "svelte";
+import { changeUserPassword, createUser, deleteUser, getUsers } from "$lib/api";
 import type { User } from "$lib/types";
 import { userInfoStore } from "$lib/user_info";
-
-import ErrorMessage from "../../components/ErrorMessage.svelte";
+import { copyToClipboard, generatePassword } from "$lib/utils";
 import ConfirmationDialog from "../../components/ConfirmationDialog.svelte";
-
-import { createUser, getUsers, deleteUser, changeUserPassword } from "$lib/api";
-
-import { generatePassword, copyToClipboard } from "$lib/utils";
-import { Check, Minus } from "@lucide/svelte";
+import ErrorMessage from "../../components/ErrorMessage.svelte";
 
 let name: string = $state("");
 let password: string = $state("");

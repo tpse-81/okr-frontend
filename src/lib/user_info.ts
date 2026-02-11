@@ -1,4 +1,4 @@
-import { writable, type Writable } from "svelte/store";
+import { type Writable, writable } from "svelte/store";
 import type { User } from "./types";
 
 const USER_INFO_STORAGE_KEY = "user_info";

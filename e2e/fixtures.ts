@@ -1,6 +1,6 @@
 import {
-	expect as baseExpect,
 	test as base,
+	expect as baseExpect,
 	type Page,
 } from "@playwright/test";
 

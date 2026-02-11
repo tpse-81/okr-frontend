@@ -1,4 +1,7 @@
 <script lang="ts">
+import { Check } from "@lucide/svelte";
+import { onMount } from "svelte";
+import { get } from "svelte/store";
 import {
 	getWebauthnAuthenticationOptions,
 	getWebauthnRegistrationOptions,
@@ -8,10 +11,7 @@ import {
 	webauthnRemoveCredentials,
 } from "$lib/api";
 import { userInfoStore } from "$lib/user_info";
-import { onMount } from "svelte";
-import { get } from "svelte/store";
 import ErrorMessage from "../../components/ErrorMessage.svelte";
-import { Check } from "@lucide/svelte";
 
 let isWebauthnConfigured = $state(false);
 let errorMessage: string | null = $state(null);

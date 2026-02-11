@@ -391,8 +391,8 @@ export async function getWebauthnRegistrationOptions() {
 	return response.json();
 }
 
-// biome-ignore lint/suspicious: the webauthn-internal response mustn't be parsed, so no type hints needed
 export async function webauthnRegister(
+	// biome-ignore lint/suspicious: the webauthn-internal response mustn't be parsed, so no type hints needed
 	registrationResponse: Record<string, any>,
 ) {
 	const response = await baseFetch(`/webauthn/register`, {

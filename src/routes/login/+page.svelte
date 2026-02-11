@@ -6,8 +6,8 @@ import {
 	getWebauthnAuthenticationOptions,
 	loginUser,
 } from "$lib/api";
-import { setUserInfo as setUserInfoWithStorageCache } from "$lib/user_info";
 import type { TwoFaRequiredResponse, User } from "$lib/types";
+import { setUserInfo as setUserInfoWithStorageCache } from "$lib/user_info";
 
 let username: string = $state("");
 let password: string = $state("");
