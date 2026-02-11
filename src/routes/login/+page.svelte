@@ -72,7 +72,7 @@ async function loadWebauthn() {
 	<form id="login-submit" onsubmit={login} class="flex flex-col justify-center gap-3 w-8/10 m-auto">
 		<h1>Login</h1>
 		{#if errorMessage}
-		<div class="alert alert-error">
+		<div id="login-error" class="alert alert-error">
 			<span>{errorMessage}</span>
 		</div>
 		{/if}

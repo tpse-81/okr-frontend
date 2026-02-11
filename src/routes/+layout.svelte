@@ -52,13 +52,13 @@ $effect(() => {
     <input id="navigation-drawer" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content">
       <!-- Actual content of the button used for toggling the drawer -->
-      <label for="navigation-drawer" class="btn btn-square btn-ghost">
+      <label id="navigation-drawer-toggle" for="navigation-drawer" class="btn btn-square btn-ghost">
         <MenuIcon />
       </label>
     </div>
     <div class="drawer-side">
       <!-- close drawer on click outside (i.e. click on this drawer-overlay label) -->
-      <label for="navigation-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+      <label id="navigation-drawer-overlay" for="navigation-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 
       <div class="bg-base-200 min-h-full w-80 p-4 flex flex-col">
         <!-- button to manually close the navigation drawer -->

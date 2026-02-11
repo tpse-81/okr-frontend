@@ -7,7 +7,7 @@ import ProjectComponent from "../../components/Project.svelte";
 
 let projectsList: Project[] = $state([]);
 let name: string = $state("");
-let deadline: number = $state(0);
+let deadline: string = $state("");
 let icon: string | null = $state(null);
 let iconRequiresConfirmation: boolean = $state(false);
 
@@ -19,11 +19,12 @@ onMount(async () => {
 	}
 });
 
-async function handleSubmit() {
+async function handleSubmit(e: SubmitEvent) {
+	e.preventDefault();
 	await createProject(name, new Date(deadline), icon);
 	projectsList = await getProjects();
 	name = "";
-	deadline = 0;
+	deadline = "";
 }
 </script>
 
@@ -49,6 +50,7 @@ async function handleSubmit() {
                 bind:value={name}
                 placeholder="Name"
                 class="input input-bordered w-full"
+                required
             />
         </div>
 
@@ -62,6 +64,7 @@ async function handleSubmit() {
                 bind:value={deadline}
                 placeholder="Deadline"
                 class="input input-bordered w-full"
+                required
             />
         </div>
       </div>
@@ -78,7 +81,7 @@ async function handleSubmit() {
 <div class="p-3">
   <h1>Projects</h1>
   {#if projectsList.length > 0}
-      <ul class="grid gap-3 grid-auto">
+      <ul id="projects-list" class="grid gap-3 grid-auto">
           {#each projectsList as project}
             <ProjectComponent project={project} onProjectDeleted={() => projectsList = projectsList.filter(proj => proj.id != project.id)} />
           {/each}

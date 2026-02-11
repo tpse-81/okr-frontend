@@ -30,7 +30,8 @@ async function loadTasks() {
 	}
 }
 
-async function handleSubmit() {
+async function handleSubmit(e: SubmitEvent) {
+	e.preventDefault();
 	await createTaskKeyResult(keyResultID, description, taskState);
 
 	taskList = await getTasksKeyResult(keyResultID);
@@ -39,8 +40,8 @@ async function handleSubmit() {
 
 <h1>Create a Task</h1>
 
-<form id="keyResultSubmit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="text" bind:value={description} placeholder="description" class="input w-full">
+<form id="task-submit" onsubmit={handleSubmit} class="flex gap-3 p-3">
+    <input type="text" id="description" bind:value={description} placeholder="description" class="input w-full" required>
     <select bind:value={taskState} class="select select-bordered">
         <option value="open">open</option>
         <option value="planned">planned</option>
@@ -53,6 +54,8 @@ async function handleSubmit() {
 </form>
 
 <div class="p-3">
-    <h1>Tasks</h1>
-		<TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
+  <h1>Tasks</h1>
+  <div id="tasks-list">
+    <TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
+  </div>
 </div>
