@@ -27,7 +27,7 @@ async function keyResults() {
 <div class="p-3">
 	<h1>Key Results</h1>
 	{#if keyResultList.length > 0}
-	    <ul class="grid grid-auto gap-3">
+	    <ul id="key-results-list" class="grid grid-auto gap-3">
 	        {#each keyResultList as key_result}
 			 	    	<KeyResultComponent keyResult={key_result} onKeyResultDeleted={() => keyResultList = keyResultList.filter(kr => kr.id != key_result.id)} />
 	        {/each}

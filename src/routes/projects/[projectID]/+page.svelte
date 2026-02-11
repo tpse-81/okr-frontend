@@ -32,7 +32,8 @@ async function objectives() {
 	}
 }
 
-async function handleSubmit() {
+async function handleSubmit(e: SubmitEvent) {
+	e.preventDefault();
 	await createObjective(name, description, project_id);
 	objectivelist = await getObjectiveProject(project_id);
 	name = "";
@@ -65,14 +66,14 @@ async function handleSubmit() {
           <label for="objective-name" class="label">
             <span class="label-text">Name</span>
           </label>
-          <input id="objective-name" type="text" bind:value={name} placeholder="Name" class="input input-bordered w-full" />
+          <input id="objective-name" type="text" bind:value={name} placeholder="Name" class="input input-bordered w-full" required/>
         </div>
 
         <div class="form-control">
           <label for="objective-description" class="label">
             <span class="label-text">Description</span>
           </label>
-          <input id="objective-description" type="text" bind:value={description} placeholder="Description" class="input input-bordered w-full" />
+          <input id="objective-description" type="text" bind:value={description} placeholder="Description" class="input input-bordered w-full" required/>
         </div>
 
         <div class="md:col-span-2 flex justify-end">
@@ -88,7 +89,7 @@ async function handleSubmit() {
       <h2 class="card-title">Objectives</h2>
 
       {#if objectivelist.length > 0}
-        <ul class="grid grid-auto">
+        <ul id="objectives-list" class="grid grid-auto">
           {#each objectivelist as objective}
 	        	<ObjectiveComponent objective={objective} onObjectiveDeleted={() => objectivelist = objectivelist.filter(obj => objective.id != obj.id)} />
           {/each}
