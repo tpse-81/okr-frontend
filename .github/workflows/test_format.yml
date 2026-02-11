@@ -76,6 +76,10 @@ jobs:
           name: playwright-test-results
           path: test-results/
 
+      - name: Stop backend
+        if: always()
+        run: pkill -f "app:app" || true # Kill backend process; ignore error if it was not running
+
       # don' know if these are necessary, maybe only useful in certain scenarios 
       # HTML-report
       #- name: Upload Playwright report
