@@ -6,7 +6,6 @@ import type {
 	Project,
 	Task,
 	TaskState,
-	User,
 } from "$lib/types";
 
 export class APIError extends Error {
@@ -105,9 +104,8 @@ export async function resetUserPassword(
 }
 
 export async function logout() {
-	await fetch(`${PUBLIC_API_URL}/logout`, {
+	await baseFetch(`/logout`, {
 		method: "POST",
-		credentials: "include",
 	});
 }
 
@@ -503,4 +501,59 @@ export async function webauthnIsConfigured(): Promise<boolean> {
 	const response = await baseFetch(`/webauthn/is_configured`);
 
 	return (await response.json()).is_configured;
+}
+
+// --- Account settings ---
+
+export async function changePassword(
+	userId: string,
+	oldPassword: string,
+	newPassword: string,
+): Promise<{ message: string }> {
+	const response = await baseFetch(`/users/${userId}/password/change`, {
+		method: "PATCH",
+		body: JSON.stringify({
+			old_password: oldPassword,
+			new_password: newPassword,
+		}),
+	});
+
+	return response.json();
+}
+
+export type TotpSetupResponse = {
+	secret: string;
+	otpauth_uri: string;
+};
+
+export async function totpSetup(userId: string): Promise<TotpSetupResponse> {
+	const response = await baseFetch(`/users/${userId}/2fa/totp/setup`, {
+		method: "POST",
+	});
+
+	return response.json();
+}
+
+export async function totpConfirm(
+	userId: string,
+	code: string,
+): Promise<{ message: string }> {
+	const response = await baseFetch(`/users/${userId}/2fa/totp/confirm`, {
+		method: "POST",
+		body: JSON.stringify({ code }),
+	});
+
+	return response.json();
+}
+
+export async function totpDisable(
+	userId: string,
+	code: string,
+): Promise<{ message: string }> {
+	const response = await baseFetch(`/users/${userId}/2fa/totp/disable`, {
+		method: "POST",
+		body: JSON.stringify({ code }),
+	});
+
+	return response.json();
 }

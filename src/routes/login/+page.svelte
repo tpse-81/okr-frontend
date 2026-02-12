@@ -13,14 +13,14 @@ let username: string = $state("");
 let password: string = $state("");
 let errorMessage: string = $state("");
 
+// TOTP specific
+let totpRequired: boolean = $state(false);
+let twoFaCode: string = $state("");
+
 // webauthn specific
 let webauthnRequired: boolean = $state(false);
 let userId: string | null = $state(null);
 let webauthnCredential: Credential | null = $state(null);
-
-// totp specific
-let totpRequired: boolean = $state(false);
-let twoFaCode: string | null = $state(null);
 
 async function login(e: SubmitEvent) {
 	e.preventDefault();
@@ -42,15 +42,33 @@ async function login(e: SubmitEvent) {
 	} catch (e) {
 		// correct credentials, but second factor is missing
 		if (e instanceof APIError && e.response.status === 403) {
+			// reset so we don't keep stale state from previous attempts
+			webauthnRequired = false;
+			totpRequired = false;
+			webauthnCredential = null;
+
 			const twoFaRequiredResponse: TwoFaRequiredResponse = (
 				await e.response.json()
 			).extra;
 			userId = twoFaRequiredResponse.user_id;
-			if (twoFaRequiredResponse.type === "webauthn") webauthnRequired = true;
-			else if (twoFaRequiredResponse.type === "totp") totpRequired = true;
+
+			if (twoFaRequiredResponse.type === "webauthn") {
+				webauthnRequired = true;
+				errorMessage = "Please load your passkey.";
+			}
+
+			if (twoFaRequiredResponse.type === "totp") {
+				totpRequired = true;
+				errorMessage = "Please enter your 2FA code.";
+			}
 			return;
 		}
+
 		console.error(e);
+		if (totpRequired) {
+			errorMessage = "Invalid 2FA code.";
+			return;
+		}
 		errorMessage = "Wrong username or password.";
 	}
 }
@@ -84,6 +102,6 @@ async function loadWebauthn() {
 		{#if totpRequired}
 		  <input type="text" autocomplete="one-time-code" id="two_fa_code" pattern={'\\d{3}[\\- ]?\\d{3}'} bind:value={twoFaCode} placeholder={$_('two_fa_code')} class="input w-full" required>
 		{/if}
-	  <input type="submit" value={$_('login')} class="btn btn-primary" disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && !twoFaCode)}>
+	  <input type="submit" value={$_('login')} class="btn btn-primary" disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && twoFaCode.trim() === "")}>
 	</form>
 </div>
