@@ -97,6 +97,7 @@ $effect(() => {
   </div>
 
   <!-- button with more options, e.g. logout -->
+  {#if $userInfoStore}
   <div class="dropdown dropdown-end">
     <div tabindex="0" role="button" class="btn btn-square btn-ghost m-1">
       <EllipsisIcon />
@@ -106,6 +107,7 @@ $effect(() => {
       <li class="btn btn-ghost" on:click={logoutUser}>Logout</li>
     </ul>
   </div>
+  {/if}
 </div>
 
 {@render children()}
