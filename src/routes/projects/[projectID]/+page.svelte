@@ -6,6 +6,7 @@ import type { Objective } from "$lib/types";
 import AvatarComponent from "../../../components/Avatar.svelte";
 import LinkProjectObjectiveComponent from "../../../components/LinkProjectObjectiveComponent.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
+import ProjectMembers from "../../../components/ProjectMembers.svelte";
 
 let { data } = $props();
 
@@ -58,6 +59,8 @@ async function handleSubmit(e: SubmitEvent) {
       </div>
     </div>
   </div>
+
+  <ProjectMembers projectId={project_id} />
 
   <!-- Create Objective -->
   <div class="card bg-base-100 border border-base-300">
