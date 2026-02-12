@@ -37,6 +37,23 @@ const baseFetch = async (url: string, options: RequestInit = {}) => {
 	return response;
 };
 
+export class ApiError extends Error {
+	status: number;
+	constructor(status: number, message: string) {
+		super(message);
+		this.status = status;
+	}
+}
+
+async function readErrorMessage(response: Response): Promise<string> {
+	try {
+		const data = await response.json();
+		return data?.detail ?? data?.message ?? JSON.stringify(data);
+	} catch {
+		return response.statusText || `HTTP ${response.status}`;
+	}
+}
+
 export async function createUser(
 	name: string,
 	email: string,
@@ -424,13 +441,37 @@ export async function addUserProject(
 			method: "POST",
 		},
 	);
-
 	return response.json();
+}
+
+export async function removeUserProject(project_id: string, user_id: string) {
+	const response = await baseFetch(`/projects/${project_id}/users/${user_id}`, {
+		method: "DELETE",
+	});
+	return response.json();
+}
+
+export async function updateUserRoleProject(
+	project_id: string,
+	user_id: string,
+	role: string,
+) {
+	const response = await baseFetch(
+		`/projects/${project_id}/users/${user_id}/role?role=${role}`,
+		{ method: "PATCH" },
+	);
+	return response.json();
+}
+
+export async function getUserRoleProject(project_id: string, user_id: string) {
+	const response = await baseFetch(
+		`/projects/${project_id}/users/${user_id}/role`,
+	);
+	return response.json(); // // Returns the user's role in this project (e.g. "member" or "leader").
 }
 
 export async function getUsersProject(project_id: string) {
 	const response = await baseFetch(`/projects/${project_id}/users`);
-
 	return response.json();
 }
 
@@ -568,4 +609,59 @@ export async function totpIsConfigured(userId: string): Promise<boolean> {
 	const response = await baseFetch(`/users/${userId}/2fa/totp/is_configured`);
 
 	return (await response.json()).is_configured;
+}
+
+// ---- Project members / user assignment ----
+
+export async function getProjectUsers(projectId: string) {
+	const r = await baseFetch(`/projects/${projectId}/users`, { method: "GET" });
+	return r.json();
+}
+
+export async function getMyRoleInProject(projectId: string, myUserId: string) {
+	const r = await baseFetch(`/projects/${projectId}/users/${myUserId}/role`, {
+		method: "GET",
+	});
+	return r.json();
+}
+
+export async function addUserToProject(
+	projectId: string,
+	userId: string,
+	role: "member" | "leader" = "member",
+) {
+	const r = await baseFetch(
+		`/projects/${projectId}/users/${userId}?role=${role}`,
+		{
+			method: "POST",
+		},
+	);
+	return r.json();
+}
+
+export async function removeUserFromProject(projectId: string, userId: string) {
+	// falls euer Backend wirklich /remove nutzt
+	const r = await baseFetch(`/projects/${projectId}/users/${userId}/remove`, {
+		method: "POST",
+	});
+	return r.json();
+}
+
+export async function updateUserRoleInProject(
+	projectId: string,
+	userId: string,
+	role: "member" | "leader",
+) {
+	const r = await baseFetch(
+		`/projects/${projectId}/users/${userId}/role?role=${role}`,
+		{ method: "PATCH" },
+	);
+	return r.json();
+}
+
+export async function getUserRoleInProject(projectId: string, userId: string) {
+	const r = await baseFetch(`/projects/${projectId}/users/${userId}/role`, {
+		method: "GET",
+	});
+	return r.json();
 }
