@@ -4,6 +4,7 @@ import { goto } from "$app/navigation";
 import { createObjective, getObjectiveProject } from "$lib/api";
 import type { Objective } from "$lib/types";
 import AvatarComponent from "../../../components/Avatar.svelte";
+import LinkProjectObjectiveComponent from "../../../components/LinkProjectObjectiveComponent.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 
 let { data } = $props();
@@ -15,6 +16,8 @@ let project_icon = $derived(data.project_icon);
 let objectivelist: Objective[] = $state([]);
 let name: string = $state("");
 let description: string = $state("");
+
+let showLinkObjectivesModal = $state(false);
 
 onMount(async () => {
 	try {
@@ -86,7 +89,10 @@ async function handleSubmit(e: SubmitEvent) {
   <!-- Liste der Objectives (bleibt sichtbar) -->
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
-      <h2 class="card-title">Objectives</h2>
+      <div class="flex">
+        <h2 class="card-title flex-1">Objectives</h2>
+        <button class="btn btn-primary" onclick={() => showLinkObjectivesModal = true}>Manage linked objectives</button>
+      </div>
 
       {#if objectivelist.length > 0}
         <ul id="objectives-list" class="grid grid-auto">
@@ -102,3 +108,12 @@ async function handleSubmit(e: SubmitEvent) {
 
 </div>
 
+{#if showLinkObjectivesModal}
+  <LinkProjectObjectiveComponent
+    projectId={project_id}
+    projectName={project_name}
+    linkedObjectives={objectivelist}
+    onLinkedObjectivesChanged={(objectives) => objectivelist = objectives}
+    ondismiss={() => showLinkObjectivesModal = false}
+    show={showLinkObjectivesModal} />
+{/if}

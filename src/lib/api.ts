@@ -241,6 +241,34 @@ export async function getObjectiveProject(project_id: string) {
 	return response.json();
 }
 
+export async function linkObjectiveToProject(
+	project_id: string,
+	objective_id: string,
+) {
+	const response = await baseFetch(
+		`/projects/${project_id}/objectives/${objective_id}`,
+		{
+			method: "POST",
+		},
+	);
+
+	return response.json();
+}
+
+export async function unlinkObjectiveFromProject(
+	project_id: string,
+	objective_id: string,
+) {
+	const response = await baseFetch(
+		`/projects/${project_id}/objectives/${objective_id}`,
+		{
+			method: "DELETE",
+		},
+	);
+
+	return response.json();
+}
+
 export async function createKeyResult(
 	description: string,
 	end_value: number,
