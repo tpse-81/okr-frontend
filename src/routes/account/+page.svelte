@@ -23,6 +23,7 @@ import {
 import { setUserInfo, userInfoStore } from "$lib/user_info";
 import ConfirmationDialog from "../../components/ConfirmationDialog.svelte";
 import ErrorMessage from "../../components/ErrorMessage.svelte";
+import PasswordStrengthInput from "../../components/PasswordStrengthInput.svelte";
 
 let isWebauthnConfigured = $state(false);
 let errorMessage: string | null = $state(null);
@@ -283,24 +284,23 @@ onMount(async () => {
         </div>
       {/if}
 
-      <form class="flex flex-col gap-3" onsubmit={handleChangePassword}>
+      <form class="flex flex-col gap-3 w-max" onsubmit={handleChangePassword}>
         <input
           type="password"
           placeholder="Current password"
           class="input input-bordered"
           bind:value={oldPassword}
         />
-        <input
-          type="password"
+
+        <PasswordStrengthInput
+          bind:password={newPassword}
+        	userInfo={$userInfoStore!}
           placeholder="New password"
-          class="input input-bordered"
-          bind:value={newPassword}
         />
-        <input
-          type="password"
+        <PasswordStrengthInput
+          bind:password={newPasswordRepeat}
+        	userInfo={$userInfoStore!}
           placeholder="Repeat new password"
-          class="input input-bordered"
-          bind:value={newPasswordRepeat}
         />
         <div>
           <button class="btn btn-primary w-max" type="submit">Change password</button>
