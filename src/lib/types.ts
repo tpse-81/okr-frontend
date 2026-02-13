@@ -13,7 +13,6 @@ export interface ProjectContainer {
 	progress: number;
 }
 
-
 export interface Objective {
 	id: string;
 	name: string;
