@@ -1,4 +1,5 @@
 <script lang="ts">
+import { CircleX } from "@lucide/svelte";
 import { fade } from "svelte/transition";
 
 let { message }: { message: string | null } = $props();
@@ -34,6 +35,7 @@ $effect(() => {
             out:fade={{ duration: 240 }}
             class="alert alert-error p-2 text-sm mb-2"
     >
-        {message}
+    		<CircleX size="20" />
+        <span>{message}</span>
     </div>
 {/if}
