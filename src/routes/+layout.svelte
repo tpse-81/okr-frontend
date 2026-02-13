@@ -20,7 +20,12 @@ let title = "OKR Project";
 const excludedPaths = ["/login"];
 
 async function logoutUser() {
-	await logout();
+	try {
+		await logout();
+	} catch {
+		// ignore errors on logout response - probably caused by the fact that the user's token has expired already
+	}
+
 	setUserInfo(null);
 	await goto("/login");
 }
