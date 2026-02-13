@@ -1,9 +1,10 @@
 <script lang="ts">
-    import type { Project } from "$lib/types";
+import type { Project } from "$lib/types";
+import { formatDate } from "$lib/utils";
 
-    const { projects } = $props<{
-        projects: Project[];
-    }>();
+const { projects } = $props<{
+	projects: Project[];
+}>();
 </script>
 
 <aside class="w-64 shrink-0 mr-5">
@@ -23,7 +24,7 @@
                                     {project.name}
                                 </span>
                                 <span class="text-sm opacity-70">
-                                    {project.deadline.toLocaleDateString()}
+                                    {formatDate(project.deadline)}
                                 </span>
                             </div>
                         </a>

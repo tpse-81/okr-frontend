@@ -7,124 +7,96 @@
   ```
 -->
 <script lang="ts">
-    import type { Task, TaskState } from "$lib/types";
-    import { Edit, Trash, XCircle } from "@lucide/svelte";
-    import { deleteTask, updateTask } from "$lib/api";
-    import EditTaskComponent from "./EditTaskComponent.svelte";
-    import ConfirmationDialog from "./ConfirmationDialog.svelte";
+import { Edit, Trash, XCircle } from "@lucide/svelte";
+import { deleteTask, updateTask } from "$lib/api";
+import type { Task, TaskState } from "$lib/types";
+import ConfirmationDialog from "./ConfirmationDialog.svelte";
+import EditTaskComponent from "./EditTaskComponent.svelte";
 
-    const taskStates: TaskState[] = [
-        "open",
-        "planned",
-        "in_progress",
-        "done",
-        "cancelled"
-    ];
+const taskStates: { state: TaskState; label: string; badge: string }[] = [
+	{ state: "open", label: "Todo", badge: "badge-ghost" },
+	{ state: "planned", label: "Backlog", badge: "badge-warning" },
+	{ state: "in_progress", label: "In progress", badge: "badge-info" },
+	{ state: "done", label: "Done", badge: "badge-success" },
+	{ state: "cancelled", label: "Canceled", badge: "badge-error" },
+];
 
-    let visibleTasks = $derived.by(() =>
-        tasks.filter(task =>
-            task.description.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            (selectedStatuses.length === 0 || selectedStatuses.includes(task.task_state))
-        )
-    );
+const taskStateMap = taskStates.reduce(
+	(acc, s) => {
+		acc[s.state] = s;
+		return acc;
+	},
+	{} as Record<TaskState, { state: TaskState; label: string; badge: string }>,
+);
 
-    let { tasks }: { tasks: Task[] } = $props();
+let visibleTasks = $derived.by(() =>
+	tasks.filter(
+		(task) =>
+			task.description.toLowerCase().includes(searchTerm.toLowerCase()) &&
+			(selectedStatuses.length === 0 ||
+				selectedStatuses.includes(task.task_state)),
+	),
+);
 
-    let selectedStatuses = $state<TaskState[]>([]);
-    let selectedTasks = $state<string[]>([]);
-    let selectedTask: Task | null = null;
-    let searchTerm = $state("");
-    let showConfirmationDialog = $state(false);
-    let showEditDialog = $state(false);
+let { tasks }: { tasks: Task[] } = $props();
 
-    function stateBadge(state: TaskState) {
-        switch (state) {
-            case "open":
-                return "badge-ghost";
-            case "planned":
-                return "badge-warning";
-            case "in_progress":
-                return "badge-info";
-            case "done":
-                return "badge-success";
-            case "cancelled":
-                return "badge-error";
-        }
-    }
+let selectedStatuses = $state<TaskState[]>([]);
+let selectedTasks = $state<string[]>([]);
+let selectedTask: Task | null = $state(null);
+let searchTerm = $state("");
+let showConfirmationDialog = $state(false);
+let showEditDialog = $state(false);
 
-    function label(state: TaskState) {
-        switch (state) {
-            case "open": return "Todo";
-            case "planned": return "Backlog";
-            case "in_progress": return "In progress";
-            case "done": return "Done";
-            case "cancelled": return "Canceled";
-        }
-    }
+async function onDeleteTask() {
+	showConfirmationDialog = false;
 
-    async function onDeleteTask() {
-        showConfirmationDialog = false;
+	const task = selectedTask;
+	if (!task) return;
 
-        if (!selectedTask) return;
+	try {
+		await deleteTask(task.id);
+		tasks = tasks.filter((t) => t.id !== task.id);
+		selectedTask = null;
+	} catch (err) {
+		console.error("Error deleting task:", err);
+	}
+}
 
-        try {
-            await deleteTask(selectedTask.id);
-            tasks = tasks.filter(t => t.id !== selectedTask.id);
-            selectedTask = null;
-        } catch (err) {
-            console.error("Error deleting task:", err);
-        }
-    }
+function toggleStatus(status: TaskState) {
+	if (selectedStatuses.includes(status)) {
+		selectedStatuses = selectedStatuses.filter((s) => s !== status);
+	} else {
+		selectedStatuses = [...selectedStatuses, status];
+	}
+	console.log(selectedStatuses);
+}
 
-    function toggleStatus(status: TaskState) {
-        if (selectedStatuses.includes(status)) {
-            selectedStatuses = selectedStatuses.filter(s => s !== status);
-        } else {
-            selectedStatuses = [...selectedStatuses, status];
-        }
-        console.log(selectedStatuses);
-    }
+async function markSelectedDone() {
+	await changeSelectedStatus("done");
+}
 
-    async function markSelectedDone() {
-        await Promise.all(
-            tasks
-                .filter(task => selectedTasks.includes(task.id))
-                .map(async (task) => {
-                    const updated = await updateTask({ ...task, task_state: "done" });
-                    return updated;
-                })
-        );
-        tasks = tasks.map(task =>
-            selectedTasks.includes(task.id) ? { ...task, task_state: "done" } : task
-        );
+async function changeSelectedStatus(newStatus: TaskState) {
+	await Promise.all(
+		tasks
+			.filter((task) => selectedTasks.includes(task.id))
+			.map(async (task) => {
+				const updated = await updateTask({ ...task, task_state: newStatus });
+				return updated;
+			}),
+	);
+	tasks = tasks.map((task) =>
+		selectedTasks.includes(task.id) ? { ...task, task_state: newStatus } : task,
+	);
+	selectedTasks = [];
+}
 
-        selectedTasks = [];
-    }
-
-    async function changeSelectedStatus(newStatus: TaskState) {
-        await Promise.all(
-            tasks
-                .filter(task => selectedTasks.includes(task.id))
-                .map(async (task) => {
-                    const updated = await updateTask({ ...task, task_state: newStatus });
-                    return updated;
-                })
-        );
-        tasks = tasks.map(task =>
-            selectedTasks.includes(task.id) ? { ...task, task_state: newStatus } : task
-        );
-        selectedTasks = [];
-    }
-
-
-    async function deleteSelectedTasks() {
-        for (const id of selectedTasks) {
-            await deleteTask(id);
-        }
-        tasks = tasks.filter(task => !selectedTasks.includes(task.id));
-        selectedTasks = [];
-    }
-
+async function deleteSelectedTasks() {
+	for (const id of selectedTasks) {
+		await deleteTask(id);
+	}
+	tasks = tasks.filter((task) => !selectedTasks.includes(task.id));
+	selectedTasks = [];
+}
 </script>
 <div class="card card-bordered bg-white-100 h-125">
     <div class="p-4 flex items-center justify-between">
@@ -135,8 +107,8 @@
         <div class="flex gap-2 items-center">
             {#if selectedStatuses.length}
                 {#each selectedStatuses as s}
-                    <span class="text-sm badge badge-ghost flex items-center gap-1" style="white-space: nowrap;">
-                    {label(s)}
+                    <span class="text-sm badge badge-ghost flex items-center gap-1 whitespace-nowrap">
+                    {taskStateMap[s].label}
                         <button class="ml-1 btn btn-ghost btn-xs p-0" onclick={() => toggleStatus(s)} aria-label="Remove status">
                             <XCircle class="h-3 w-3" />
                         </button>
@@ -152,9 +124,9 @@
                         {#each taskStates as status}
                             <li>
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" class="checkbox checkbox-xs" checked={selectedStatuses.includes(status)} onchange={() => toggleStatus(status)}/>
+                                    <input type="checkbox" class="checkbox checkbox-xs" checked={selectedStatuses.includes(status.state)} onchange={() => toggleStatus(status.state)}/>
                                     <span class="flex-1">
-                                        {label(status)}
+                                        {status.label}
                                     </span>
                                 </label>
                             </li>
@@ -166,14 +138,14 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-white-100" style="height: 400px;">
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-white-100 h-[400px]">
         <table class="table table-fixed w-full">
             <colgroup>
-                <col style="width: 50px;" />
-                <col style="width: 65%;" />
-                <col style="width: 10%;" />
-                <col style="width: 10%;" />
-                <col style="width: 40px;" />
+                <col/>
+                <col class="w-2/3" />
+                <col />
+                <col />
+                <col />
             </colgroup>
             <thead>
             <tr>
@@ -186,7 +158,7 @@
             </thead>
             <tbody>
             {#each visibleTasks as task}
-                <tr class="hover {selectedTasks.includes(task.id) ? 'bg-gray-900' : ''}" style="transition: background-color 0.2s;">
+                <tr class="hover transition duration-200 {selectedTasks.includes(task.id) ? 'bg-gray-900' : ''}">
                     <td>
                         <input type="checkbox" class="checkbox checkbox-sm" checked={selectedTasks.includes(task.id)} onchange={() => {
                             if (selectedTasks.includes(task.id)) {
@@ -205,23 +177,29 @@
                     </td>
                     <td></td>
                     <td>
-                    <span class="badge badge-soft {stateBadge(task.task_state)}">
-                        {label(task.task_state)}
-                    </span>
+                        <span class="badge badge-soft {taskStateMap[task.task_state].badge}">
+                            {taskStateMap[task.task_state].label}
+                        </span>
                     </td>
                     <td class="text-right">
                         <div class="dropdown dropdown-left">
                             <div tabindex="0" role="button" class="btn btn-ghost btn-lg">...</div>
                             <ul tabindex="-1" class="dropdown-content menu bg-gray-950 rounded-box z-1 w-30 p-2 shadow-sm">
                                 <li>
-                                    <a class="flex items-center gap-2" onclick={() => {selectedTask = task; showEditDialog = true;}}>
+                                    <button
+                                            type="button"
+                                            class="flex items-center gap-2"
+                                            onclick={() => { selectedTask = task; showEditDialog = true; }}>
                                         <Edit size="16" />Edit
-                                    </a>
+                                    </button>
                                 </li>
                                 <li>
-                                    <a class="flex items-center gap-2" onclick={() => {selectedTask = task; showConfirmationDialog = true; }}>
+                                    <button
+                                            type="button"
+                                            class="flex items-center gap-2"
+                                            onclick={() => { selectedTask = task; showConfirmationDialog = true; }}>
                                         <Trash size="16" />Delete
-                                    </a>
+                                    </button>
                                 </li>
                             </ul>
                         </div>
@@ -245,10 +223,16 @@
                     <button tabindex="0" class="btn btn-sm btn-outline">
                         Change Status
                     </button>
-                    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-gray-950 rounded-box w-40">
+                    <ul class="dropdown-content menu p-2 shadow bg-gray-950 rounded-box w-40">
                         {#each taskStates as status}
                             <li>
-                                <a onclick={() => changeSelectedStatus(status)}>{label(status)}</a>
+                                <button
+                                        type="button"
+                                        class="w-full text-left px-2 py-1"
+                                        onclick={() => changeSelectedStatus(status.state)}
+                                >
+                                    {status.label}
+                                </button>
                             </li>
                         {/each}
                     </ul>

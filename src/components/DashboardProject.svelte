@@ -7,13 +7,13 @@
   ```
 -->
 <script lang="ts">
-    import type { ProjectContainer } from "$lib/types";
-    import { ChevronDown } from "@lucide/svelte";
+import { ChevronDown } from "@lucide/svelte";
+import type { ProjectContainer } from "$lib/types";
 
-    let { projectContainer }: { projectContainer: ProjectContainer } = $props();
-    let showObjectives = $state(false);
+let { projectContainer }: { projectContainer: ProjectContainer } = $props();
+let showObjectives = $state(false);
 
-    let btn: HTMLButtonElement | null = $state(null);
+let btn: HTMLButtonElement | null = $state(null);
 </script>
 
 

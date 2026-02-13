@@ -108,15 +108,20 @@ $effect(() => {
 
   <!-- button with more options, e.g. logout -->
   {#if $userInfoStore}
-  <div class="dropdown dropdown-end">
-    <div tabindex="0" role="button" class="btn btn-square btn-ghost m-1">
-      <EllipsisIcon />
+    <div>
+        { $userInfoStore?.name ?? "" }
     </div>
-    <ul tabindex="-1" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
-      <li class="btn btn-ghost" on:click={() => goto("/account")}>Account</li>
-      <li class="btn btn-ghost" on:click={logoutUser}>Logout</li>
-    </ul>
-  </div>
+
+    <!-- button with more options, e.g. logout -->
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-square btn-ghost m-1">
+        <EllipsisIcon />
+      </div>
+      <ul tabindex="-1" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
+        <li class="btn btn-ghost" on:click={() => goto("/account")}>Account</li>
+        <li class="btn btn-ghost" on:click={logoutUser}>Logout</li>
+      </ul>
+    </div>
   {/if}
 </div>
 
