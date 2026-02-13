@@ -1,5 +1,6 @@
 <script lang="ts">
 import { Check } from "@lucide/svelte";
+import QrCode from "qrcode";
 import { onMount } from "svelte";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
@@ -38,10 +39,24 @@ let passwordSuccess: string | null = $state(null);
 let isTotpConfigured = $state(false);
 let totpSetupData: { secret: string; otpauth_uri: string } | null =
 	$state(null);
+
+let totpSetupQrCodeUrl: string | null = $state(null);
 let totpConfirmCode: string = $state("");
 let totpDisableCode: string = $state("");
 let totpError: string | null = $state(null);
 let totpSuccess: string | null = $state(null);
+
+$effect(() => {
+	// generate a TOTP setup QR code that can be scanned
+	// by 2FA apps to automatically store the 2FA token
+	if (totpSetupData) {
+		QrCode.toDataURL(totpSetupData?.otpauth_uri, (err, url) => {
+			if (!err) totpSetupQrCodeUrl = url;
+		});
+	} else {
+		totpSetupQrCodeUrl = null;
+	}
+});
 
 // --- Delete account ---
 let showDeleteDialog: boolean = $state(false);
@@ -316,7 +331,7 @@ onMount(async () => {
         </div>
 
         {#if totpSetupData}
-          <div class="alert">
+          <div class="alert flex">
             <div class="flex flex-col gap-2 w-full">
               <div>
                 <div class="font-semibold">Secret</div>
@@ -327,9 +342,10 @@ onMount(async () => {
               </div>
 
               <div class="flex flex-col gap-2">
-                <label class="label"><span class="label-text">Confirm token</span></label>
+                <label class="label" for="token-input"><span class="label-text">Confirm token</span></label>
                 <input
                   type="text"
+                  id="token-input"
                   placeholder="123456"
                   class="input input-bordered"
                   bind:value={totpConfirmCode}
@@ -341,6 +357,9 @@ onMount(async () => {
                 </div>
               </div>
             </div>
+            {#if totpSetupQrCodeUrl}
+            <img src={totpSetupQrCodeUrl} alt="TOTP Setup QR code" />
+            {/if}
           </div>
         {/if}
 
