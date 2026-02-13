@@ -12,6 +12,7 @@ import {
 	logout,
 	totpConfirm,
 	totpDisable,
+	totpIsConfigured,
 	totpSetup,
 	webauthnAuthenticate,
 	webauthnIsConfigured,
@@ -34,6 +35,7 @@ let passwordError: string | null = $state(null);
 let passwordSuccess: string | null = $state(null);
 
 // --- TOTP 2FA ---
+let isTotpConfigured = $state(false);
 let totpSetupData: { secret: string; otpauth_uri: string } | null =
 	$state(null);
 let totpConfirmCode: string = $state("");
@@ -120,10 +122,8 @@ async function handleChangePassword(e: SubmitEvent) {
 	passwordSuccess = null;
 
 	const userId = get(userInfoStore)?.id;
-	if (!userId) {
-		passwordError = "You are not logged in.";
-		return;
-	}
+	if (!userId) return;
+
 	if (!oldPassword || !newPassword || !newPasswordRepeat) {
 		passwordError = "Please fill out all fields.";
 		return;
@@ -134,8 +134,8 @@ async function handleChangePassword(e: SubmitEvent) {
 	}
 
 	try {
-		const res = await changePassword(userId, oldPassword, newPassword);
-		passwordSuccess = res.message;
+		await changePassword(userId, oldPassword, newPassword);
+		passwordSuccess = "Successfully changed password";
 		oldPassword = "";
 		newPassword = "";
 		newPasswordRepeat = "";
@@ -146,14 +146,12 @@ async function handleChangePassword(e: SubmitEvent) {
 }
 
 async function startTotpSetup() {
+	isTotpConfigured = false;
 	totpError = null;
 	totpSuccess = null;
 
 	const userId = get(userInfoStore)?.id;
-	if (!userId) {
-		totpError = "You are not logged in.";
-		return;
-	}
+	if (!userId) return;
 
 	try {
 		totpSetupData = await totpSetup(userId);
@@ -171,18 +169,17 @@ async function confirmTotp() {
 	totpSuccess = null;
 
 	const userId = get(userInfoStore)?.id;
-	if (!userId) {
-		totpError = "You are not logged in.";
-		return;
-	}
+	if (!userId) return;
+
 	if (!totpConfirmCode) {
 		totpError = "Please enter a 2FA code.";
 		return;
 	}
 
 	try {
-		const res = await totpConfirm(userId, totpConfirmCode);
-		totpSuccess = res.message;
+		await totpConfirm(userId, totpConfirmCode);
+		isTotpConfigured = true;
+		totpSuccess = "TOTP 2FA successfully configured";
 		totpConfirmCode = "";
 		totpSetupData = null;
 	} catch (e) {
@@ -196,20 +193,18 @@ async function disableTotp() {
 	totpSuccess = null;
 
 	const userId = get(userInfoStore)?.id;
-	if (!userId) {
-		totpError = "You are not logged in.";
-		return;
-	}
+	if (!userId) return;
+
 	if (!totpDisableCode) {
 		totpError = "Please enter a 2FA code.";
 		return;
 	}
 
 	try {
-		const res = await totpDisable(userId, totpDisableCode);
-		totpSuccess = res.message;
+		totpSuccess = "2FA TOTP successfully disabled";
 		totpDisableCode = "";
 		totpSetupData = null;
+		isTotpConfigured = false;
 	} catch (e) {
 		console.error(e);
 		totpError = "Could not disable 2FA.";
@@ -243,6 +238,16 @@ async function confirmDeleteAccount() {
 	setUserInfo(null);
 	await goto("/");
 }
+
+$effect(() => {
+	(async () => {
+		const userId = $userInfoStore?.id;
+		if (!userId) return;
+
+		isTotpConfigured = await totpIsConfigured(userId);
+		if (isTotpConfigured) totpSuccess = "2FA TOTP is enabled";
+	})();
+});
 
 onMount(async () => {
 	isWebauthnConfigured = await webauthnIsConfigured();
@@ -338,6 +343,8 @@ onMount(async () => {
           </div>
         {/if}
 
+        {#if isTotpConfigured}
+        <div class="divider divider-neutral"></div>
         <div class="flex flex-col gap-2">
           <label class="label"><span class="label-text">Disable 2FA</span></label>
           <input
@@ -346,10 +353,11 @@ onMount(async () => {
             class="input input-bordered"
             bind:value={totpDisableCode}
           />
-          <button class="btn btn-ghost w-max" type="button" onclick={() => disableTotp()}>
+          <button class="btn w-max" type="button" onclick={() => disableTotp()}>
             Disable 2FA
           </button>
         </div>
+	      {/if}
       </div>
     </div>
   </div>
