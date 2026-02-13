@@ -201,6 +201,7 @@ async function disableTotp() {
 	}
 
 	try {
+		await totpDisable(userId, totpDisableCode);
 		totpSuccess = "2FA TOTP successfully disabled";
 		totpDisableCode = "";
 		totpSetupData = null;
