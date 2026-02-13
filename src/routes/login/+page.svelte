@@ -1,4 +1,5 @@
 <script lang="ts">
+import { CircleX, Info } from "@lucide/svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
@@ -11,6 +12,7 @@ import { setUserInfo as setUserInfoWithStorageCache } from "$lib/user_info";
 
 let username: string = $state("");
 let password: string = $state("");
+let infoMessage: string = $state("");
 let errorMessage: string = $state("");
 
 // TOTP specific
@@ -25,6 +27,7 @@ let webauthnCredential: Credential | null = $state(null);
 async function login(e: SubmitEvent) {
 	e.preventDefault();
 	errorMessage = "";
+	infoMessage = "";
 	if (username === "" || password === "") {
 		errorMessage = "Empty username or password.";
 		return;
@@ -54,12 +57,12 @@ async function login(e: SubmitEvent) {
 
 			if (twoFaRequiredResponse.type === "webauthn") {
 				webauthnRequired = true;
-				errorMessage = "Please load your passkey.";
+				infoMessage = "Please load your passkey.";
 			}
 
 			if (twoFaRequiredResponse.type === "totp") {
 				totpRequired = true;
-				errorMessage = "Please enter your 2FA code.";
+				infoMessage = "Please enter your 2FA code.";
 			}
 			return;
 		}
@@ -91,7 +94,13 @@ async function loadWebauthn() {
 		<h1>Login</h1>
 		{#if errorMessage}
 		<div id="login-error" class="alert alert-error">
+			<CircleX size="20" />
 			<span>{errorMessage}</span>
+		</div>
+		{:else if infoMessage}
+		<div id="login-info" class="alert alert-info">
+			<Info size="20" />
+			<span>{infoMessage}</span>
 		</div>
 		{/if}
 	  <input type="text" autocomplete="username" id="username" bind:value={username} placeholder={$_('username')} class="input w-full" required>
