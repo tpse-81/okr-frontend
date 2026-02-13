@@ -557,3 +557,9 @@ export async function totpDisable(
 
 	return response.json();
 }
+
+export async function totpIsConfigured(userId: string): Promise<boolean> {
+	const response = await baseFetch(`/users/${userId}/2fa/totp/is_configured`);
+
+	return (await response.json()).is_configured;
+}
