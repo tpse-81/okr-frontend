@@ -280,6 +280,16 @@ export async function getObjectives() {
 	return response.json();
 }
 
+export async function getArchivedObjectives() {
+	const response = await baseFetch("/objectives/archived");
+
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
+
+	return response.json();
+}
+
 export async function getObjectiveProject(project_id: string) {
 	const response = await baseFetch(`/projects/${project_id}/objectives`);
 
