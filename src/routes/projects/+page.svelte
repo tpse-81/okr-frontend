@@ -102,6 +102,13 @@ let visibleProjects = $derived.by(() => {
 		}
 	}
 
+	const archivedIds = new Set(archivedProjectsList.map((p) => p.id));
+	if (activeMultiFilters.includes("archived")) {
+	searchedlist = searchedlist.filter((p) => archivedIds.has(p.id));
+	} else {
+	searchedlist = searchedlist.filter((p) => !archivedIds.has(p.id));
+	}
+
 	if (activeFilter) {
 		searchedlist = sortProjectList(searchedlist, activeFilter);
 	}
@@ -125,6 +132,19 @@ function applyMultiFilter(value: string) {
 		activeMultiFilters = activeMultiFilters.filter((v) => v !== value);
 	} else {
 		activeMultiFilters = [...activeMultiFilters, value];
+	}
+}
+
+async function refreshProjects() {
+	try {
+		const [archivedProjects, projects] = await Promise.all([
+			getArchivedProjects(),
+			getProjects(),
+		]);
+		archivedProjectsList = archivedProjects;
+		projectsList = projects;
+	} catch (err) {
+		console.error(err);
 	}
 }
 
@@ -156,6 +176,7 @@ async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 
 	await createProject(name, new Date(deadline), icon);
+	await refreshProjects();
 	projectsList = await getProjects();
 	name = "";
 	deadline = "";
@@ -261,7 +282,7 @@ async function handleSubmit(e: SubmitEvent) {
     {#if visibleProjects.length > 0}
       <ul id="projects-list" class="grid gap-3 grid-auto">
           {#each visibleProjects as project}
-            <ProjectComponent project={project} onProjectDeleted={() => projectsList = projectsList.filter(proj => proj.id != project.id)} />
+            <ProjectComponent project={project} onProjectDeleted={() => projectsList = projectsList.filter(proj => proj.id != project.id)} onProjectUpdated={refreshProjects}/>
           {/each}
       </ul>
   {:else}

@@ -5,7 +5,14 @@ export interface Project {
 	deadline: Date;
 	done: boolean;
 	icon?: string | null;
+	is_archived?: boolean;
+	archive_reason?: ArchiveReason | null;
 }
+
+export type ArchiveReason = 
+	| "on_break" 
+	| "finalized" 
+	| "give_up";
 
 export interface ProjectContainer {
 	project: Project;

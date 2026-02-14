@@ -1,6 +1,7 @@
 // load api url from .env file
 import { PUBLIC_API_URL } from "$env/static/public";
 import type {
+	ArchiveReason,
 	KeyResult,
 	Objective,
 	Project,
@@ -184,6 +185,31 @@ export async function getArchivedProjects() {
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
 	}
+
+	return response.json();
+}
+
+export async function archiveProject(
+	projectId: string,
+	reason: ArchiveReason,
+): Promise<{ message: string }> {
+	const response = await baseFetch(
+		`/projects/${projectId}/archive?archive_reason=${reason}`,
+		{ method: "PATCH" },
+	);
+
+	return response.json();
+}
+
+export async function unarchiveProject(
+	projectId: string,
+	newDeadline: Date,
+): Promise<{ message: string }> {
+	const deadlineParam = encodeURIComponent(newDeadline.toISOString());
+	const response = await baseFetch(
+		`/projects/${projectId}/unarchive?new_deadline=${deadlineParam}`,
+		{ method: "PATCH" },
+	);
 
 	return response.json();
 }
