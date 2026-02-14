@@ -51,8 +51,8 @@ async function handleSubmit(e: SubmitEvent) {
 
 <form id="keyResultSubmit" onsubmit={handleSubmit} class="flex gap-3 p-3">
     <input type="text" id="description" bind:value={description} placeholder="description" class="input w-full" required>
-    <input type="number" id="start-value" bind:value={startValue} placeholder="start value" class="input w-full" required>
-    <input type="number" id="end-value" bind:value={endValue} placeholder="end value" class="input w-full" required>
+    <input type="number" step="any" id="start-value" bind:value={startValue} placeholder="start value" class="input w-full" required>
+    <input type="number" step="any" id="end-value" bind:value={endValue} placeholder="end value" class="input w-full" required>
     <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
