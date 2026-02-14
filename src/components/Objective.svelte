@@ -7,7 +7,7 @@
   ```
 -->
 <script lang="ts">
-import { Edit, Trash } from "@lucide/svelte";
+import { Archive, Edit, Trash } from "@lucide/svelte";
 import { deleteObjective } from "$lib/api";
 import type { Objective } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
@@ -21,6 +21,8 @@ let {
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
 
+const isArchived = $derived(objective.is_archived === true);
+
 async function onDeleteObjective() {
 	showConfirmationDialog = false;
 
@@ -30,10 +32,15 @@ async function onDeleteObjective() {
 
 <li class="card card-border relative">
   	<div class="absolute right-2 top-2 flex gap-2">
-		  <button class="btn btn-square" onclick={() => showEditDialog = true}><Edit size="16" /></button>
+		  <button class="btn btn-square" disabled={isArchived} onclick={() => showEditDialog = true}><Edit size="16" /></button>
 		  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
 		</div>
     <a href={`/objectives/${objective.id}`} class="card-body">
+		{#if isArchived}
+			<div class="badge badge-warning">
+				<Archive size="16" /> Archived
+			</div>
+		{/if}
         <h2 class="card-title">{objective.name}</h2>
         <p>{objective.description}</p>
     </a>

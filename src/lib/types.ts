@@ -25,6 +25,7 @@ export interface Objective {
 	name: string;
 	description: string;
 	parent_id: string;
+	is_archived?: boolean;
 }
 
 export interface KeyResult {

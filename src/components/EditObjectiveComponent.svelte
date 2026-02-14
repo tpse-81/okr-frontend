@@ -25,6 +25,11 @@ $effect(() => {
 });
 
 async function onUpdateObjective() {
+	if (objective.is_archived) {
+		ondismiss();
+		return;
+	}
+
 	objective.name = name;
 	objective.description = description;
 
@@ -45,7 +50,7 @@ async function onUpdateObjective() {
       <form method="dialog" class="flex gap-3 w-full justify-end">
         <button class="btn" onclick={ondismiss}>Close</button>
         <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-primary" onclick={onUpdateObjective}>Confirm</button>
+        <button class="btn btn-primary" disabled={objective.is_archived} onclick={onUpdateObjective}>Confirm</button>
       </form>
     </div>
   </div>
