@@ -40,7 +40,7 @@ function confirmIcon() {
 	onStateChanged(confirmedIcon, false);
 }
 
-function discardIcon() {
+export function discardIcon() {
 	pendingIcon = null;
 	confirmedIcon = null;
 	needsConfirm = false;

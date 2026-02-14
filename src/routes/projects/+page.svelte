@@ -10,22 +10,25 @@ import {
 } from "@lucide/svelte";
 import { onMount } from "svelte";
 import {
-	addUserProject,
 	createProject,
 	getArchivedProjects,
 	getProjects,
 	getProjectsForUser,
 } from "$lib/api";
 import type { Project } from "$lib/types";
+// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
 import IconSelector from "../../components/IconSelector.svelte";
+
+let iconSelectorRef: IconSelector | null = null;
+
 import ProjectComponent from "../../components/Project.svelte";
 
 let projectsList: Project[] = $state([]);
 let name: string = $state("");
-let deadline: string = $state("");
+let deadline: string = $state(new Date().toISOString().split("T")[0]);
+
 let archivedProjectsList: Project[] = $state([]);
 let userProjectsList: Project[] = $state([]);
-let userID: string = $state("");
 
 import { restoreUserInfoFromStorage, userInfoStore } from "$lib/user_info";
 
@@ -158,7 +161,13 @@ async function handleSubmit(e: SubmitEvent) {
 	await createProject(name, new Date(deadline), icon);
 	projectsList = await getProjects();
 	name = "";
-	deadline = "";
+	deadline = new Date().toISOString().split("T")[0]; // reset to today after submit
+
+	icon = null;
+	iconRequiresConfirmation = false;
+
+	// reset internal state of IconSelector (preview, file input, etc.)
+	iconSelectorRef?.discardIcon();
 }
 </script>
 
@@ -170,7 +179,7 @@ async function handleSubmit(e: SubmitEvent) {
 
       <h2 class="card-title">Create a Project</h2>
 
-      <IconSelector initialIcon={null} onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}} />
+      <IconSelector bind:this={iconSelectorRef} initialIcon={null} onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}} />
 
       <!-- Inputs: nice grid -->
       <div class="grid grid-auto gap-3">
