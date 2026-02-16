@@ -76,7 +76,6 @@ $effect(() => {
         </label>
 
         <ul class="menu w-full">
-        	<li><a href="/">Home</a></li>
         	<!-- sections to only show if not logged in -->
         	{#if $userInfoStore == null}
           	<li><a href="/login">Login</a></li>
