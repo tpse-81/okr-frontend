@@ -1,5 +1,8 @@
-// load api url from .env file
-import { PUBLIC_API_URL } from "$env/static/public";
+// load api url from .env file or runtime environment if provided
+import { env } from "$env/dynamic/public";
+
+const PUBLIC_API_URL = env.PUBLIC_API_URL;
+
 import type {
 	KeyResult,
 	Objective,
