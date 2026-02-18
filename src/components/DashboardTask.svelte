@@ -158,7 +158,7 @@ async function deleteSelectedTasks() {
             </thead>
             <tbody>
             {#each visibleTasks as task}
-                <tr class="hover transition duration-200 {selectedTasks.includes(task.id) ? 'bg-gray-900' : ''}">
+                <tr class="hover transition duration-200 {selectedTasks.includes(task.id) ? 'bg-base-300' : ''}">
                     <td>
                         <input type="checkbox" class="checkbox checkbox-sm" checked={selectedTasks.includes(task.id)} onchange={() => {
                             if (selectedTasks.includes(task.id)) {
@@ -184,7 +184,7 @@ async function deleteSelectedTasks() {
                     <td class="text-right">
                         <div class="dropdown dropdown-left">
                             <div tabindex="0" role="button" class="btn btn-ghost btn-lg">...</div>
-                            <ul tabindex="-1" class="dropdown-content menu bg-gray-950 rounded-box z-1 w-30 p-2 shadow-sm">
+                            <ul tabindex="-1" class="dropdown-content menu bg-base-300 rounded-box z-1 w-30 p-2 shadow-sm">
                                 <li>
                                     <button
                                             type="button"
@@ -223,7 +223,7 @@ async function deleteSelectedTasks() {
                     <button tabindex="0" class="btn btn-sm btn-outline">
                         Change Status
                     </button>
-                    <ul class="dropdown-content menu p-2 shadow bg-gray-950 rounded-box w-40">
+                    <ul class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-40">
                         {#each taskStates as status}
                             <li>
                                 <button
