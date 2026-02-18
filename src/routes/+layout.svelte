@@ -7,12 +7,12 @@ import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { logout } from "$lib/api";
-import ForcePasswordChangeDialog from "../components/ForcePasswordChangeDialog.svelte";
 import {
 	restoreUserInfoFromStorage,
 	setUserInfo,
 	userInfoStore,
 } from "$lib/user_info";
+import ForcePasswordChangeDialog from "../components/ForcePasswordChangeDialog.svelte";
 
 let { children } = $props();
 let title = "OKR Project";
@@ -20,9 +20,8 @@ let title = "OKR Project";
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
 const excludedPaths = ["/login"];
 
-
 const passwordChangeRequired = $derived(
-  Boolean($userInfoStore?.must_change_password),
+	Boolean($userInfoStore?.must_change_password),
 );
 
 async function logoutUser() {

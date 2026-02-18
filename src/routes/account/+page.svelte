@@ -152,7 +152,7 @@ async function handleChangePassword(e: SubmitEvent) {
 	try {
 		await changeUserPassword(oldPassword, newPassword);
 		if ($userInfoStore?.must_change_password) {
-		setUserInfo({ ...$userInfoStore, must_change_password: false });
+			setUserInfo({ ...$userInfoStore, must_change_password: false });
 		}
 		passwordSuccess = "Successfully changed password";
 		oldPassword = "";
