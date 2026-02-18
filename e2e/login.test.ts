@@ -8,7 +8,7 @@ test("try successful login", async ({ page }) => {
 	await page.locator("#password").fill("password");
 	await page.locator("#login-submit input[type=submit]").click();
 
-	await expect(page).toHaveURL(/\/$/);
+	await expect(page).toHaveURL(/\/dashboard$/);
 });
 
 test("try empty username", async ({ page }) => {

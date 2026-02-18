@@ -50,7 +50,7 @@ export const loginBaseTest = base.extend<{ loginPage: Page }>({
 		await page.locator("#password").fill(E2E_PASSWORD);
 
 		await page.locator("#login-submit input[type=submit]").click();
-		await baseExpect(page).toHaveURL(/\/$/);
+		await baseExpect(page).toHaveURL(/\/dashboard$/);
 
 		await use(page);
 	},
