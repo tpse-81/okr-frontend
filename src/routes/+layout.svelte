@@ -1,5 +1,5 @@
 <script lang="ts">
-import { EllipsisIcon, MenuIcon, X } from "@lucide/svelte";
+import { EllipsisIcon, MenuIcon, Moon, Sun, X } from "@lucide/svelte";
 import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
@@ -15,6 +15,8 @@ import {
 
 let { children } = $props();
 let title = "OKR Project";
+let isDark = $state(false);
+let checkbox: HTMLInputElement;
 
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
 const excludedPaths = ["/login"];
@@ -31,19 +33,46 @@ async function logoutUser() {
 }
 
 // run in onMount to ensure that it's run on client side (i.e. window is available)
-let ready = false;
+let userInfoLoaded = false;
 
 onMount(async () => {
 	restoreUserInfoFromStorage();
-	ready = true;
+	userInfoLoaded = true;
+
+	const theme = getInitialTheme();
+	applyTheme(theme);
+	isDark = theme === "luxury";
 });
 
 $effect(() => {
 	const path = page.url.pathname;
-	if (ready && $userInfoStore == null && !excludedPaths.includes(path)) {
+	if (
+		userInfoLoaded &&
+		$userInfoStore == null &&
+		!excludedPaths.includes(path)
+	) {
 		goto("/login");
 	}
 });
+
+function applyTheme(theme: string) {
+	document.documentElement.setAttribute("data-theme", theme);
+	if (checkbox) checkbox.checked = theme === "luxury";
+}
+
+function getInitialTheme(): string {
+	const saved = localStorage.getItem("theme");
+	if (saved) return saved;
+	return window.matchMedia("(prefers-color-scheme: dark)").matches
+		? "luxury"
+		: "cupcake";
+}
+
+function changeTheme() {
+	const theme = checkbox.checked ? "luxury" : "cupcake";
+	localStorage.setItem("theme", theme);
+	applyTheme(theme);
+}
 </script>
 
 <svelte:head>
@@ -107,14 +136,26 @@ $effect(() => {
         { $userInfoStore?.name ?? "" }
     </div>
 
+    <div class="ml-2">
+    <label class="swap swap-rotate">
+      <!-- this hidden checkbox controls the state -->
+      <input type="checkbox" class="theme-controller" value="luxury" bind:this={checkbox} onchange={changeTheme} checked={isDark}/>
+
+      <!-- sun icon -->
+      <Sun class="swap-off h-6.5 w-6.5" />
+      <!-- moon icon -->
+      <Moon class="swap-on h-6.5 w-6.5"/>
+    </label>
+    </div>
+
     <!-- button with more options, e.g. logout -->
     <div class="dropdown dropdown-end">
       <div tabindex="0" role="button" class="btn btn-square btn-ghost m-1">
         <EllipsisIcon />
       </div>
       <ul tabindex="-1" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
-        <li class="btn btn-ghost" on:click={() => goto("/account")}>Account</li>
-        <li class="btn btn-ghost" on:click={logoutUser}>Logout</li>
+        <li class="btn btn-ghost" onclick={() => goto("/account")}>Account</li>
+        <li class="btn btn-ghost" onclick={logoutUser}>Logout</li>
       </ul>
     </div>
   {/if}
