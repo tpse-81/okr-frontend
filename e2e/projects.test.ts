@@ -65,6 +65,8 @@ loginBaseTest(
 		await page.locator("#project-name").fill(`e2e-project-${Date.now()}`);
 		await page.locator("#project-submit button[type=submit]").click();
 
+		await page.locator("#project-deadline").clear();
+
 		await expect(page.locator("#project-deadline")).toHaveJSProperty(
 			"validity.valueMissing",
 			true,
@@ -74,28 +76,15 @@ loginBaseTest(
 );
 
 loginBaseTest(
-	"deadline akzeptiert keine buchstaben (date input)",
+	"can't create project if logo is unconfirmed",
 	async ({ loginPage: page }) => {
 		await navigateViaDrawer(page, "Projects", "/projects");
 
 		const name = page.locator("#project-name");
-		const deadline = page.locator("#project-deadline");
-		const submit = page.locator("#project-submit button[type=submit]");
+		const logo = page.locator("#project-submit #project-logo");
 
 		await name.fill(uniq("e2e-project"));
-
-		await deadline.click();
-		await deadline.type("abcdef");
-
-		await expect(deadline).toHaveValue("");
-
-		let posted = false;
-		page.on("request", (req) => {
-			if (req.url().includes("/projects") && req.method() === "POST")
-				posted = true;
-		});
-
-		await submit.click();
-		await expect.poll(() => posted).toBe(false);
+		await logo.setInputFiles("./src/lib/assets/favicon.svg");
+		await page.locator("#project-submit button[type=submit]").isDisabled();
 	},
 );
