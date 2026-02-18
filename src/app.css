@@ -3,7 +3,7 @@
 	/* biome-ignore lint/correctness/noUnknownProperty: Key exists even though Biome can't find it */
 	themes:
 		cupcake --default,
-		luxury --prefersdark;
+		luxury;
 	/* biome-ignore lint/correctness/noUnknownProperty: Key exists even though Biome can't find it */
 	root: ":root";
 	/* biome-ignore lint/correctness/noUnknownProperty: Key exists even though Biome can't find it */
