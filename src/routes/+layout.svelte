@@ -7,6 +7,7 @@ import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { logout } from "$lib/api";
+import ForcePasswordChangeDialog from "../components/ForcePasswordChangeDialog.svelte";
 import {
 	restoreUserInfoFromStorage,
 	setUserInfo,
@@ -18,6 +19,11 @@ let title = "OKR Project";
 
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
 const excludedPaths = ["/login"];
+
+
+const passwordChangeRequired = $derived(
+  Boolean($userInfoStore?.must_change_password),
+);
 
 async function logoutUser() {
 	try {
@@ -81,16 +87,20 @@ $effect(() => {
           	<li><a href="/login">Login</a></li>
         	{/if}
         	<!-- section to only show if admin -->
-        	{#if $userInfoStore?.is_admin}
+        	{#if $userInfoStore?.is_admin && !passwordChangeRequired}
           	<li><a href="/user">User</a></li>
         	{/if}
         	<!-- sections to only show if logged in -->
         	{#if $userInfoStore}
-            <li><a href="/dashboard">Dashboard</a></li>
-          	<li><a href="/projects">Projects</a></li>
-          	<li><a href="/objectives">Objectives</a></li>
-          	<li><a href="/key_results">Key results</a></li>
-            <li><a href="/tasks">Tasks</a></li>
+            {#if passwordChangeRequired}
+              <li><a href="/account">Change password</a></li>
+            {:else}
+              <li><a href="/dashboard">Dashboard</a></li>
+              <li><a href="/projects">Projects</a></li>
+              <li><a href="/objectives">Objectives</a></li>
+              <li><a href="/key_results">Key results</a></li>
+              <li><a href="/tasks">Tasks</a></li>
+            {/if}
           {/if}
         </ul>
       </div>
@@ -122,3 +132,6 @@ $effect(() => {
 
 {@render children()}
 
+{#if $userInfoStore && passwordChangeRequired}
+  <ForcePasswordChangeDialog open={true} userInfo={$userInfoStore} />
+{/if}

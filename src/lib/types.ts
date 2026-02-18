@@ -48,6 +48,7 @@ export interface User {
 	name: string;
 	email: string;
 	is_admin: boolean;
+	must_change_password: boolean;
 }
 
 export interface TwoFaRequiredResponse {

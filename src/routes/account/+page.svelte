@@ -6,7 +6,7 @@ import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 import {
 	APIError,
-	changePassword,
+	changeUserPassword,
 	deleteUser,
 	getWebauthnAuthenticationOptions,
 	getWebauthnRegistrationOptions,
@@ -150,7 +150,10 @@ async function handleChangePassword(e: SubmitEvent) {
 	}
 
 	try {
-		await changePassword(userId, oldPassword, newPassword);
+		await changeUserPassword(oldPassword, newPassword);
+		if ($userInfoStore?.must_change_password) {
+		setUserInfo({ ...$userInfoStore, must_change_password: false });
+		}
 		passwordSuccess = "Successfully changed password";
 		oldPassword = "";
 		newPassword = "";
