@@ -199,7 +199,6 @@ function changeTheme() {
 </div>
 
 {@render children()}
-{/await}
 
 {#if $userInfoStore}
 	<ForcePasswordChangeDialog
@@ -208,3 +207,5 @@ function changeTheme() {
 		ondismiss={() => (forcePwDialogOpen = false)}
 	/>
 {/if}
+
+{/await}

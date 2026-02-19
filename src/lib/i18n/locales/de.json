@@ -49,7 +49,14 @@
 		"manageLinks": "Verknüpfte Ziele verwalten",
 		"empty": "Keine Ziele vorhanden",
 		"edit": "Ziel bearbeiten",
-		"delete": "Ziel löschen"
+		"delete": "Ziel löschen",
+		"child": "Unterziele",
+		"childrenForTitle": "Unterziele von {objectiveName}",
+		"addChild": "Unterziele hinzufügen",
+		"emptyChild": "Noch keine Unterziele vorhanden",
+		"cycleError": "Würde einen Zyklus erzeugen.",
+		"notFoundError": "Ziel nicht gefunden.",
+		"linkingFailedError": "Unterziele konnten nicht hinzugefügt werden:"
 	},
 
 	"keyResults": {

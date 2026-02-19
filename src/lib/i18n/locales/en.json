@@ -49,7 +49,14 @@
 		"manageLinks": "Manage linked objectives",
 		"empty": "No objectives available",
 		"edit": "Edit objective",
-		"delete": "Delete objective"
+		"delete": "Delete objective",
+		"child": "Sub-objectives",
+		"childrenForTitle": "Sub-objectives for {objectiveName}",
+		"addChild": "Add sub-objectives",
+		"emptyChild": "No sub-objectives yet",
+		"cycleError": "Would create a cycle.",
+		"notFoundError": "Objective not found.",
+		"linkingFailedError": "Failed to add sub-objectives:"
 	},
 
 	"keyResults": {
