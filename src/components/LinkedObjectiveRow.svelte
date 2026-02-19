@@ -13,6 +13,10 @@ let {
 
 // svelte-ignore state_referenced_locally
 let isLinkedState = $state(isLinked);
+
+$effect(() => {
+	isLinkedState = isLinked;
+});
 </script>
 
 <tr>

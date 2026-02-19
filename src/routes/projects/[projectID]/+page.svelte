@@ -2,10 +2,15 @@
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
-import { createObjective, getObjectiveProject } from "$lib/api";
+import {
+	createObjective,
+	getObjectiveProject,
+	linkObjectiveToProject,
+	unlinkObjectiveFromProject,
+} from "$lib/api";
 import type { Objective } from "$lib/types";
 import AvatarComponent from "../../../components/Avatar.svelte";
-import LinkProjectObjectiveComponent from "../../../components/LinkProjectObjectiveComponent.svelte";
+import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectMembers from "../../../components/ProjectMembers.svelte";
 
@@ -112,12 +117,19 @@ async function handleSubmit(e: SubmitEvent) {
 
 </div>
 
-{#if showLinkObjectivesModal}
-  <LinkProjectObjectiveComponent
-    projectId={project_id}
-    projectName={project_name}
-    linkedObjectives={objectivelist}
-    onLinkedObjectivesChanged={(objectives) => objectivelist = objectives}
-    ondismiss={() => showLinkObjectivesModal = false}
-    show={showLinkObjectivesModal} />
-{/if}
+<LinkObjectiveDialog
+  title={$_("projects.objectivesForTitle", { values: { projectName: project_name } })}
+  initialLinked={objectivelist}
+  showErrors={false} 
+  writeChanges={async (toAdd, toRemove) => {
+    const addJobs = toAdd.map((obj) => linkObjectiveToProject(project_id, obj.id));
+    const removeJobs = toRemove.map((obj) =>
+      unlinkObjectiveFromProject(project_id, obj.id),
+    );
+    await Promise.all([...addJobs, ...removeJobs]);
+    return [];
+  }}
+  onLinkedChanged={(objectives) => (objectivelist = objectives)}
+  ondismiss={() => (showLinkObjectivesModal = false)}
+  show={showLinkObjectivesModal}
+/>

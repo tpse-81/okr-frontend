@@ -313,6 +313,56 @@ export async function unlinkObjectiveFromProject(
 		},
 	);
 
+	const text = await response.text();
+	return text ? JSON.parse(text) : null;
+}
+
+export async function linkObjectiveToObjective(
+	parent_objective_id: string,
+	objective_id: string,
+) {
+	const response = await baseFetch(
+		`/objectives/${parent_objective_id}/children/${objective_id}`,
+		{
+			method: "POST",
+		},
+	);
+
+	if (!response.ok) {
+		let body: any = null;
+		try {
+			body = await response.json();
+		} catch {
+			// ignore, fallback below
+		}
+		if (body && typeof body === "object") {
+			throw { ...body, status: response.status };
+		}
+		throw { detail: body ?? response.statusText, status: response.status };
+	}
+
+	return response.json();
+}
+
+export async function unlinkObjectiveFromObjective(
+	parent_objective_id: string,
+	objective_id: string,
+) {
+	const response = await baseFetch(
+		`/objectives/${parent_objective_id}/children/${objective_id}`,
+		{
+			method: "DELETE",
+		},
+	);
+
+	const text = await response.text();
+	return text ? JSON.parse(text) : null;
+}
+
+export async function getObjectiveChildren(
+	objective_id: string,
+): Promise<Objective[]> {
+	const response = await baseFetch(`/objectives/${objective_id}/children`);
 	return response.json();
 }
 

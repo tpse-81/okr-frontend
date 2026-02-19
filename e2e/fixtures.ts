@@ -67,7 +67,9 @@ export const projectBaseTest = loginBaseTest.extend<{ projectPage: Page }>({
 		await Promise.all([
 			page.waitForResponse(
 				(res) =>
-					res.url().includes("/projects") && res.request().method() === "POST",
+					res.url().includes("/projects") &&
+					res.request().method() === "POST" &&
+					res.ok(),
 			),
 			page.locator("#project-submit button[type=submit]").click(),
 		]);
