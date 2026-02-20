@@ -30,24 +30,28 @@ let isArchiving = $state(false);
 let showUnarchiveDialog = $state(false);
 let isUnarchiving = $state(false);
 
-function formatArchiveReason(reason: ArchiveReason | null | undefined): string {
-//can be built upon in case another language is introduced:
-	switch (reason) {
-		case "on_break":
-			return "on break";
-		case "finalized":
-			return "finalized";
-		case "give_up":
-			return "give_up";
-		default:
-			return "–";
-	}
+type ArchiveMeta = { reason: ArchiveReason; format: string; badge: string };
+
+const archiveReasons: ArchiveMeta[] = [
+	{ reason: "finalized", format: "Finished", badge: "badge-success" },
+	{ reason: "on_break", format: "On Break", badge: "badge-warning" },
+	{ reason: "give_up", format: "Cancelled", badge: "badge-error" },
+];
+
+const archiveReasonMap = archiveReasons.reduce(
+	(acc, r) => {
+		acc[r.reason] = r;
+		return acc;
+	},
+	{} as Record<ArchiveReason, ArchiveMeta>,
+);
+
+function getArchiveMeta(reason: ArchiveReason | null | undefined) {
+	if (!reason) return { format: "Archived", badge: "badge-warning" };
+	return archiveReasonMap[reason] ?? { format: reason, badge: "badge-warning" };
 }
 
-function archiveBadgeClass(reason: ArchiveReason | null | undefined): string {
-	if (reason === "give_up") return "badge-error";
-	return "badge-warning";
-}
+let archiveMeta = $derived(getArchiveMeta(project.archive_reason));
 
 async function onDeleteProject() {
 	showConfirmationDialog = false;
@@ -108,8 +112,8 @@ async function onUnarchiveProject(newDeadline: Date) {
 		</div>
     <a href={`/projects/${project.id}`} class="card-body">
         {#if project.is_archived}
-			<div class={`badge ${archiveBadgeClass(project.archive_reason)}`}>
-				<Archive size="16" /> Archiviert: {formatArchiveReason(project.archive_reason)}
+			<div class={`badge ${archiveMeta.badge}`}>
+				<Archive size="16" /> Archived: {archiveMeta.format}
 			</div>
         {:else if project.done}
             <div class="badge badge-success"><Check size="16" /> Done</div>

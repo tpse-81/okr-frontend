@@ -35,6 +35,7 @@ export interface KeyResult {
 	start_value: number;
 	current_value: number;
 	end_value: number;
+	is_archived?: boolean;
 }
 
 export type TaskState =
@@ -49,6 +50,7 @@ export interface Task {
 	description: string;
 	task_state: TaskState;
 	key_result_id: string;
+	is_archived?: boolean;
 }
 
 export interface User {

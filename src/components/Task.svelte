@@ -7,7 +7,7 @@
   ```
 -->
 <script lang="ts">
-import { Edit, Trash } from "@lucide/svelte";
+import { Archive, Edit, Trash } from "@lucide/svelte";
 import { deleteTask } from "$lib/api";
 import type { Task } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
@@ -17,6 +17,8 @@ let { task, onTaskDeleted }: { task: Task; onTaskDeleted: () => void } =
 	$props();
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
+
+const isArchived = $derived(task.is_archived === true);
 
 async function onDeleteTask() {
 	showConfirmationDialog = false;
@@ -31,6 +33,11 @@ async function onDeleteTask() {
 	  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
 	</div>
   <div class="card-body">
+      {#if isArchived}
+		    <div class="badge badge-warning mb-2">
+			    <Archive size="16" /> Archived
+		    </div>
+	    {/if}
       {task.description}<br>
       (State: {task.task_state})<br>
   </div>

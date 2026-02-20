@@ -84,8 +84,12 @@ async function tasks() {
 
 		for (const row of results) {
 			for (const t of row.tasks) {
-				const withKr = { ...t, key_result_id: row.keyResultId } as Task;
+				const isArchived = archivedObjectiveIds.has(row.objectiveId);
+
+				const withKr = { ...t, key_result_id: row.keyResultId, is_archived: isArchived } as Task;
 				allTasks.push(withKr);
+
+				if (isArchived) archivedTasks.push(t.id);
 
 				if (archivedObjectiveIds.has(row.objectiveId)) {
 					archivedTasks.push(t.id);

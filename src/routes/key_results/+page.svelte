@@ -80,7 +80,8 @@ async function keyResults() {
 			}
 		}
 
-		keyResultList = all;
+		const archivedSet = new Set(archivedKR);
+		keyResultList = all.map((kr) => ({ ...kr, is_archived: archivedSet.has(kr.id) }));
 		archivedKeyResultIds = archivedKR;
 	} catch (err) {
 		await goto("/expected");
