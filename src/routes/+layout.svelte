@@ -109,10 +109,6 @@ function changeTheme() {
         	{#if $userInfoStore == null}
           	<li><a href="/login">Login</a></li>
         	{/if}
-        	<!-- section to only show if admin -->
-        	{#if $userInfoStore?.is_admin}
-          	<li><a href="/user">User</a></li>
-        	{/if}
         	<!-- sections to only show if logged in -->
         	{#if $userInfoStore}
             <li><a href="/dashboard">Dashboard</a></li>
@@ -120,6 +116,11 @@ function changeTheme() {
           	<li><a href="/objectives">Objectives</a></li>
           	<li><a href="/key_results">Key results</a></li>
             <li><a href="/tasks">Tasks</a></li>
+            <!-- visually separated admin section -->
+            {#if $userInfoStore?.is_admin}
+              <li class="menu-title mt-4"><span>Admin</span></li>
+              <li><a href="/user" class="text-error flex items-center justify-between"><span>Manage users</span><span class="badge badge-error badge-sm">Admin</span></a></li>
+            {/if}
           {/if}
         </ul>
       </div>
