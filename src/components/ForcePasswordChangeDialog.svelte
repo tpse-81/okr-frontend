@@ -106,7 +106,7 @@ async function handleSubmit(e: SubmitEvent) {
 				type="password"
 				autocomplete="current-password"
 				placeholder="Current (temporary) password"
-				class="input input-bordered"
+				class="input input-bordered w-full"
 				bind:value={oldPassword}
 				required
 			/>
