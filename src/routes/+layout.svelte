@@ -131,6 +131,4 @@ $effect(() => {
 
 {@render children()}
 
-{#if $userInfoStore && passwordChangeRequired}
-  <ForcePasswordChangeDialog open={true} userInfo={$userInfoStore} />
-{/if}
+ <ForcePasswordChangeDialog open={$userInfoStore && passwordChangeRequired} userInfo={$userInfoStore} />
