@@ -349,6 +349,11 @@ export async function getKeyResult(key_result_id: string): Promise<KeyResult> {
 	return response.json();
 }
 
+export async function getArchivedKeyResults() {
+	const response = await baseFetch("/key_results/archived");
+	return response.json();
+}
+
 export async function updateKeyResult(
 	keyResult: KeyResult,
 ): Promise<KeyResult> {
@@ -432,6 +437,11 @@ export async function updateTask(task: Task): Promise<Task> {
 
 export async function getTasks(): Promise<Task[]> {
 	const response = await baseFetch("/tasks");
+	return response.json();
+}
+
+export async function getArchivedTasks() {
+	const response = await baseFetch("/tasks/archived");
 	return response.json();
 }
 

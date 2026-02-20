@@ -2,8 +2,8 @@
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { Archive, Check } from "@lucide/svelte";
-import { getKeyResults,getArchivedObjectives, getObjectives, getKeyResultObjective, } from "$lib/api";
-import type { KeyResult, Objective } from "$lib/types";
+import { getKeyResults, getArchivedKeyResults } from "$lib/api";
+import type { KeyResult } from "$lib/types";
 import KeyResultComponent from "../../components/KeyResult.svelte";
 
 let keyResultList: KeyResult[] = $state([]);
@@ -16,10 +16,6 @@ const multiOptions = [
 		value: "archived",
 		icon: Archive,
 		size: 26,
-		filter: (list: KeyResult[]) => {
-			const archivedIds = new Set(archivedKeyResultIds);
-			return list.filter((kr) => archivedIds.has(kr.id));
-		},
 		tooltip: "Show archived key results",
 	},
 ];
@@ -33,16 +29,10 @@ function applyMultiFilter(value: string) {
 }
 
 let visibleKeyResults = $derived.by(() => {
-	let list = keyResultList;
-	const archivedIds = new Set(archivedKeyResultIds);
-
 	if (activeMultiFilters.includes("archived")) {
-		list = list.filter((kr) => archivedIds.has(kr.id));
-	} else {
-		list = list.filter((kr) => !archivedIds.has(kr.id));
+		return keyResultList.filter((kr) => kr.is_archived === true);
 	}
-
-	return list;
+	return keyResultList.filter((kr) => kr.is_archived !== true);
 });
 
 onMount(async () => {
@@ -55,34 +45,17 @@ onMount(async () => {
 
 async function keyResults() {
 	try {
-		const [objectives, archivedObjectives] = await Promise.all([
-			getObjectives() as Promise<Objective[]>,
-			getArchivedObjectives() as Promise<Objective[]>,
+		const [all, archived] = await Promise.all([
+			getKeyResults() as Promise<KeyResult[]>,
+			getArchivedKeyResults() as Promise<KeyResult[]>,
 		]);
 
-		const archivedObjectiveIds = new Set(archivedObjectives.map((o) => o.id));
+		const archivedIds = new Set(archived.map((kr) => kr.id));
 
-		const krByObjective = await Promise.all(
-			objectives.map(async (obj) => ({
-				objectiveId: obj.id,
-				keyResults: (await getKeyResultObjective(obj.id)) as KeyResult[],
-			})),
-		);
-
-		const all: KeyResult[] = [];
-		const archivedKR: string[] = [];
-
-		for (const row of krByObjective) {
-			all.push(...row.keyResults);
-
-			if (archivedObjectiveIds.has(row.objectiveId)) {
-				for (const kr of row.keyResults) archivedKR.push(kr.id);
-			}
-		}
-
-		const archivedSet = new Set(archivedKR);
-		keyResultList = all.map((kr) => ({ ...kr, is_archived: archivedSet.has(kr.id) }));
-		archivedKeyResultIds = archivedKR;
+		keyResultList = all.map((kr) => ({
+			...kr,
+			is_archived: archivedIds.has(kr.id),
+		}));
 	} catch (err) {
 		await goto("/expected");
 	}
@@ -114,7 +87,7 @@ async function keyResults() {
 	{#if visibleKeyResults.length > 0}
 		<ul id="key-results-list" class="grid grid-auto gap-3">
 			{#each visibleKeyResults as key_result}
-				<KeyResultComponent keyResult={key_result} onKeyResultDeleted={() => { keyResultList = keyResultList.filter((kr) => kr.id !== key_result.id); archivedKeyResultIds = archivedKeyResultIds.filter((id) => id !== key_result.id); }} />
+				<KeyResultComponent keyResult={key_result} onKeyResultDeleted={() => { keyResultList = keyResultList.filter((kr) => kr.id !== key_result.id); }} />
 			{/each}
 		</ul>
 	{:else}

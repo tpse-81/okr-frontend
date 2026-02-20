@@ -2,12 +2,11 @@
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { Archive, Check } from "@lucide/svelte";
-import { getTasks, getArchivedObjectives, getObjectives, getKeyResultObjective, getTasksKeyResult, } from "$lib/api";
-import type { KeyResult, Objective, Task } from "$lib/types";
+import { getArchivedTasks, getTasks } from "$lib/api";
+import type { Task } from "$lib/types";
 import TaskColumns from "../../components/TaskColumns.svelte";
 
 let tasklist: Task[] = $state([]);
-let archivedTaskIds: string[] = $state([]);
 
 let activeMultiFilters = $state<string[]>([]);
 
@@ -16,10 +15,6 @@ const multiOptions = [
 		value: "archived",
 		icon: Archive,
 		size: 26,
-		filter: (list: Task[]) => {
-			const archivedIds = new Set(archivedTaskIds);
-			return list.filter((t) => archivedIds.has(t.id));
-		},
 		tooltip: "Show archived tasks",
 	},
 ];
@@ -33,16 +28,10 @@ function applyMultiFilter(value: string) {
 }
 
 let visibleTasks = $derived.by(() => {
-	let list = tasklist;
-	const archivedIds = new Set(archivedTaskIds);
-
 	if (activeMultiFilters.includes("archived")) {
-		list = list.filter((t) => archivedIds.has(t.id));
-	} else {
-		list = list.filter((t) => !archivedIds.has(t.id));
+		return tasklist.filter((t) => t.is_archived === true);
 	}
-
-	return list;
+	return tasklist.filter((t) => t.is_archived !== true);
 });
 
 onMount(async () => {
@@ -55,50 +44,17 @@ onMount(async () => {
 
 async function tasks() {
 	try {
-		const [objectives, archivedObjectives] = await Promise.all([
-			getObjectives() as Promise<Objective[]>,
-			getArchivedObjectives() as Promise<Objective[]>,
+		const [all, archived] = await Promise.all([
+			getTasks() as Promise<Task[]>,
+			getArchivedTasks() as Promise<Task[]>,
 		]);
 
-		const archivedObjectiveIds = new Set(archivedObjectives.map((o) => o.id));
+		const archivedIds = new Set(archived.map((t) => t.id));
 
-		const krByObjective = await Promise.all(
-			objectives.map(async (obj) => ({
-				objectiveId: obj.id,
-				keyResults: (await getKeyResultObjective(obj.id)) as KeyResult[],
-			})),
-		);
-
-		const taskJobs = krByObjective.flatMap(({ objectiveId, keyResults }) =>
-			keyResults.map(async (kr) => ({
-				objectiveId,
-				keyResultId: kr.id,
-				tasks: (await getTasksKeyResult(kr.id)) as Task[],
-			})),
-		);
-
-		const results = await Promise.all(taskJobs);
-
-		const allTasks: Task[] = [];
-		const archivedTasks: string[] = [];
-
-		for (const row of results) {
-			for (const t of row.tasks) {
-				const isArchived = archivedObjectiveIds.has(row.objectiveId);
-
-				const withKr = { ...t, key_result_id: row.keyResultId, is_archived: isArchived } as Task;
-				allTasks.push(withKr);
-
-				if (isArchived) archivedTasks.push(t.id);
-
-				if (archivedObjectiveIds.has(row.objectiveId)) {
-					archivedTasks.push(t.id);
-				}
-			}
-		}
-
-		tasklist = allTasks;
-		archivedTaskIds = archivedTasks;
+		tasklist = all.map((t) => ({
+			...t,
+			is_archived: archivedIds.has(t.id),
+		}));
 	} catch (err) {
 		await goto("/expected");
 	}
@@ -127,5 +83,5 @@ async function tasks() {
 		</div>
 	</div>
 
-	<TaskColumns tasks={visibleTasks} onTaskDeleted={(id) => { tasklist = tasklist.filter((t) => t.id !== id); archivedTaskIds = archivedTaskIds.filter((x) => x !== id); }} />
+	<TaskColumns tasks={visibleTasks} onTaskDeleted={(id) => { tasklist = tasklist.filter((t) => t.id !== id); }} />
 </div>
