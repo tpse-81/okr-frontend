@@ -118,7 +118,7 @@ function changeTheme() {
             <li><a href="/tasks">Tasks</a></li>
             <!-- visually separated admin section -->
             {#if $userInfoStore?.is_admin}
-              <li class="menu-title mt-4"><span>Admin</span></li>
+              <div class="divider divider-error mt-4"></div>
               <li><a href="/user" class="text-error flex items-center justify-between"><span>Manage users</span><span class="badge badge-error badge-sm">Admin</span></a></li>
             {/if}
           {/if}
