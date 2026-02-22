@@ -17,7 +17,7 @@ import EditTaskComponent from "./EditTaskComponent.svelte";
 const taskStates: { state: TaskState; label: string; badge: string }[] = [
 	{ state: "open", label: "tasks.open", badge: "badge-ghost" },
 	{ state: "planned", label: "tasks.planned", badge: "badge-warning" },
-	{ state: "inProgress", label: "tasks.inProgress", badge: "badge-info" },
+	{ state: "in_progress", label: "tasks.in_progress", badge: "badge-info" },
 	{ state: "done", label: "tasks.done", badge: "badge-success" },
 	{ state: "cancelled", label: "tasks.cancelled", badge: "badge-error" },
 ];

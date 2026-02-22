@@ -74,7 +74,7 @@
 		"state": "Status",
 		"open": "Offen",
 		"planned": "Geplant",
-		"inProgress": "In Bearbeitung",
+		"in_progress": "In Bearbeitung",
 		"done": "Erledigt",
 		"cancelled": "Abgebrochen",
 		"createTitle": "Aufgabe erstellen",

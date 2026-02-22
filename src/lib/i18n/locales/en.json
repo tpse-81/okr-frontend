@@ -74,7 +74,7 @@
 		"state": "State",
 		"open": "Open",
 		"planned": "Planned",
-		"inProgress": "In progress",
+		"in_progress": "In progress",
 		"done": "Done",
 		"cancelled": "Cancelled",
 		"createTitle": "Create a Task",

@@ -43,7 +43,7 @@ async function onUpdateTask() {
 	    <select bind:value={taskState} class="select select-bordered">
 	        <option value="open">{$_("tasks.open")}</option>
 	        <option value="planned">{$_("tasks.planned")}</option>
-	        <option value="inProgress">{$_("tasks.inProgress")}</option>
+	        <option value="in_progress">{$_("tasks.in_progress")}</option>
 	        <option value="done">{$_("tasks.done")}</option>
 	        <option value="cancelled">{$_("tasks.cancelled")}</option>
 	    </select>
