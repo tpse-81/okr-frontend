@@ -29,7 +29,7 @@ async function login(e: SubmitEvent) {
 	errorMessage = "";
 	infoMessage = "";
 	if (username === "" || password === "") {
-		errorMessage = "Empty username or password.";
+		errorMessage = $_("users.login.empty");
 		return;
 	}
 
@@ -57,22 +57,22 @@ async function login(e: SubmitEvent) {
 
 			if (twoFaRequiredResponse.type === "webauthn") {
 				webauthnRequired = true;
-				infoMessage = "Please load your passkey.";
+				infoMessage = $_("users.login.passkey");
 			}
 
 			if (twoFaRequiredResponse.type === "totp") {
 				totpRequired = true;
-				infoMessage = "Please enter your 2FA code.";
+				infoMessage = $_("users.login.totp");
 			}
 			return;
 		}
 
 		console.error(e);
 		if (totpRequired) {
-			errorMessage = "Invalid 2FA code.";
+			errorMessage = $_("users.login.invalidTotp");
 			return;
 		}
-		errorMessage = "Wrong username or password.";
+		errorMessage = $_("users.login.wrong");
 	}
 }
 
@@ -91,7 +91,7 @@ async function loadWebauthn() {
 
 <div class="h-screen flex align-center">
 	<form id="login-submit" onsubmit={login} class="flex flex-col justify-center gap-3 w-8/10 m-auto">
-		<h1>Login</h1>
+		<h1>{$_("users.login.title")}</h1>
 		{#if errorMessage}
 		<div id="login-error" class="alert alert-error">
 			<CircleX size="20" />
@@ -103,14 +103,14 @@ async function loadWebauthn() {
 			<span>{infoMessage}</span>
 		</div>
 		{/if}
-	  <input type="text" autocomplete="username" id="username" bind:value={username} placeholder={$_('username')} class="input w-full" required>
-	  <input type="password" id="password" autocomplete="current-password" bind:value={password} placeholder={$_('password')} class="input w-full" required>
+	  <input type="text" autocomplete="username" id="username" bind:value={username} placeholder={$_("users.login.name")} class="input w-full" required>
+	  <input type="password" id="password" autocomplete="current-password" bind:value={password} placeholder={$_("users.login.password")} class="input w-full" required>
 	  {#if webauthnRequired}
-		  <button type="button" class="btn btn-primary" onclick={() => loadWebauthn()}>Load passkey</button>
+		  <button type="button" class="btn btn-primary" onclick={() => loadWebauthn()}>{$_("users.login.loadPasskey")}</button>
 		{/if}
 		{#if totpRequired}
 		  <input type="text" autocomplete="one-time-code" id="two_fa_code" pattern={'\\d{3}[\\- ]?\\d{3}'} bind:value={twoFaCode} placeholder={$_('two_fa_code')} class="input w-full" required>
 		{/if}
-	  <input type="submit" value={$_('login')} class="btn btn-primary" disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && twoFaCode.trim() === "")}>
+	  <input type="submit" value={$_("users.login.button")} class="btn btn-primary" disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && twoFaCode.trim() === "")}>
 	</form>
 </div>

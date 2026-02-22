@@ -1,8 +1,10 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { getDashboard, getTasks } from "$lib/api";
 import type { Project, ProjectContainer, Task } from "$lib/types";
+import { userInfoStore } from "$lib/user_info";
 import DashboardDeadlineComponent from "../../components/DashboardDeadline.svelte";
 import DashboardProjectComponent from "../../components/DashboardProject.svelte";
 import DashboardTaskComponent from "../../components/DashboardTask.svelte";
@@ -48,14 +50,20 @@ $effect(() => {
 </script>
 
 
-<h1 class="ml-15">Hallo Dashboard</h1>
+<h1 class="ml-15">
+    {#if $userInfoStore?.name}
+        {$_("dashboard.greeting", { values: {name: $userInfoStore?.name ?? "" } })}
+    {:else}
+        {$_("dashboard.greetingNoName")}
+    {/if}
+</h1>
 
 <div class="flex gap-4 ml-15">
     <div class="flex-1">
 
         <div class="card card-border relative">
             <div class="p-3">
-                <h1>Projects</h1>
+                <h1>{$_("projects.title")}</h1>
                 {#if projectContainers.length > 0}
                     <ul class="flex -gap-10 overflow-x-auto pb-2">
                         {#each projectContainers as projectContainer}
@@ -67,7 +75,7 @@ $effect(() => {
                         {/each}
                     </ul>
                 {:else}
-                    <p>Keine Projekte geladen</p>
+                    <p>{$_("projects.empty")}</p>
                 {/if}
             </div>
         </div>
@@ -77,7 +85,7 @@ $effect(() => {
                 <DashboardTaskComponent tasks={taskList} />
             {:else}
                 <div class="card card-bordered p-4">
-                    No tasks loaded
+                    {$_("tasks.empty")}
                 </div>
             {/if}
         </div>

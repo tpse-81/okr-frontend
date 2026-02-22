@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { createTaskKeyResult, getTasksKeyResult } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
@@ -38,23 +39,23 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<h1>Create a Task</h1>
+<h1>{$_("tasks.createTitle")}</h1>
 
 <form id="task-submit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="text" id="description" bind:value={description} placeholder="description" class="input w-full" required>
+    <input type="text" id="description" bind:value={description} placeholder={$_("common.description")} class="input w-full" required>
     <select bind:value={taskState} class="select select-bordered">
-        <option value="open">open</option>
-        <option value="planned">planned</option>
-        <option value="in_progress">in_progress</option>
-        <option value="done">done</option>
-        <option value="cancelled">cancelled</option>
+        <option value="open">{$_("tasks.open")}</option>
+        <option value="planned">{$_("tasks.planned")}</option>
+        <option value="inProgress">{$_("tasks.inProgress")}</option>
+        <option value="done">{$_("tasks.done")}</option>
+        <option value="cancelled">{$_("tasks.cancelled")}</option>
     </select>
     
-    <input type="submit" value="Create" class="btn btn-primary">
+    <input type="submit" value={$_("common.create")} class="btn btn-primary">
 </form>
 
 <div class="p-3">
-  <h1>Tasks</h1>
+  <h1>{$_("tasks.title")}</h1>
   <div id="tasks-list">
     <TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
   </div>
