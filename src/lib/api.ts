@@ -313,12 +313,10 @@ export async function createKeyResult(
 	end_value: number,
 	start_value: number,
 	objective_id: string,
-	project_id: string,
 ) {
 	const response = await baseFetch(`/objectives/${objective_id}/key_results`, {
 		method: "POST",
 		body: JSON.stringify({
-			project_id,
 			description,
 			start_value,
 			end_value,
