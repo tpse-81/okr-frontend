@@ -385,12 +385,14 @@ export async function getKeyResultObjective(objective_id: string) {
 
 export async function createTaskKeyResult(
 	key_result_id: string,
+	name: string,
 	description: string,
 	task_state: TaskState,
 ) {
 	const response = await baseFetch(`/key_results/${key_result_id}/tasks`, {
 		method: "POST",
 		body: JSON.stringify({
+			name,
 			description: description,
 			task_state: task_state,
 		}),

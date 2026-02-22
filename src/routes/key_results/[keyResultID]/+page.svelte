@@ -10,7 +10,7 @@ let { data } = $props();
 let keyResultID = $derived(data.keyResultID);
 
 let taskList: Task[] = $state([]);
-
+let name: string = $state("");
 let description: string = $state("");
 let taskState: TaskState = $state("open");
 
@@ -32,25 +32,56 @@ async function loadTasks() {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-	await createTaskKeyResult(keyResultID, description, taskState);
+	await createTaskKeyResult(keyResultID, name, description, taskState);
 
-	taskList = await getTasksKeyResult(keyResultID);
+  await loadTasks();
+  name = "";
+  description = "";
 }
 </script>
 
 <h1>Create a Task</h1>
 
-<form id="task-submit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="text" id="description" bind:value={description} placeholder="description" class="input w-full" required>
-    <select bind:value={taskState} class="select select-bordered">
-        <option value="open">open</option>
-        <option value="planned">planned</option>
-        <option value="in_progress">in_progress</option>
-        <option value="done">done</option>
-        <option value="cancelled">cancelled</option>
+<form id="task-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3 p-3">
+  <div class="form-control">
+    <label for="task-name" class="label"><span class="label-text">Title</span></label>
+    <input
+      id="task-name"
+      type="text"
+      bind:value={name}
+      placeholder="Title"
+      class="input input-bordered w-full"
+      required
+    />
+  </div>
+
+  <div class="form-control md:col-span-2">
+    <label for="task-description" class="label"><span class="label-text">Description</span></label>
+    <textarea
+      id="task-description"
+      bind:value={description}
+      placeholder="Description"
+      class="textarea textarea-bordered w-full"
+      rows="3"
+    ></textarea>
+  </div>
+
+  <div class="form-control">
+    <label for="task-state" class="label">
+      <span class="label-text">State</span>
+    </label>
+    <select id="task-state" bind:value={taskState} class="select select-bordered">
+      <option value="open">open</option>
+      <option value="planned">planned</option>
+      <option value="in_progress">in_progress</option>
+      <option value="done">done</option>
+      <option value="cancelled">cancelled</option>
     </select>
-    
-    <input type="submit" value="Create" class="btn btn-primary">
+  </div>
+
+  <div class="md:col-span-2 flex justify-end">
+    <button type="submit" class="btn btn-primary">Create</button>
+  </div>
 </form>
 
 <div class="p-3">

@@ -2,43 +2,48 @@
 import { updateTask } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
 
-let {
-	show,
-	task,
-	ondismiss,
-}: {
-	show: boolean;
-	task: Task;
-	ondismiss: () => void;
-} = $props();
+let { show, task, ondismiss }: { show: boolean; task: Task; ondismiss: () => void } = $props();
 
-// svelte-ignore non_reactive_update
 let modal: HTMLDialogElement;
-// svelte-ignore state_referenced_locally
-let description: string = $state(task.description);
-// svelte-ignore state_referenced_locally
-let taskState: TaskState = $state(task.task_state);
+
+let name = $state("");
+let description = $state("");
+let taskState: TaskState = $state("open");
 
 $effect(() => {
-	if (show) modal.showModal();
-	else modal.close();
+  if (!modal) return;
+
+  if (show && !modal.open) {
+    // sync local form state from props on open
+    name = task.name ?? "";
+    description = task.description ?? "";
+    taskState = task.task_state;
+
+    modal.showModal();
+  } else if (!show && modal.open) {
+    modal.close();
+  }
 });
 
 async function onUpdateTask() {
-	task.description = description;
-	task.task_state = taskState;
+  const title = name.trim();
+  if (!title) return;
 
-	await updateTask(task);
+  task.name = title;
+  task.description = description;
+  task.task_state = taskState;
 
-	ondismiss();
+  await updateTask(task);
+  ondismiss();
 }
 </script>
 
 <dialog id="edit-task-modal" bind:this={modal} class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">Edit task</h3>
-    <form class="flex flex-col gap-3 mt-3">
-	    <input type="text" bind:value={description} placeholder="Description" class="input w-full">
+	<form class="flex flex-col gap-3 mt-3">
+	<input type="text" bind:value={name} placeholder="Title" class="input input-bordered w-full" required />
+	<textarea bind:value={description} placeholder="Description" class="textarea textarea-bordered w-full" rows="3"></textarea>
 	    <select bind:value={taskState} class="select select-bordered">
 	        <option value="open">open</option>
 	        <option value="planned">planned</option>
@@ -47,13 +52,10 @@ async function onUpdateTask() {
 	        <option value="cancelled">cancelled</option>
 	    </select>
     </form>
-    <div class="modal-action">
-      <form method="dialog" class="flex gap-3 w-full justify-end">
-        <button class="btn" onclick={ondismiss}>Close</button>
-        <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-primary" onclick={onUpdateTask}>Confirm</button>
-      </form>
-    </div>
+	<div class="modal-action">
+		<button type="button" class="btn" onclick={ondismiss}>Close</button>
+		<button type="button" class="btn btn-primary" onclick={onUpdateTask}>Confirm</button>
+	</div>
   </div>
 </dialog>
 
