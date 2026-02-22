@@ -10,7 +10,6 @@ let { data } = $props();
 
 let objectiveID = $derived(data.objectiveID);
 let objectiveName = $derived(data.objectiveName);
-let projectID = $derived(data.parentID);
 
 let keyResultList: KeyResult[] = $state([]);
 
@@ -36,13 +35,7 @@ async function loadKeyResults() {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-	await createKeyResult(
-		description,
-		endValue,
-		startValue,
-		objectiveID,
-		projectID,
-	);
+	await createKeyResult(description, endValue, startValue, objectiveID);
 
 	keyResultList = await getKeyResultObjective(objectiveID);
 }
