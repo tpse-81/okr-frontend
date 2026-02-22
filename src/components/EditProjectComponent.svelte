@@ -19,7 +19,9 @@ let modal: HTMLDialogElement;
 // svelte-ignore state_referenced_locally
 let name: string = $state(project.name);
 // svelte-ignore state_referenced_locally
-let deadline: Date = $state(project.deadline);
+let deadline: string = $state(
+	new Date(project.deadline).toISOString().split("T")[0],
+);
 // svelte-ignore state_referenced_locally
 let icon: string | null = $state(project.icon ?? null);
 let iconRequiresConfirmation: boolean = $state(false);
@@ -31,7 +33,7 @@ $effect(() => {
 
 async function onUpdateproject() {
 	project.name = name;
-	project.deadline = deadline;
+	project.deadline = new Date(deadline);
 	project.icon = icon;
 
 	await updateProject(project);
@@ -47,7 +49,7 @@ async function onUpdateproject() {
       <IconSelector initialIcon={project.icon ?? null} onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}} />
 
 	    <input type="text" bind:value={name} placeholder="Name" class="input w-full">
-	    <input type="text" bind:value={deadline} placeholder="Deadline" class="input w-full">
+	    <input type="date" bind:value={deadline} placeholder="Deadline" class="input w-full">
     </form>
     <div class="modal-action">
       <form method="dialog" class="flex gap-3 w-full justify-end">
