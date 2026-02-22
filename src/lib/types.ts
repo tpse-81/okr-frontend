@@ -32,7 +32,7 @@ export interface KeyResult {
 export type TaskState =
 	| "open"
 	| "planned"
-	| "in_progress"
+	| "inProgress"
 	| "done"
 	| "cancelled";
 

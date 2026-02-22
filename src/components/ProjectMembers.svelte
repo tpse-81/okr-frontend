@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import {
 	addUserProject,
 	getUserRoleProject,
@@ -152,7 +153,10 @@ async function addToProject(user: User) {
 		await addUserProject(projectId, user.id, "member");
 
 		memberRoles = { ...memberRoles, [user.id]: "member" };
-		showMessage("success", `${user.name} added to project.`);
+		showMessage(
+			"success",
+			$_("users.addedToProject", { values: { name: user.name } }),
+		);
 	} catch (e) {
 		console.error(e);
 		showMessage("error", "Request failed.");
@@ -221,13 +225,13 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 <div class="card bg-base-100 border border-base-300">
 	<div class="card-body gap-4">
 		<div class="flex items-center justify-between gap-3">
-			<h2 class="card-title">Members</h2>
+			<h2 class="card-title">{$_("users.members")}</h2>
 			<div class="flex items-center gap-3">
 				{#if loading}
 					<span class="loading loading-spinner loading-sm"></span>
 				{/if}
 				<span class="text-sm opacity-70">
-					{members.length} member{members.length === 1 ? "" : "s"}
+					{members.length} {$_("users.member")}{members.length === 1 ? "" : "s"}
 				</span>
 			</div>
 		</div>
@@ -249,13 +253,13 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 		<div class="flex flex-col md:flex-row gap-3 md:items-center">
 			<input
 				type="text"
-				placeholder="Search user"
+				placeholder={$_("users.search")}
 				bind:value={filter}
 				class="input input-bordered w-full md:max-w-sm"
 			/>
 			{#if me && !canManageAnything}
 				<div class="text-sm opacity-70">
-					Read-only: you don't have permission to manage members.
+					{$_("users.readOnlyWarning")}
 				</div>
 			{/if}
 		</div>
@@ -265,17 +269,17 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 			<table class="table table-zebra">
 				<thead>
 					<tr>
-						<th>User</th>
-						<th class="hidden md:table-cell">Email</th>
-						<th class="w-44">Role</th>
-						<th class="w-24 text-right">In project</th>
+						<th>{$_("users.title")}</th>
+						<th class="hidden md:table-cell">{$_("users.email")}</th>
+						<th class="w-44">{$_("users.role")}</th>
+						<th class="w-24 text-right">{$_("users.inProject")}</th>
 					</tr>
 				</thead>
 
 				<tbody>
 					{#if members.length === 0}
 						<tr>
-							<td colspan="4" class="opacity-70">No members yet.</td>
+							<td colspan="4" class="opacity-70">{$_("users.noMembersYet")}</td>
 						</tr>
 					{:else}
 						{#each members as user (user.id)}
@@ -306,7 +310,7 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 		{#if canManageAnything}
 			<details class="collapse collapse-arrow border border-base-300 bg-base-100">
 				<summary class="collapse-title font-medium">
-					Add users ({nonMembers.length})
+					{$_("users.addUsers")} ({nonMembers.length})
 				</summary>
 
 				<div class="collapse-content">
@@ -314,17 +318,17 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 						<table class="table table-zebra">
 							<thead>
 								<tr>
-									<th>User</th>
-									<th class="hidden md:table-cell">Email</th>
-									<th class="w-44">Role</th>
-									<th class="w-24 text-right">Add</th>
+									<th>{$_("users.title")}</th>
+									<th class="hidden md:table-cell">{$_("users.email")}</th>
+									<th class="w-44">{$_("users.role")}</th>
+									<th class="w-24 text-right">{$_("users.add")}</th>
 								</tr>
 							</thead>
 
 							<tbody>
 								{#if nonMembers.length === 0}
 									<tr>
-										<td colspan="4" class="opacity-70">No users to add.</td>
+										<td colspan="4" class="opacity-70">{$_("users.noUsersToAdd")}</td>
 									</tr>
 								{:else}
 									{#each nonMembers as user (user.id)}

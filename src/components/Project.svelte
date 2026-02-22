@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 import { Check, Edit, Info, Trash } from "@lucide/svelte";
+import { _, locale } from "svelte-i18n";
 import { deleteProject } from "$lib/api";
 import type { Project } from "$lib/types";
 import { formatDate, formatDeadline } from "$lib/utils";
@@ -37,18 +38,18 @@ async function onDeleteProject() {
 		</div>
     <a href={`/projects/${project.id}`} class="card-body">
         {#if project.done}
-            <div class="badge badge-success"><Check size="16" /> Done</div>
+            <div class="badge badge-success"><Check size="16" /> {$_("projects.done")}</div>
         {:else}
-            <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline))}</div>
+            <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline), $locale)}</div>
         {/if}
         <div class="card-title flex mt-2">
             <AvatarComponent icon={project.icon ?? null} name={project.name} big={false} />
             <h2>{project.name}</h2>
         </div>
-        <p>Erstellt am {formatDate(new Date(project.creation_date))}</p>
-        <p>Fällig am {formatDate(new Date(project.deadline))}</p>
+        <p>{$_("projects.createdAtLabel")} {formatDate(new Date(project.creation_date), $locale)}</p>
+        <p>{$_("projects.dueAtLabel")} {formatDate(new Date(project.deadline), $locale)}</p>
     </a>
 </li>
 
 <EditProjectComponent show={showEditDialog} project={project} ondismiss={() => showEditDialog = false} />
-<ConfirmationDialog show={showConfirmationDialog} message="Delete project" onconfirm={onDeleteProject} ondismiss={() => showConfirmationDialog = false} />
+<ConfirmationDialog show={showConfirmationDialog} message={$_("projects.delete")} onconfirm={onDeleteProject} ondismiss={() => showConfirmationDialog = false} />

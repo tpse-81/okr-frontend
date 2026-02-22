@@ -1,4 +1,5 @@
 <script lang="ts">
+import { _ } from "svelte-i18n";
 import { updateKeyResult } from "$lib/api";
 import type { KeyResult } from "$lib/types";
 import { isBetween } from "$lib/utils";
@@ -35,7 +36,7 @@ $effect(() => {
 async function onUpdatekeyResult() {
 	if (!isBetween(currentValue, startValue, endValue)) {
 		errorMessage = null;
-		errorMessage = "Current value is out of bounds";
+		errorMessage = $_("keyResults.outOfBoundsError");
 		return;
 	}
 	keyResult.description = description;
@@ -51,18 +52,18 @@ async function onUpdatekeyResult() {
 
 <dialog id="edit-key-result-modal" bind:this={modal} class="modal">
   <div class="modal-box">
-    <h3 class="text-lg font-bold">Edit key result</h3>
+    <h3 class="text-lg font-bold">{$_("keyResults.edit")}</h3>
     <ErrorMessage message={errorMessage} />
     <form class="flex flex-col gap-3 mt-3">
-	    <input type="text" bind:value={description} placeholder="description" class="input w-full">
-	    <input type="number" bind:value={startValue} placeholder="start value" class="input w-full">
-        <input type="number" bind:value={currentValue} placeholder="current value" class="input w-full">
-	    <input type="number" bind:value={endValue} placeholder="end value" class="input w-full">
+	    <input type="text" bind:value={description} placeholder={$_("common.description")} class="input w-full">
+	    <input type="number" bind:value={startValue} placeholder={$_("keyResults.start")} class="input w-full">
+        <input type="number" bind:value={currentValue} placeholder={$_("keyResults.current")} class="input w-full">
+	    <input type="number" bind:value={endValue} placeholder={$_("keyResults.target")} class="input w-full">
     </form>
       <div class="modal-action">
           <div class="flex gap-3 w-full justify-end">
-              <button type="button" class="btn" onclick={ondismiss}>Close</button>
-              <button type="button" class="btn btn-primary" onclick={onUpdatekeyResult}>Confirm</button>
+              <button type="button" class="btn" onclick={ondismiss}>{$_("common.close")}</button>
+              <button type="button" class="btn btn-primary" onclick={onUpdatekeyResult}>{$_("common.confirm")}</button>
           </div>
       </div>
   </div>

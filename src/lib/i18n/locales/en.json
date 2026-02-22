@@ -1,0 +1,220 @@
+{
+	"nav": {
+		"login": "Login",
+		"dashboard": "Dashboard",
+		"account": "Account",
+		"logout": "Log out"
+	},
+
+	"dashboard": {
+		"greeting": "Hello, {name}!",
+		"greetingNoName": "Hello!",
+		"title": "Dashboard",
+		"upcomingDeadline": "Upcoming deadlines",
+		"noUpcomingDeadlines": "No upcoming deadlines",
+		"availableTasks": "Your tasks",
+		"status": "Status",
+		"markDone": "Mark as done",
+		"changeStatus": "Change status"
+	},
+
+	"projects": {
+		"title": "Projects",
+		"objectivesForTitle": "Objectives for {projectName}",
+		"createTitle": "Create a Project",
+		"deadline": "Deadline",
+		"empty": "No projects available",
+		"edit": "Edit project",
+		"icon": "Project icon",
+		"preview": "Preview",
+		"iconAffirmation": "Use this icon?",
+		"iconAccepted": "Icon selected",
+		"done": "Done",
+		"createdAtLabel": "Created at:",
+		"dueAtLabel": "Due at:",
+		"delete": "Delete project",
+		"tooltipMy": "Show my projects",
+		"tooltipArchived": "Show archived projects",
+		"tooltipSortByNameAscending": "Sort by name (Z-A)",
+		"tooltipSortByNameDescending": "Sort by name (A-Z)",
+		"tooltipSortByDeadlineAscending": "Sort by deadline (latest first)",
+		"tooltipSortbyDeadlineDescending": "Sort by deadline (earliest first)",
+		"overdue": "overdue",
+		"dueIn": "due in"
+	},
+
+	"objectives": {
+		"title": "Objectives",
+		"createTitle": "Create an Objective",
+		"manageLinks": "Manage linked objectives",
+		"empty": "No objectives available",
+		"edit": "Edit objective",
+		"delete": "Delete objective"
+	},
+
+	"keyResults": {
+		"title": "Key Results",
+		"titleForObjective": "Key Results for {objectiveName}",
+		"createTitleForObjective": "Create a key result for {objectiveName}",
+		"empty": "No key results available",
+		"edit": "Edit key result",
+		"start": "Start value",
+		"current": "Current value",
+		"target": "Target value",
+		"outOfBoundsError": "Current value is out of bounds",
+		"updateError": "Current value could not be updated",
+		"delete": "Delete key result"
+	},
+
+	"tasks": {
+		"title": "Tasks",
+		"titleSingPlu": "task(s)",
+		"empty": "No tasks available",
+		"edit": "Edit task",
+		"state": "State",
+		"open": "Open",
+		"planned": "Planned",
+		"inProgress": "In progress",
+		"done": "Done",
+		"cancelled": "Cancelled",
+		"createTitle": "Create a Task",
+		"search": "Search for tasks...",
+		"delete": "Delete task"
+	},
+
+	"users": {
+		"title": "Manager Users",
+		"titlePlural": "Users",
+		"createTitle": "Create User",
+		"email": "Email",
+		"role": "Role",
+		"inProject": "In this project",
+		"empty": "No users available",
+		"admin": "Admin",
+		"member": "Member",
+		"members": "Members",
+		"teamlead": "Teamlead",
+		"actions": "Actions",
+		"noUsers": "No users available.",
+		"adminOnly": "Only admins can manage users.",
+		"generateNew": "Generate new",
+		"random": "Random",
+		"onlyAdminCanAddUser": "Only an admin can add this user.",
+		"onlyAdminCanEdit": "Only an admin can edit this.",
+		"teamleadsCannotEditTeamleads": "Teamleads cannot edit other teamleads permissions.",
+		"readOnlyWarning": "Read-only access. You don't have permission to manage members.",
+		"noMembersYet": "No members yet.",
+		"addUsers": "Add users",
+		"add": "Add",
+		"noUsersToAdd": "No users available to add.",
+		"search": "Search user",
+		"addedToProject": "{name} added to the project.",
+		"cannotLoadError": "Could not load user",
+		"creationError": "Could not create user",
+		"creationSuccess": "User created",
+		"creationSuccessBody": "User: {name}\nEmail: {email}\nPassword: {password}",
+		"passwordChangeSuccess": "Password changed",
+		"passwordChangeSuccessBody": "User: {name}\nEmail: {email}\nNew password: {password}",
+		"passwordChangeError": "Password change failed",
+		"deletionError": "User deletion failed",
+		"tooltipPasswordChange": "Change manually or regenerate password",
+		"generatePasswordButton": "Regenerate",
+		"setPassword": "Set password",
+		"deleteSelfError": "You can't delete yourself",
+		"deletionQuestion": "Delete user?",
+		"deletionQuestionWithName": "Delete user {name}?",
+		"login": {
+			"empty": "Please enter a username and password.",
+			"passkey": "Please use your passkey.",
+			"totp": "Please enter your 2FA code.",
+			"invalidTotp": "Invalid 2FA code.",
+			"wrong": "Incorrect username or password.",
+			"loadPasskey": "Load passkey",
+			"name": "Username",
+			"title": "Login",
+			"password": "Password",
+			"button": "Log in"
+		}
+	},
+
+	"account": {
+		"title": "Account settings",
+		"switchLanguage": "Switch Language",
+
+		"password": {
+			"title": "Change password",
+			"current": "Current password",
+			"new": "New password",
+			"repeat": "Repeat new password",
+			"change": "Change password",
+			"changedSuccess": "Password changed successfully.",
+			"fillAllError": "Please fill out all fields.",
+			"mismatchError": "New passwords do not match.",
+			"changeFailedError": "Could not change password."
+		},
+
+		"totp": {
+			"title": "Authenticator app (TOTP)",
+			"description": "Use this to set up or replace your 2FA token. After enabling it, you’ll need to enter a 6-digit code when logging in.",
+			"secret": "Secret",
+			"secretHint": "If you can’t scan a QR code, most authenticator apps let you add an account by entering this secret manually.",
+			"generate": "Generate new token",
+			"confirm": "Confirm token",
+			"disable": "Disable 2FA",
+			"qrAlt": "TOTP setup QR code",
+
+			"enabledInfo": "Two-factor authentication is enabled.",
+			"createdSuccess": "New 2FA token created. Add it to your authenticator app, then confirm with a code.",
+			"enabledSuccess": "Two-factor authentication enabled.",
+			"disabledSuccess": "Two-factor authentication disabled.",
+			"enterCodeError": "Please enter a 2FA code.",
+			"invalidCodeError": "Invalid 2FA code.",
+			"setupFailedError": "Could not start 2FA setup.",
+			"disableFailedError": "Could not disable 2FA."
+		},
+
+		"passkeys": {
+			"title": "Passkeys (WebAuthn)",
+			"register": "Register passkey",
+			"login": "Sign in with passkey",
+			"remove": "Remove passkey",
+			"configuredInfo": "Passkey is set up.",
+			"verifiedSuccess": "Success! Your passkey works as expected.",
+			"operationFailedError": "Could not complete passkey operation."
+		},
+
+		"delete": {
+			"title": "Delete account",
+			"description": "This will permanently delete your account and all associated data (e.g. project memberships). You will be signed out.",
+			"action": "Delete my account",
+			"notLoggedInError": "You are not logged in.",
+			"failedError": "Could not delete your account."
+		}
+	},
+
+	"errors": {
+		"generic": "Something went wrong. Please try again."
+	},
+
+	"common": {
+		"hello": "Hello",
+		"create": "Create",
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"copy": "Copy",
+		"deleteConfirmation": "Delete this item? This cannot be undone.",
+		"confirm": "Confirm",
+		"close": "Close",
+		"edit": "Edit",
+		"selected": "selected",
+		"accept": "Accept",
+		"discard": "Discard",
+		"name": "Name",
+		"description": "Description",
+		"linked": "Linked",
+		"searchName": "Search by name...",
+		"years": "{count} year(s)",
+		"days": "{count} day(s)"
+	}
+}
