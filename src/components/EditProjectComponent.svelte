@@ -1,4 +1,5 @@
 <script lang="ts">
+import { _ } from "svelte-i18n";
 import { updateProject } from "$lib/api";
 import type { Project } from "$lib/types";
 import IconSelector from "./IconSelector.svelte";
@@ -41,7 +42,7 @@ async function onUpdateproject() {
 
 <dialog id="edit-project-modal" bind:this={modal} class="modal">
   <div class="modal-box">
-    <h3 class="text-lg font-bold">Edit project</h3>
+    <h3 class="text-lg font-bold">{$_("projects.edit")}</h3>
     <form class="flex flex-col gap-3 mt-3">
       <IconSelector initialIcon={project.icon ?? null} onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}} />
 
@@ -50,9 +51,9 @@ async function onUpdateproject() {
     </form>
     <div class="modal-action">
       <form method="dialog" class="flex gap-3 w-full justify-end">
-        <button class="btn" onclick={ondismiss}>Close</button>
+        <button class="btn" onclick={ondismiss}>{$_("common.close")}</button>
         <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-primary" onclick={onUpdateproject} disabled={iconRequiresConfirmation}>Confirm</button>
+        <button class="btn btn-primary" onclick={onUpdateproject} disabled={iconRequiresConfirmation}>{$_("common.confirm")}</button>
       </form>
     </div>
   </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { createTaskKeyResult, getTasksKeyResult } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
@@ -40,7 +41,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<h1>Create a Task</h1>
+<h1>{$_("tasks.createTitle")}</h1>
 
 <form id="task-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3 p-3">
   <div class="form-control">
@@ -56,11 +57,13 @@ async function handleSubmit(e: SubmitEvent) {
   </div>
 
   <div class="form-control md:col-span-2">
-    <label for="task-description" class="label"><span class="label-text">Description</span></label>
+    <label for="task-description" class="label">
+      <span class="label-text">{$_("common.description")}</span>
+    </label>
     <textarea
       id="task-description"
       bind:value={description}
-      placeholder="Description"
+      placeholder={$_("common.description")}
       class="textarea textarea-bordered w-full"
       rows="3"
     ></textarea>
@@ -68,24 +71,24 @@ async function handleSubmit(e: SubmitEvent) {
 
   <div class="form-control">
     <label for="task-state" class="label">
-      <span class="label-text">State</span>
+      <span class="label-text">{$_("tasks.state")}</span>
     </label>
     <select id="task-state" bind:value={taskState} class="select select-bordered">
-      <option value="open">open</option>
-      <option value="planned">planned</option>
-      <option value="in_progress">in_progress</option>
-      <option value="done">done</option>
-      <option value="cancelled">cancelled</option>
+      <option value="open">{$_("tasks.open")}</option>
+      <option value="planned">{$_("tasks.planned")}</option>
+      <option value="in_progress">{$_("tasks.inProgress")}</option>
+      <option value="done">{$_("tasks.done")}</option>
+      <option value="cancelled">{$_("tasks.cancelled")}</option>
     </select>
   </div>
 
   <div class="md:col-span-2 flex justify-end">
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">{$_("common.create")}</button>
   </div>
 </form>
 
 <div class="p-3">
-  <h1>Tasks</h1>
+  <h1>{$_("tasks.title")}</h1>
   <div id="tasks-list">
     <TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
   </div>

@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 import { Edit, Trash } from "@lucide/svelte";
+import { _ } from "svelte-i18n";
 import { deleteTask } from "$lib/api";
 import type { Task } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
@@ -36,14 +37,21 @@ async function onDeleteTask() {
       <Trash size="16" />
     </button>
   </div>
-  <div class="card-body">
-      <h3 class="card-title">{title}</h3>
-      {#if details?.trim()}
-        <p>{details}</p>
-      {/if}
-      <div class="text-sm opacity-70">State: {task.task_state}</div>      
+<div class="card-body">
+  <h3 class="card-title">{title}</h3>
+
+  {#if details?.trim()}
+    <p>{details}</p>
+  {/if}
+
+  <div class="text-sm opacity-70">
+    {$_("tasks.state")}:
+    {task.task_state === "in_progress"
+      ? $_("tasks.inProgress")
+      : $_(`tasks.${task.task_state}`)}
   </div>
+</div>
 </li>
 
 <EditTaskComponent show={showEditDialog} task={task} ondismiss={() => showEditDialog = false} />
-<ConfirmationDialog show={showConfirmationDialog} message="Delete task" onconfirm={onDeleteTask} ondismiss={() => showConfirmationDialog = false} />
+<ConfirmationDialog show={showConfirmationDialog} message={$_("tasks.delete")} onconfirm={onDeleteTask} ondismiss={() => showConfirmationDialog = false} />

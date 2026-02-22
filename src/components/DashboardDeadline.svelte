@@ -1,4 +1,5 @@
 <script lang="ts">
+import { _, locale } from "svelte-i18n";
 import type { Project } from "$lib/types";
 import { formatDate } from "$lib/utils";
 
@@ -10,7 +11,7 @@ const { projects } = $props<{
 <aside class="w-64 shrink-0 mr-5">
     <div class="card card-border">
         <div class="p-4">
-            <h2 class="text-base font-semibold mb-3">Closest deadlines</h2>
+            <h2 class="text-base font-semibold mb-3">{$_("dashboard.upcomingDeadline")}</h2>
 
             {#if projects.length > 0}
                 <div class="flex flex-col gap-3">
@@ -24,14 +25,14 @@ const { projects } = $props<{
                                     {project.name}
                                 </span>
                                 <span class="text-sm opacity-70">
-                                    {formatDate(project.deadline)}
+                                    {formatDate(new Date(project.deadline), $locale)}
                                 </span>
                             </div>
                         </a>
                     {/each}
                 </div>
             {:else}
-                <p class="text-sm opacity-60">No upcoming deadlines</p>
+                <p class="text-sm opacity-60">{$_("dashboard.noUpcomingDeadlines")}</p>
             {/if}
         </div>
     </div>

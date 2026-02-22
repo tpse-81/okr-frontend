@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import {
 	getObjectives,
 	linkObjectiveToProject,
@@ -100,13 +101,13 @@ async function onconfirm() {
 
 <dialog id="link-objectives-modal" bind:this={modal} class="modal">
   <div class="modal-box">
-    <h3 class="text-lg font-bold">Objectives for { projectName }</h3>
+    <h3 class="text-lg font-bold">{$_("projects.objectivesForTitle", {values: {projectName}})}</h3>
     <table class="table table-zebra w-full">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Linked?</th>
+          <th>{$_("common.name")}</th>
+          <th>{$_("common.description")}</th>
+          <th>{$_("common.linked")}</th>
         </tr>
       </thead>
       <tbody>
@@ -121,8 +122,8 @@ async function onconfirm() {
     </table>
     <div class="modal-action">
       <form method="dialog" class="flex gap-3 w-full justify-end">
-        <button class="btn" onclick={ondismiss}>Cancel</button>
-        <button class="btn btn-primary" onclick={onconfirm}>Okay</button>
+        <button class="btn" onclick={ondismiss}>{$_("common.cancel")}</button>
+        <button class="btn btn-primary" onclick={onconfirm}>{$_("common.confirm")}</button>
       </form>
     </div>
   </div>

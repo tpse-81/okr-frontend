@@ -1,4 +1,5 @@
 <script lang="ts">
+import { _ } from "svelte-i18n";
 import type { ProjectRole, User } from "$lib/types";
 
 type Mode = "member" | "nonMember";
@@ -51,7 +52,7 @@ const roleSelectDisabled = $derived(
       <div class="min-w-0">
         <div class="font-medium truncate">{props.user.name}</div>
         {#if props.user.is_admin}
-          <div class="badge badge-outline badge-sm">admin</div>
+          <div class="badge badge-outline badge-sm">{$_("users.admin")}</div>
         {/if}
       </div>
     </div>
@@ -61,17 +62,17 @@ const roleSelectDisabled = $derived(
 
   <td class="w-44">
     {#if props.user.is_admin}
-      <span class="badge badge-outline badge-sm">admin</span>
+      <span class="badge badge-outline badge-sm">{$_("users.admin")}</span>
     {:else if props.mode === "nonMember"}
-      <span class="opacity-50 text-sm">member</span>
+      <span class="opacity-50 text-sm">{$_("users.member")}</span>
       {#if !manageTarget}
-        <div class="text-xs opacity-60 mt-1">only admin can add this user</div>
+        <div class="text-xs opacity-60 mt-1">{$_("users.onlyAdminCanAddUser")}</div>
       {/if}
     {:else}
       {#if !canManageAnything || !manageTarget}
         <span class="badge badge-outline badge-sm">{props.roleLabel(currentRole)}</span>
         {#if canManageAnything && !manageTarget}
-          <div class="text-xs opacity-60 mt-1">only admin can edit</div>
+          <div class="text-xs opacity-60 mt-1">{$_("users.onlyAdminCanEdit")}</div>
         {/if}
       {:else}
         <select
@@ -80,12 +81,12 @@ const roleSelectDisabled = $derived(
           disabled={roleSelectDisabled}
           onchange={() => props.onChangeRole(props.user, currentRole)}
         >
-          <option value="member">member</option>
-          <option value="leader">teamlead</option>
+          <option value="member">{$_("users.member")}</option>
+          <option value="leader">{$_("users.teamlead")}</option>
         </select>
 
         {#if !viewerIsAdmin && currentRole === "leader"}
-          <div class="text-xs opacity-60 mt-1">teamleads cannot be edited by teamleads</div>
+          <div class="text-xs opacity-60 mt-1">{$_("users.teamleadsCannotEditTeamleads")}</div>
         {/if}
       {/if}
     {/if}

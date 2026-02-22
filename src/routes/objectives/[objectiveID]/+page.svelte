@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { createKeyResult, getKeyResultObjective } from "$lib/api";
 import type { KeyResult } from "$lib/types";
@@ -47,17 +48,17 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<h1>Create a Key Result for {objectiveName}</h1>
+<h1>{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
 
 <form id="keyResultSubmit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="text" id="description" bind:value={description} placeholder="description" class="input w-full" required>
-    <input type="number" step="any" id="start-value" bind:value={startValue} placeholder="start value" class="input w-full" required>
-    <input type="number" step="any" id="end-value" bind:value={endValue} placeholder="end value" class="input w-full" required>
+    <input type="text" id="description" bind:value={description} placeholder={$_("common.description")} class="input w-full" required>
+    <input type="number" step="any" id="start-value" bind:value={startValue} placeholder={$_("keyResults.start")} class="input w-full" required>
+    <input type="number" step="any" id="end-value" bind:value={endValue} placeholder={$_("keyResults.target")} class="input w-full" required>
     <input type="submit" value="Create" class="btn btn-primary">
 </form>
 
 <div class="p-3">
-    <h1>Key Results for {objectiveName}</h1>
+    <h1>{$_("keyResults.titleForObjective", {values: {objectiveName: objectiveName}})}</h1>
     {#if keyResultList.length > 0}
         <ul id="key-results-list" class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}
@@ -65,6 +66,6 @@ async function handleSubmit(e: SubmitEvent) {
             {/each}
         </ul>
     {:else}
-        <p>Keine Key Results geladen</p>
+        <p>{$_("keyResults.empty")}</p>
     {/if}
 </div>
