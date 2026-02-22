@@ -2,7 +2,13 @@
 import { Check, Minus } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import { createUser, deleteUser, getUsers, resetUserPassword } from "$lib/api";
+import {
+	createUser,
+	deleteUser,
+	getUsers,
+	promoteUser,
+	resetUserPassword,
+} from "$lib/api";
 import type { User } from "$lib/types";
 import { userInfoStore } from "$lib/user_info";
 import { copyToClipboard, generatePassword } from "$lib/utils";
@@ -14,6 +20,7 @@ let password: string = $state("");
 let email: string = $state("");
 
 let users: User[] = $state([]);
+let adminCount = $derived(users.filter((u) => u.is_admin).length);
 let loading = $state(false);
 let errorMessage: string | null = $state(null);
 
@@ -31,6 +38,10 @@ let setPasswordModal: HTMLDialogElement;
 let showSetPasswordDialog = $state(false);
 let userForPassword: User | null = $state(null);
 let passwordInput = $state("");
+
+// Promote to admin
+let showPromoteToAdminDialog = $state(false);
+let userForPromotion: User | null = $state(null);
 
 $effect(() => {
 	if (!passwordModal) return;
@@ -96,6 +107,11 @@ function openSetPassword(u: User) {
 	showSetPasswordDialog = true;
 }
 
+function openPromoteToAdmin(u: User) {
+	userForPromotion = u;
+	showPromoteToAdminDialog = true;
+}
+
 async function confirmSetPassword() {
 	if (!userForPassword) return;
 	errorMessage = null;
@@ -153,6 +169,26 @@ async function confirmDelete() {
 function dismissDelete() {
 	showDeleteDialog = false;
 	userToDelete = null;
+}
+
+async function confirmPromoteUserToAdmin() {
+	if (!userForPromotion) return;
+
+	errorMessage = null;
+	try {
+		await promoteUser(userForPromotion.id);
+		showPromoteToAdminDialog = false;
+		userForPromotion = null;
+		await refreshUsers();
+	} catch (e) {
+		console.error(e);
+		errorMessage = $_("users.promoteToAdminError");
+	}
+}
+
+function dismissPromoteToAdmin() {
+	showPromoteToAdminDialog = false;
+	userForPromotion = null;
 }
 
 // can't be put into onMount because it's a race condition
@@ -241,16 +277,24 @@ onMount(() => {
 								</td>
 								<td class="text-right">
 									<div class="flex gap-2 justify-end">
+										{#if !u.is_admin}
 										<button class="btn btn-sm" onclick={() => openSetPassword(u)}>
 											{$_("users.setPassword")}
 										</button>
 
+										<button class="btn btn-sm btn-warning" onclick={() => openPromoteToAdmin(u)}>
+											{$_("users.promoteToAdmin")}
+										</button>
+										{/if}
+
 										<button
-											class="btn btn-sm btn-error"
-											disabled={u.id === $userInfoStore?.id}
+											class="btn btn-sm btn-error pointer-events-auto"
+											disabled={($userInfoStore.id !== u.id && u.is_admin) || ($userInfoStore.id === u.id && adminCount == 1)}
 											onclick={() => askDelete(u)}
-											title={u.id === $userInfoStore?.id
+											title={u.id === $userInfoStore?.id && adminCount == 1
 												? $_("users.deleteSelfError")
+												: u.id !== $userInfoStore.id && u.is_admin
+												? $_("users.deleteAdminError")
 												: ""}
 										>
 											{$_("common.delete")}
@@ -271,6 +315,14 @@ onMount(() => {
 	message={userToDelete ? $_("users.deletionQuestionWithName", {values: {name: userToDelete.name}}) : $_("users.deletionQuestion")}
 	onconfirm={() => void confirmDelete()}
 	ondismiss={dismissDelete}
+/>
+
+<ConfirmationDialog
+	show={showPromoteToAdminDialog}
+	message={userForPromotion ? $_("users.promoteToAdminMessage", {values: {name: userForPromotion.name}}) : $_("users.promoteToAdmin")}
+	explanation={$_("users.promoteToAdminWarning")}
+	onconfirm={() => void confirmPromoteUserToAdmin()}
+	ondismiss={dismissPromoteToAdmin}
 />
 
 <dialog bind:this={setPasswordModal} class="modal">

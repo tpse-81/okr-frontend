@@ -121,7 +121,12 @@
 		"tooltipPasswordChange": "Change manually or regenerate password",
 		"generatePasswordButton": "Regenerate",
 		"setPassword": "Set password",
+		"promoteToAdmin": "Promote to admin",
+		"promoteToAdminMessage": "Promote {name} to admin",
+		"promoteToAdminWarning": "Are you sure? You can't demote the user anymore afterwards, so the user will stay admin forever.",
+		"promoteToAdminError": "Failed to promote user to admin",
 		"deleteSelfError": "You can't delete yourself",
+		"deleteAdminError": "You can't delete other admins",
 		"deletionQuestion": "Delete user?",
 		"deletionQuestionWithName": "Delete user {name}?",
 		"login": {
