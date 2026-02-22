@@ -71,6 +71,14 @@ export async function createUser(
 	return response.json();
 }
 
+export async function promoteUser(user_id: string) {
+	const response = await baseFetch(`/users/${user_id}/promote`, {
+		method: "PATCH",
+	});
+
+	return response.json();
+}
+
 export async function loginUser(
 	username: string,
 	password: string,

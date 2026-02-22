@@ -7,11 +7,13 @@ let modal: HTMLDialogElement;
 let {
 	show,
 	message,
+	explanation = $_("common.deleteConfirmation"),
 	onconfirm,
 	ondismiss,
 }: {
 	show: boolean;
 	message: string;
+	explanation?: string;
 	onconfirm: () => void;
 	ondismiss: () => void;
 } = $props();
@@ -25,7 +27,7 @@ $effect(() => {
 <dialog id="confirmation-modal" bind:this={modal} class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">{ message }</h3>
-    <p class="py-4">{$_("common.deleteConfirmation")}</p>
+    <p class="py-4">{explanation}</p>
     <div class="modal-action">
       <form method="dialog" class="flex gap-3 w-full justify-end">
         <button class="btn" onclick={ondismiss}>{$_("common.close")}</button>

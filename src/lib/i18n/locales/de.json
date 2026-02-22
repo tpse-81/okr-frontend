@@ -120,7 +120,12 @@
 		"tooltipPasswordChange": "Passwort manuell ändern oder neu generieren",
 		"generatePasswordButton": "Neu generieren",
 		"setPassword": "Passwort setzen",
+		"promoteToAdmin": "Zum Admin befördern",
+		"promoteToAdminMessage": "Befördere {name} zum Admin",
+		"promoteToAdminWarning": "Bist du dir sicher? Danach kannst du den Admin nicht mehr degradieren.",
+		"promoteToAdminError": "Benutzer befördern fehlgeschlagen",
 		"deleteSelfError": "Du kannst dich nicht selbst löschen.",
+		"deleteAdminError": "Du kannst andere Admins nicht löschen.",
 		"deletionQuestion": "Benutzer löschen?",
 		"deletionQuestionWithName": "Benutzer {name} löschen?",
 		"login": {
