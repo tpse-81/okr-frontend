@@ -41,7 +41,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<div class="card card-border m-3">
+<div class="card bg-base-100 border border-base-300">
 	<div class="px-3 pt-3 card-title">{$_("tasks.createTitle")}</div>
 
 	<form
