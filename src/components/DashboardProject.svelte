@@ -56,7 +56,7 @@ let btn: HTMLButtonElement | null = $state(null);
     <button
             bind:this={btn}
             type="button"
-            class="btn btn-xs btn-ghost z-20"
+            class="btn btn-xs btn-ghost"
             onclick={() => showObjectives = !showObjectives}
     >
         <ChevronDown class="h-3 w-3"/>
@@ -65,7 +65,7 @@ let btn: HTMLButtonElement | null = $state(null);
         {@const r = btn.getBoundingClientRect()}
 
         <div
-                class="fixed z-50 bg-base-100 border rounded-lg shadow-lg p-3 text-sm"
+                class="fixed bg-base-100 border rounded-lg shadow-lg p-3 text-sm"
                 style="
             left: {r.left}px;
             top: {r.bottom + 8}px;
