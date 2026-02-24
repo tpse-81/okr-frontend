@@ -37,6 +37,7 @@ export type TaskState =
 
 export interface Task {
 	id: string;
+	name: string;
 	description: string;
 	task_state: TaskState;
 	key_result_id: string;

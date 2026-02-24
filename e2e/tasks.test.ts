@@ -3,8 +3,11 @@ import { expect, keyResultBaseTest, uniq } from "./fixtures";
 keyResultBaseTest(
 	"can create a task for a key result and see it in the list",
 	async ({ keyResultPage: page }) => {
-		const taskDesc = uniq("e2e-task");
-		await page.locator("#task-submit #description").fill(taskDesc);
+		const taskTitle = uniq("e2e-task-title");
+		const taskDesc = uniq("e2e-task-desc");
+
+		await page.locator("#task-submit #task-name").fill(taskTitle);
+		await page.locator("#task-submit #task-description").fill(taskDesc);
 		await page.locator("#task-submit select").selectOption("open");
 
 		const [createRes] = await Promise.all([
@@ -12,7 +15,7 @@ keyResultBaseTest(
 				(res) =>
 					res.url().includes("/tasks") && res.request().method() === "POST",
 			),
-			page.locator("#task-submit input[type=submit]").click(),
+			page.locator("#task-submit button[type=submit]").click(),
 		]);
 		expect(createRes.ok()).toBeTruthy();
 
@@ -24,11 +27,14 @@ keyResultBaseTest(
 	"cannot create task without description (required)",
 	async ({ keyResultPage: page }) => {
 		// description leer lassen
-		await page.locator("#task-submit input[type=submit]").click();
+		const taskTitle = uniq("e2e-task-title");
+		await page.locator("#task-submit #task-name").fill(taskTitle);
 
-		await expect(page.locator("#task-submit #description")).toHaveJSProperty(
-			"validity.valueMissing",
-			true,
-		);
+		// description absichtlich leer lassen
+		await page.locator("#task-submit button[type=submit]").click();
+
+		await expect(
+			page.locator("#task-submit #task-description"),
+		).toHaveJSProperty("validity.valueMissing", true);
 	},
 );
