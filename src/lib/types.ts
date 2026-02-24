@@ -56,3 +56,12 @@ export interface TwoFaRequiredResponse {
 }
 
 export type ProjectRole = "leader" | "member";
+
+export const taskStates: { state: TaskState; label: string; badge: string }[] =
+	[
+		{ state: "open", label: "tasks.open", badge: "badge-ghost" },
+		{ state: "planned", label: "tasks.planned", badge: "badge-warning" },
+		{ state: "in_progress", label: "tasks.in_progress", badge: "badge-info" },
+		{ state: "done", label: "tasks.done", badge: "badge-success" },
+		{ state: "cancelled", label: "tasks.cancelled", badge: "badge-error" },
+	];
