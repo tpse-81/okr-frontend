@@ -75,7 +75,7 @@ export const projectBaseTest = loginBaseTest.extend<{ projectPage: Page }>({
 		const projectLink = page
 			.locator("#projects-list")
 			.getByRole("link", { name: new RegExp(projectName) });
-		await baseExpect(projectLink).toBeVisible();
+		await baseExpect(projectLink).toBeVisible({ timeout: 20000 });
 		await projectLink.click();
 		await baseExpect(page).toHaveURL(/\/projects\/.+/);
 

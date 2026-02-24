@@ -14,7 +14,10 @@ import type { Task } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
 
-let { task, onTaskDeleted }: { task: Task; onTaskDeleted: (id: string) => void } = $props();
+let {
+	task,
+	onTaskDeleted,
+}: { task: Task; onTaskDeleted: (id: string) => void } = $props();
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
 
@@ -46,7 +49,7 @@ async function onDeleteTask() {
 
   <div class="text-sm opacity-70">
     {$_("tasks.state")}:
-    {task.task_state === "in_progress"
+    {task.task_state === "inProgress"
       ? $_("tasks.inProgress")
       : $_(`tasks.${task.task_state}`)}
   </div>

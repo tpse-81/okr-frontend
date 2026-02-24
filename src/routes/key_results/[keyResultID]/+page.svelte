@@ -35,56 +35,71 @@ async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 	await createTaskKeyResult(keyResultID, name, description, taskState);
 
-  await loadTasks();
-  name = "";
-  description = "";
+	await loadTasks();
+	name = "";
+	description = "";
 }
 </script>
 
 <h1>{$_("tasks.createTitle")}</h1>
 
-<form id="task-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3 p-3">
-  <div class="form-control">
-    <label for="task-name" class="label"><span class="label-text">Title</span></label>
-    <input
-      id="task-name"
-      type="text"
-      bind:value={name}
-      placeholder="Title"
-      class="input input-bordered w-full"
-      required
-    />
-  </div>
+<form
+	id="task-submit"
+	onsubmit={handleSubmit}
+	class="grid grid-cols-1 gap-3 p-3 md:grid-cols-[1fr_auto] md:items-end"
+>
+	<!-- Left column: title + description + status stacked -->
+	<div class="flex flex-col gap-3">
+		<div class="form-control">
+			<label for="task-name" class="label">
+				<span class="label-text">Title</span>
+			</label>
+			<input
+				id="task-name"
+				type="text"
+				bind:value={name}
+				placeholder="Title"
+				class="input input-bordered w-full"
+				required
+			/>
+		</div>
 
-  <div class="form-control md:col-span-2">
-    <label for="task-description" class="label">
-      <span class="label-text">{$_("common.description")}</span>
-    </label>
-    <textarea
-      id="task-description"
-      bind:value={description}
-      placeholder={$_("common.description")}
-      class="textarea textarea-bordered w-full"
-      rows="3"
-    ></textarea>
-  </div>
+		<div class="form-control">
+			<label for="task-description" class="label">
+				<span class="label-text">{$_("common.description")}</span>
+			</label>
+			<textarea
+				id="task-description"
+				bind:value={description}
+				placeholder={$_("common.description")}
+				class="textarea textarea-bordered w-full"
+				rows="3"
+        required
+			></textarea>
+		</div>
 
-  <div class="form-control">
-    <label for="task-state" class="label">
-      <span class="label-text">{$_("tasks.state")}</span>
-    </label>
-    <select id="task-state" bind:value={taskState} class="select select-bordered">
-      <option value="open">{$_("tasks.open")}</option>
-      <option value="planned">{$_("tasks.planned")}</option>
-      <option value="in_progress">{$_("tasks.inProgress")}</option>
-      <option value="done">{$_("tasks.done")}</option>
-      <option value="cancelled">{$_("tasks.cancelled")}</option>
-    </select>
-  </div>
+		<div class="form-control">
+			<label for="task-state" class="label">
+				<span class="label-text">{$_("tasks.state")}</span>
+			</label>
+			<select
+				id="task-state"
+				bind:value={taskState}
+				class="select select-bordered w-full"
+			>
+				<option value="open">{$_("tasks.open")}</option>
+				<option value="planned">{$_("tasks.planned")}</option>
+				<option value="in_progress">{$_("tasks.inProgress")}</option>
+				<option value="done">{$_("tasks.done")}</option>
+				<option value="cancelled">{$_("tasks.cancelled")}</option>
+			</select>
+		</div>
+	</div>
 
-  <div class="md:col-span-2 flex justify-end">
-    <button type="submit" class="btn btn-primary">{$_("common.create")}</button>
-  </div>
+	<!-- Right column: create button -->
+	<button type="submit" class="btn btn-primary md:mb-1">
+		{$_("common.create")}
+	</button>
 </form>
 
 <div class="p-3">
