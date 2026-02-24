@@ -10,17 +10,9 @@
 import { Edit, Trash, XCircle } from "@lucide/svelte";
 import { _ } from "svelte-i18n";
 import { deleteTask, updateTask } from "$lib/api";
-import type { Task, TaskState } from "$lib/types";
+import { type Task, type TaskState, taskStates } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
-
-const taskStates: { state: TaskState; label: string; badge: string }[] = [
-	{ state: "open", label: "tasks.open", badge: "badge-ghost" },
-	{ state: "planned", label: "tasks.planned", badge: "badge-warning" },
-	{ state: "in_progress", label: "tasks.in_progress", badge: "badge-info" },
-	{ state: "done", label: "tasks.done", badge: "badge-success" },
-	{ state: "cancelled", label: "tasks.cancelled", badge: "badge-error" },
-];
 
 const taskStateMap = taskStates.reduce(
 	(acc, s) => {

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
 import { updateTask } from "$lib/api";
-import type { Task, TaskState } from "$lib/types";
+import { type Task, type TaskState, taskStates } from "$lib/types";
 
 let {
 	show,
@@ -66,11 +66,9 @@ async function onUpdateTask() {
       <div class="modal-action">
         <div class="flex w-full items-center justify-between gap-3">
           <select bind:value={taskState} class="select select-bordered w-44 sm:w-56">
-            <option value="open">{$_("tasks.open")}</option>
-            <option value="planned">{$_("tasks.planned")}</option>
-            <option value="in_progress">{$_("tasks.in_progress")}</option>
-            <option value="done">{$_("tasks.done")}</option>
-            <option value="cancelled">{$_("tasks.cancelled")}</option>
+            {#each taskStates as state}
+              <option value={state.state}>{$_(state.label)}</option>
+            {/each}
           </select>
 
           <div class="flex gap-3">
