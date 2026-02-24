@@ -13,6 +13,7 @@ import {
 	setUserInfo,
 	userInfoStore,
 } from "$lib/user_info";
+import ForcePasswordChangeDialog from "../components/ForcePasswordChangeDialog.svelte";
 import LanguageSwitch from "../components/LanguageSwitch.svelte";
 
 const i18nReady = waitLocale();
@@ -24,6 +25,16 @@ let checkbox: HTMLInputElement;
 
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
 const excludedPaths = ["/login"];
+
+const passwordChangeRequired = $derived(
+	Boolean($userInfoStore?.must_change_password),
+);
+
+let forcePwDialogOpen = $state(false);
+
+$effect(() => {
+	forcePwDialogOpen = Boolean($userInfoStore?.must_change_password);
+});
 
 async function logoutUser() {
 	try {
@@ -116,23 +127,31 @@ function changeTheme() {
         	<!-- sections to only show if not logged in -->
         	{#if $userInfoStore == null}
           	<li><a href="/login">{$_("nav.login")}</a></li>
+
         	{/if}
 
         	<!-- sections to only show if logged in -->
-        	{#if $userInfoStore}
-            <li><a href="/dashboard">{$_("dashboard.title")}</a></li>
-          	<li><a href="/projects">{$_("projects.title")}</a></li>
-          	<li><a href="/objectives">{$_("objectives.title")}</a></li>
-          	<li><a href="/key_results">{$_("keyResults.title")}</a></li>
-            <li><a href="/tasks">{$_("tasks.title")}</a></li>
-          {/if}
+          {#if $userInfoStore}
+            {#if passwordChangeRequired}
+              <li><a href="/account">{$_("account.title")}</a></li>
+            {:else}
+              <li><a href="/dashboard">{$_("dashboard.title")}</a></li>
+              <li><a href="/projects">{$_("projects.title")}</a></li>
+              <li><a href="/objectives">{$_("objectives.title")}</a></li>
+              <li><a href="/key_results">{$_("keyResults.title")}</a></li>
+              <li><a href="/tasks">{$_("tasks.title")}</a></li>
 
-          <!-- visually separated admin section -->
-          {#if $userInfoStore?.is_admin}
-            <div class="divider divider-error mt-4"></div>
-            <li>
-              <a href="/user" class="text-error flex items-center justify-between"><span>{$_("users.title")}</span><span class="badge badge-error badge-sm">{$_("users.admin")}</span></a>
-            </li>
+              <!-- visually separated admin section -->
+              {#if $userInfoStore?.is_admin}
+                <div class="divider divider-error mt-4"></div>
+                <li>
+                  <a href="/user" class="text-error flex items-center justify-between">
+                    <span>{$_("users.title")}</span>
+                    <span class="badge badge-error badge-sm">{$_("users.admin")}</span>
+                  </a>
+                </li>
+              {/if}
+            {/if}
           {/if}
         </ul>
       </div>
@@ -182,3 +201,10 @@ function changeTheme() {
 {@render children()}
 {/await}
 
+{#if $userInfoStore}
+	<ForcePasswordChangeDialog
+		open={forcePwDialogOpen}
+		userInfo={$userInfoStore}
+		ondismiss={() => (forcePwDialogOpen = false)}
+	/>
+{/if}

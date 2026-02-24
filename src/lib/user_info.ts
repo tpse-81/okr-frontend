@@ -14,8 +14,12 @@ function getUserInfo(): User | null {
 	const userInfoString = window.localStorage.getItem(USER_INFO_STORAGE_KEY);
 	if (!userInfoString) return null;
 
-	const userInfo: User = JSON.parse(userInfoString);
-	return userInfo;
+	const raw = JSON.parse(userInfoString) as Partial<User>;
+	// backward-compatible default for older localStorage entries
+	return {
+		...raw,
+		must_change_password: raw.must_change_password ?? false,
+	} as User;
 }
 
 export function setUserInfo(userInfo: User | null) {

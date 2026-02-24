@@ -8,6 +8,7 @@ import { goto } from "$app/navigation";
 import {
 	APIError,
 	changePassword,
+	changeUserPassword,
 	deleteUser,
 	getWebauthnAuthenticationOptions,
 	getWebauthnRegistrationOptions,
@@ -152,6 +153,11 @@ async function handleChangePassword(e: SubmitEvent) {
 
 	try {
 		await changePassword(userId, oldPassword, newPassword);
+
+		if ($userInfoStore?.must_change_password) {
+			setUserInfo({ ...$userInfoStore, must_change_password: false });
+		}
+
 		passwordSuccess = $_("account.password.changedSuccess");
 		oldPassword = "";
 		newPassword = "";
@@ -296,11 +302,13 @@ onMount(async () => {
           bind:password={newPassword}
         	userInfo={$userInfoStore!}
           placeholder={$_("account.password.new")}
+		  class="w-full"
         />
         <PasswordStrengthInput
           bind:password={newPasswordRepeat}
         	userInfo={$userInfoStore!}
           placeholder={$_("account.password.repeat")}
+		  class="w-full"
         />
         <div>
           <button class="btn btn-primary w-max" type="submit">{$_("account.password.change")}</button>

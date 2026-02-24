@@ -150,7 +150,8 @@
 			"changedSuccess": "Passwort erfolgreich geändert.",
 			"fillAllError": "Bitte fülle alle Felder aus.",
 			"mismatchError": "Die neuen Passwörter stimmen nicht überein.",
-			"changeFailedError": "Passwort konnte nicht geändert werden."
+			"changeFailedError": "Passwort konnte nicht geändert werden.",
+			"temporaryPasswordWarning": "Dein Account verwendet ein temporäres Passwort. Bitte ändere dein Passwort, um fortzufahren."
 		},
 
 		"totp": {
