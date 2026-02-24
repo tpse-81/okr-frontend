@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Check, CircleX, LogOut } from "@lucide/svelte";
+import { CircleX, LogOut } from "@lucide/svelte";
 import { goto } from "$app/navigation";
 import { changeUserPassword, logout } from "$lib/api";
 import type { User } from "$lib/types";
@@ -9,9 +9,11 @@ import PasswordStrengthInput from "./PasswordStrengthInput.svelte";
 let {
 	open = false,
 	userInfo,
+	ondismiss,
 }: {
 	open: boolean;
 	userInfo: User;
+	ondismiss: () => void;
 } = $props();
 
 let dialog: HTMLDialogElement;
@@ -20,7 +22,6 @@ let oldPassword = $state("");
 let newPassword = $state("");
 let newPasswordRepeat = $state("");
 let errorMessage: string | null = $state(null);
-let successMessage: string | null = $state(null);
 let pending = $state(false);
 
 $effect(() => {
@@ -47,7 +48,6 @@ async function handleLogout() {
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 	errorMessage = null;
-	successMessage = null;
 
 	if (!oldPassword || !newPassword || !newPasswordRepeat) {
 		errorMessage = "Please fill out all fields.";
@@ -64,7 +64,6 @@ async function handleSubmit(e: SubmitEvent) {
 
 		// update local user cache so the app immediately unlocks navigation
 		setUserInfo({ ...userInfo, must_change_password: false });
-		successMessage = "Password updated.";
 		oldPassword = "";
 		newPassword = "";
 		newPasswordRepeat = "";
@@ -81,7 +80,12 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<dialog bind:this={dialog} class="modal" oncancel={preventClose}>
+<dialog
+	bind:this={dialog}
+	class="modal"
+	oncancel={preventClose}
+	onclose={ondismiss}
+>
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Change your password</h3>
 		<p class="opacity-80 mt-2">
@@ -92,12 +96,6 @@ async function handleSubmit(e: SubmitEvent) {
 			<div class="alert alert-error mt-4">
 				<CircleX size="18" />
 				<span>{errorMessage}</span>
-			</div>
-		{/if}
-		{#if successMessage}
-			<div class="alert alert-success mt-4">
-				<Check size="18" />
-				<span>{successMessage}</span>
 			</div>
 		{/if}
 
@@ -115,14 +113,13 @@ async function handleSubmit(e: SubmitEvent) {
 				bind:password={newPassword}
 				userInfo={userInfo}
 				placeholder="New password"
+				class="w-full"
 			/>
-			<input
-				type="password"
-				autocomplete="new-password"
+			<PasswordStrengthInput
+				bind:password={newPasswordRepeat}
+				userInfo={userInfo}
 				placeholder="Repeat new password"
-				class="input input-bordered"
-				bind:value={newPasswordRepeat}
-				required
+				class="w-full"
 			/>
 
 			<div class="flex justify-between items-center mt-2">

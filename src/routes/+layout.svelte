@@ -24,6 +24,12 @@ const passwordChangeRequired = $derived(
 	Boolean($userInfoStore?.must_change_password),
 );
 
+let forcePwDialogOpen = $state(false);
+
+$effect(() => {
+	forcePwDialogOpen = Boolean($userInfoStore?.must_change_password);
+});
+
 async function logoutUser() {
 	try {
 		await logout();
@@ -131,4 +137,10 @@ $effect(() => {
 
 {@render children()}
 
- <ForcePasswordChangeDialog open={$userInfoStore && passwordChangeRequired} userInfo={$userInfoStore} />
+{#if $userInfoStore}
+	<ForcePasswordChangeDialog
+		open={forcePwDialogOpen}
+		userInfo={$userInfoStore}
+		ondismiss={() => (forcePwDialogOpen = false)}
+	/>
+{/if}
