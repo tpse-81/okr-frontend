@@ -63,9 +63,9 @@ loginBaseTest(
 		await navigateViaDrawer(page, "Projects", "/projects");
 
 		await page.locator("#project-name").fill(`e2e-project-${Date.now()}`);
-		await page.locator("#project-submit button[type=submit]").click();
+		await page.locator("#project-deadline").fill("");
 
-		await page.locator("#project-deadline").clear();
+		await page.locator("#project-submit button[type=submit]").click();
 
 		await expect(page.locator("#project-deadline")).toHaveJSProperty(
 			"validity.valueMissing",

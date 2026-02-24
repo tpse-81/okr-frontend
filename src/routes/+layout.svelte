@@ -1,9 +1,10 @@
 <script lang="ts">
-import { EllipsisIcon, MenuIcon, X } from "@lucide/svelte";
+import { EllipsisIcon, MenuIcon, Moon, Sun, X } from "@lucide/svelte";
 import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
 import { onMount } from "svelte";
+import { _, waitLocale } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { logout } from "$lib/api";
@@ -13,9 +14,14 @@ import {
 	userInfoStore,
 } from "$lib/user_info";
 import ForcePasswordChangeDialog from "../components/ForcePasswordChangeDialog.svelte";
+import LanguageSwitch from "../components/LanguageSwitch.svelte";
+
+const i18nReady = waitLocale();
 
 let { children } = $props();
 let title = "OKR Project";
+let isDark = $state(false);
+let checkbox: HTMLInputElement;
 
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
 const excludedPaths = ["/login"];
@@ -42,19 +48,46 @@ async function logoutUser() {
 }
 
 // run in onMount to ensure that it's run on client side (i.e. window is available)
-let ready = false;
+let userInfoLoaded = false;
 
 onMount(async () => {
 	restoreUserInfoFromStorage();
-	ready = true;
+	userInfoLoaded = true;
+
+	const theme = getInitialTheme();
+	applyTheme(theme);
+	isDark = theme === "luxury";
 });
 
 $effect(() => {
 	const path = page.url.pathname;
-	if (ready && $userInfoStore == null && !excludedPaths.includes(path)) {
+	if (
+		userInfoLoaded &&
+		$userInfoStore == null &&
+		!excludedPaths.includes(path)
+	) {
 		goto("/login");
 	}
 });
+
+function applyTheme(theme: string) {
+	document.documentElement.setAttribute("data-theme", theme);
+	if (checkbox) checkbox.checked = theme === "luxury";
+}
+
+function getInitialTheme(): string {
+	const saved = localStorage.getItem("theme");
+	if (saved) return saved;
+	return window.matchMedia("(prefers-color-scheme: dark)").matches
+		? "luxury"
+		: "cupcake";
+}
+
+function changeTheme() {
+	const theme = checkbox.checked ? "luxury" : "cupcake";
+	localStorage.setItem("theme", theme);
+	applyTheme(theme);
+}
 </script>
 
 <svelte:head>
@@ -62,6 +95,10 @@ $effect(() => {
   <title>{title}</title>
 </svelte:head>
 
+
+{#await i18nReady}
+  <div class="p-4">Loading…</div>
+{:then}
 <div class="navbar bg-base-100 shadow-sm">
   <div class="drawer w-auto">
     <!-- uses the CSS checkbox hack, see https://daisyui.com/components/drawer/ -->
@@ -89,22 +126,31 @@ $effect(() => {
         <ul class="menu w-full">
         	<!-- sections to only show if not logged in -->
         	{#if $userInfoStore == null}
-          	<li><a href="/login">Login</a></li>
+          	<li><a href="/login">{$_("nav.login")}</a></li>
+
         	{/if}
-        	<!-- section to only show if admin -->
-        	{#if $userInfoStore?.is_admin && !passwordChangeRequired}
-          	<li><a href="/user">User</a></li>
-        	{/if}
+
         	<!-- sections to only show if logged in -->
-        	{#if $userInfoStore}
+          {#if $userInfoStore}
             {#if passwordChangeRequired}
-              <li><a href="/account">Change password</a></li>
+              <li><a href="/account">{$_("account.title")}</a></li>
             {:else}
-              <li><a href="/dashboard">Dashboard</a></li>
-              <li><a href="/projects">Projects</a></li>
-              <li><a href="/objectives">Objectives</a></li>
-              <li><a href="/key_results">Key results</a></li>
-              <li><a href="/tasks">Tasks</a></li>
+              <li><a href="/dashboard">{$_("dashboard.title")}</a></li>
+              <li><a href="/projects">{$_("projects.title")}</a></li>
+              <li><a href="/objectives">{$_("objectives.title")}</a></li>
+              <li><a href="/key_results">{$_("keyResults.title")}</a></li>
+              <li><a href="/tasks">{$_("tasks.title")}</a></li>
+
+              <!-- visually separated admin section -->
+              {#if $userInfoStore?.is_admin}
+                <div class="divider divider-error mt-4"></div>
+                <li>
+                  <a href="/user" class="text-error flex items-center justify-between">
+                    <span>{$_("users.title")}</span>
+                    <span class="badge badge-error badge-sm">{$_("users.admin")}</span>
+                  </a>
+                </li>
+              {/if}
             {/if}
           {/if}
         </ul>
@@ -118,24 +164,42 @@ $effect(() => {
 
   <!-- button with more options, e.g. logout -->
   {#if $userInfoStore}
-    <div>
+    <div class="btn btn-ghost text-base pointer-events-none">
         { $userInfoStore?.name ?? "" }
     </div>
 
+    <div class="ml-2">
+    <label class="swap swap-rotate">
+      <!-- this hidden checkbox controls the state -->
+      <input type="checkbox" class="theme-controller" value="luxury" bind:this={checkbox} onchange={changeTheme} checked={isDark}/>
+
+      <!-- sun icon -->
+      <Sun class="swap-off h-6.5 w-6.5" />
+      <!-- moon icon -->
+      <Moon class="swap-on h-6.5 w-6.5"/>
+    </label>
+    </div>
+
+    <!-- language toggle button-->
+    <div class="ml-2">
+      <LanguageSwitch />
+    </div>
+    
     <!-- button with more options, e.g. logout -->
     <div class="dropdown dropdown-end">
       <div tabindex="0" role="button" class="btn btn-square btn-ghost m-1">
         <EllipsisIcon />
       </div>
       <ul tabindex="-1" class="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
-        <li class="btn btn-ghost" on:click={() => goto("/account")}>Account</li>
-        <li class="btn btn-ghost" on:click={logoutUser}>Logout</li>
+        <li class="btn btn-ghost" onclick={() => goto("/account")}>{$_("nav.account")}</li>
+        <li class="btn btn-ghost" onclick={logoutUser}>{$_("nav.logout")}</li>
       </ul>
     </div>
   {/if}
 </div>
 
 {@render children()}
+{/await}
 
 {#if $userInfoStore}
 	<ForcePasswordChangeDialog

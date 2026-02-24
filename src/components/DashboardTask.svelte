@@ -8,17 +8,18 @@
 -->
 <script lang="ts">
 import { Edit, Trash, XCircle } from "@lucide/svelte";
+import { _ } from "svelte-i18n";
 import { deleteTask, updateTask } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
 
 const taskStates: { state: TaskState; label: string; badge: string }[] = [
-	{ state: "open", label: "Todo", badge: "badge-ghost" },
-	{ state: "planned", label: "Backlog", badge: "badge-warning" },
-	{ state: "in_progress", label: "In progress", badge: "badge-info" },
-	{ state: "done", label: "Done", badge: "badge-success" },
-	{ state: "cancelled", label: "Canceled", badge: "badge-error" },
+	{ state: "open", label: "tasks.open", badge: "badge-ghost" },
+	{ state: "planned", label: "tasks.planned", badge: "badge-warning" },
+	{ state: "in_progress", label: "tasks.in_progress", badge: "badge-info" },
+	{ state: "done", label: "tasks.done", badge: "badge-success" },
+	{ state: "cancelled", label: "tasks.cancelled", badge: "badge-error" },
 ];
 
 const taskStateMap = taskStates.reduce(
@@ -101,14 +102,14 @@ async function deleteSelectedTasks() {
 <div class="card card-bordered bg-white-100 h-125">
     <div class="p-4 flex items-center justify-between">
         <div>
-            <h2 class="text-lg font-semibold">Your tasks</h2>
-            <p class="text-sm opacity-60">Here’s a list of your tasks.</p>
+            <h2 class="text-lg font-semibold">{$_("dashboard.availableTasks")}</h2>
+
         </div>
         <div class="flex gap-2 items-center">
             {#if selectedStatuses.length}
                 {#each selectedStatuses as s}
                     <span class="text-sm badge badge-ghost flex items-center gap-1 whitespace-nowrap">
-                    {taskStateMap[s].label}
+                    {$_(taskStateMap[s].label)}
                         <button class="ml-1 btn btn-ghost btn-xs p-0" onclick={() => toggleStatus(s)} aria-label="Remove status">
                             <XCircle class="h-3 w-3" />
                         </button>
@@ -117,7 +118,7 @@ async function deleteSelectedTasks() {
             {/if}
             <div class="dropdown dropdown-bottom">
                 <div tabindex="0" role="button" class="btn btn-sm btn-outline flex items-center gap-2">
-                    Status
+                    {$_("dashboard.status")}
                 </div>
                 <div role="menu" tabindex="0" class="dropdown-content z-1 mt-2 w-52 rounded-box bg-base-100 shadow p-2">
                     <ul class="menu menu-sm">
@@ -126,7 +127,7 @@ async function deleteSelectedTasks() {
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox" class="checkbox checkbox-xs" checked={selectedStatuses.includes(status.state)} onchange={() => toggleStatus(status.state)}/>
                                     <span class="flex-1">
-                                        {status.label}
+                                        {$_(status.label)}
                                     </span>
                                 </label>
                             </li>
@@ -134,7 +135,7 @@ async function deleteSelectedTasks() {
                     </ul>
                 </div>
             </div>
-            <input type="text" bind:value={searchTerm} placeholder="Search for tasks…" class="input input-sm input-bordered"/>
+            <input type="text" bind:value={searchTerm} placeholder={$_("tasks.search")} class="input input-sm input-bordered"/>
         </div>
     </div>
 
@@ -150,9 +151,9 @@ async function deleteSelectedTasks() {
             <thead>
             <tr>
                 <th></th>
-                <th>Task</th>
+                <th>{$_("tasks.title")}</th>
                 <th></th>
-                <th>Status</th>
+                <th>{$_("dashboard.status")}</th>
                 <th class="text-right"></th>
             </tr>
             </thead>
@@ -178,7 +179,7 @@ async function deleteSelectedTasks() {
                     <td></td>
                     <td>
                         <span class="badge badge-soft {taskStateMap[task.task_state].badge}">
-                            {taskStateMap[task.task_state].label}
+                            {$_(taskStateMap[task.task_state].label)}
                         </span>
                     </td>
                     <td class="text-right">
@@ -190,7 +191,7 @@ async function deleteSelectedTasks() {
                                             type="button"
                                             class="flex items-center gap-2"
                                             onclick={() => { selectedTask = task; showEditDialog = true; }}>
-                                        <Edit size="16" />Edit
+                                        <Edit size="16" />{$_("common.edit")}
                                     </button>
                                 </li>
                                 <li>
@@ -198,7 +199,7 @@ async function deleteSelectedTasks() {
                                             type="button"
                                             class="flex items-center gap-2"
                                             onclick={() => { selectedTask = task; showConfirmationDialog = true; }}>
-                                        <Trash size="16" />Delete
+                                        <Trash size="16" />{$_("common.delete")}
                                     </button>
                                 </li>
                             </ul>
@@ -212,16 +213,16 @@ async function deleteSelectedTasks() {
 
 
     <div class="p-3 border-t text-sm  flex justify-between">
-        <span>{tasks.length} task(s)</span>
+        <span>{tasks.length} {$_("tasks.titleSingPlu")}</span>
         <div>
             {#if selectedTasks.length > 0}
-                <span class="font-medium">{selectedTasks.length} task{selectedTasks.length > 1 ? 's' : ''} selected</span>
+                <span class="font-medium">{selectedTasks.length} {$_("tasks.titleSingPlu")} {$_("common.selected")}</span>
                 <button class="btn btn-sm btn-outline btn-success" onclick={markSelectedDone}>
-                    Mark Done
+                    {$_("dashboard.markDone")}
                 </button>
                 <div class="dropdown dropdown-top dropdown-center">
                     <button tabindex="0" class="btn btn-sm btn-outline">
-                        Change Status
+                        {$_("dashboard.changeStatus")}
                     </button>
                     <ul class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-40">
                         {#each taskStates as status}
@@ -231,14 +232,14 @@ async function deleteSelectedTasks() {
                                         class="w-full text-left px-2 py-1"
                                         onclick={() => changeSelectedStatus(status.state)}
                                 >
-                                    {status.label}
+                                    {$_(status.label)}
                                 </button>
                             </li>
                         {/each}
                     </ul>
                 </div>
                 <button class="btn btn-sm btn-outline btn-error" onclick={deleteSelectedTasks}>
-                    Delete
+                    {$_("common.delete")}
                 </button>
             {/if}
         </div>

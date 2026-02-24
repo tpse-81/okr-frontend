@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 import { ChevronDown } from "@lucide/svelte";
+import { _ } from "svelte-i18n";
 import type { ProjectContainer } from "$lib/types";
 
 let { projectContainer }: { projectContainer: ProjectContainer } = $props();
@@ -50,12 +51,12 @@ let btn: HTMLButtonElement | null = $state(null);
             </div>
         </div>
     </a>
-    <div class="divider flex">Objectives</div>
+    <div class="divider flex">{$_("objectives.title")}</div>
 
     <button
             bind:this={btn}
             type="button"
-            class="btn btn-xs btn-ghost z-20"
+            class="btn btn-xs btn-ghost"
             onclick={() => showObjectives = !showObjectives}
     >
         <ChevronDown class="h-3 w-3"/>
@@ -64,14 +65,14 @@ let btn: HTMLButtonElement | null = $state(null);
         {@const r = btn.getBoundingClientRect()}
 
         <div
-                class="fixed z-50 bg-base-100 border rounded-lg shadow-lg p-3 text-sm"
+                class="fixed bg-base-100 border rounded-lg shadow-lg p-3 text-sm"
                 style="
             left: {r.left}px;
             top: {r.bottom + 8}px;
             width: {r.width}px;
         "
         >
-            <div class="font-semibold mb-1">Objectives</div>
+            <div class="font-semibold mb-1">{$_("objectives.title")}</div>
             <ul class="list-disc list-inside space-y-1">
                 {#each projectContainer.objectives as obj}
                     <a href={`/objectives/${obj.id}`}>

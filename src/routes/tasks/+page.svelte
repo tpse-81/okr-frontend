@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { getTasks } from "$lib/api";
 import type { Task } from "$lib/types";
@@ -25,6 +26,6 @@ async function tasks() {
 </script>
 
 <div class="p-3">
-	<h1>Tasks</h1>
+	<h1>{$_("tasks.title")}</h1>
 	<TaskColumns tasks={tasklist} onTaskDeleted={id => tasklist = tasklist.filter(task => task.id != id)} />
 </div>

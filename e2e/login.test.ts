@@ -36,7 +36,7 @@ test("try wrong username", async ({ page }) => {
 
 	await expect(page.locator("#login-error")).toBeVisible();
 	await expect(page.locator("#login-error")).toHaveText(
-		/Wrong username or password\./,
+		/Incorrect username or password\./,
 	);
 	await expect(page).toHaveURL(/\/login$/);
 });

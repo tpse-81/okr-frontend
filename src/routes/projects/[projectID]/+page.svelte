@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { createObjective, getObjectiveProject } from "$lib/api";
 import type { Objective } from "$lib/types";
@@ -54,7 +55,7 @@ async function handleSubmit(e: SubmitEvent) {
         <AvatarComponent icon={project_icon ?? null} name={project_name} big={true} />
         <div class="min-w-0">
           <div class="text-2xl font-bold truncate">{project_name}</div>
-          <div class="opacity-70">Objectives</div>
+          <div class="opacity-70">{$_("objectives.title")}</div>
         </div>
       </div>
     </div>
@@ -65,25 +66,25 @@ async function handleSubmit(e: SubmitEvent) {
   <!-- Create Objective -->
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
-      <h2 class="card-title">Create an Objective</h2>
+      <h2 class="card-title">{$_("objectives.createTitle")}</h2>
 
       <form id="objective-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3">
         <div class="form-control">
           <label for="objective-name" class="label">
-            <span class="label-text">Name</span>
+            <span class="label-text">{$_("common.name")}</span>
           </label>
-          <input id="objective-name" type="text" bind:value={name} placeholder="Name" class="input input-bordered w-full" required/>
+          <input id="objective-name" type="text" bind:value={name} placeholder={$_("common.name")} class="input input-bordered w-full" required/>
         </div>
 
         <div class="form-control">
           <label for="objective-description" class="label">
-            <span class="label-text">Description</span>
+            <span class="label-text">{$_("common.description")}</span>
           </label>
-          <input id="objective-description" type="text" bind:value={description} placeholder="Description" class="input input-bordered w-full" required/>
+          <input id="objective-description" type="text" bind:value={description} placeholder={$_("common.description")} class="input input-bordered w-full" required/>
         </div>
 
         <div class="md:col-span-2 flex justify-end">
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="submit" class="btn btn-primary">{$_("common.create")}</button>
         </div>
       </form>
     </div>
@@ -93,8 +94,8 @@ async function handleSubmit(e: SubmitEvent) {
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
       <div class="flex">
-        <h2 class="card-title flex-1">Objectives</h2>
-        <button class="btn btn-primary" onclick={() => showLinkObjectivesModal = true}>Manage linked objectives</button>
+        <h2 class="card-title flex-1">{$_("objectives.title")}</h2>
+        <button class="btn btn-primary" onclick={() => showLinkObjectivesModal = true}>{$_("objectives.manageLinks")}</button>
       </div>
 
       {#if objectivelist.length > 0}
@@ -104,7 +105,7 @@ async function handleSubmit(e: SubmitEvent) {
           {/each}
         </ul>
       {:else}
-        <p class="opacity-70">Keine Objectives geladen</p>
+        <p class="opacity-70">{$_("objectives.empty")}</p>
       {/if}
     </div>
   </div>

@@ -3,6 +3,7 @@ import { Check } from "@lucide/svelte";
 import QrCode from "qrcode";
 import { onMount } from "svelte";
 import { get } from "svelte/store";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
 	APIError,
@@ -19,6 +20,7 @@ import {
 	webauthnIsConfigured,
 	webauthnRegister,
 	webauthnRemoveCredentials,
+	changePassword,
 } from "$lib/api";
 import { setUserInfo, userInfoStore } from "$lib/user_info";
 import ConfirmationDialog from "../../components/ConfirmationDialog.svelte";
@@ -27,7 +29,7 @@ import PasswordStrengthInput from "../../components/PasswordStrengthInput.svelte
 
 let isWebauthnConfigured = $state(false);
 let errorMessage: string | null = $state(null);
-let successMessage: string = $state("Passkey configured properly");
+let successMessage: string = $state($_("account.passkeys.configuredInfo"));
 
 // --- Change password ---
 let oldPassword: string = $state("");
@@ -101,10 +103,10 @@ async function loginWebauthn() {
 
 	try {
 		await webauthnAuthenticate(userId, credential);
-		successMessage = "Success! Your passkey works as expected.";
+		successMessage = $_("account.passkeys.verifiedSuccess");
 		// biome-ignore lint: exceptions are always of type any
 	} catch (e: any) {
-		errorMessage = e.toString();
+		errorMessage = e.toString;
 	}
 }
 
@@ -141,26 +143,28 @@ async function handleChangePassword(e: SubmitEvent) {
 	if (!userId) return;
 
 	if (!oldPassword || !newPassword || !newPasswordRepeat) {
-		passwordError = "Please fill out all fields.";
+		passwordError = $_("account.password.fillAllError");
 		return;
 	}
 	if (newPassword !== newPasswordRepeat) {
-		passwordError = "New passwords do not match.";
+		passwordError = $_("account.password.mismatchError");
 		return;
 	}
 
 	try {
-		await changeUserPassword(oldPassword, newPassword);
+		await changePassword(userId, oldPassword, newPassword);
+
 		if ($userInfoStore?.must_change_password) {
 			setUserInfo({ ...$userInfoStore, must_change_password: false });
 		}
-		passwordSuccess = "Successfully changed password";
+
+		passwordSuccess = $_("account.password.changedSuccess");
 		oldPassword = "";
 		newPassword = "";
 		newPasswordRepeat = "";
 	} catch (e) {
 		console.error(e);
-		passwordError = "Could not change password.";
+		passwordError = $_("account.password.changeFailedError");
 	}
 }
 
@@ -174,12 +178,11 @@ async function startTotpSetup() {
 
 	try {
 		totpSetupData = await totpSetup(userId);
-		totpSuccess =
-			"New 2FA token created. Add it to your authenticator app, then confirm with a code.";
+		totpSuccess = $_("account.totp.createdSuccess");
 	} catch (e) {
 		console.error(e);
 		if (e instanceof APIError) console.log(await e.response.json());
-		totpError = "Could not start 2FA setup.";
+		totpError = $_("account.totp.setupFailedError");
 	}
 }
 
@@ -191,19 +194,19 @@ async function confirmTotp() {
 	if (!userId) return;
 
 	if (!totpConfirmCode) {
-		totpError = "Please enter a 2FA code.";
+		totpError = $_("account.totp.enterCodeError");
 		return;
 	}
 
 	try {
 		await totpConfirm(userId, totpConfirmCode);
 		isTotpConfigured = true;
-		totpSuccess = "TOTP 2FA successfully configured";
+		totpSuccess = $_("account.totp.enabledSuccess");
 		totpConfirmCode = "";
 		totpSetupData = null;
 	} catch (e) {
 		console.error(e);
-		totpError = "Invalid 2FA code.";
+		totpError = $_("account.totp.invalidCodeError");
 	}
 }
 
@@ -215,19 +218,19 @@ async function disableTotp() {
 	if (!userId) return;
 
 	if (!totpDisableCode) {
-		totpError = "Please enter a 2FA code.";
+		totpError = $_("account.totp.enterCodeError");
 		return;
 	}
 
 	try {
 		await totpDisable(userId, totpDisableCode);
-		totpSuccess = "2FA TOTP successfully disabled";
+		totpSuccess = $_("account.totp.disabledSuccess");
 		totpDisableCode = "";
 		totpSetupData = null;
 		isTotpConfigured = false;
 	} catch (e) {
 		console.error(e);
-		totpError = "Could not disable 2FA.";
+		totpError = $_("account.totp.disableFailedError");
 	}
 }
 
@@ -236,7 +239,7 @@ async function confirmDeleteAccount() {
 
 	const userId = get(userInfoStore)?.id;
 	if (!userId) {
-		deleteError = "You are not logged in.";
+		deleteError = $_("account.delete.notLoggedInError");
 		return;
 	}
 
@@ -244,7 +247,7 @@ async function confirmDeleteAccount() {
 		await deleteUser(userId);
 	} catch (e) {
 		console.error(e);
-		deleteError = "Could not delete your account.";
+		deleteError = $_("account.delete.failedError");
 		return;
 	}
 
@@ -265,7 +268,7 @@ $effect(() => {
 		if (!userId) return;
 
 		isTotpConfigured = await totpIsConfigured(userId);
-		if (isTotpConfigured) totpSuccess = "2FA TOTP is enabled";
+		if (isTotpConfigured) totpSuccess = $_("account.totp.enabledInfo");
 	})();
 });
 
@@ -275,9 +278,9 @@ onMount(async () => {
 </script>
 
 <div class="p-3">
-  <h2>Configure Account</h2>
+  <h2>{$_("account.title")}</h2>
   <div class="card card-border mt-3">
-    <h2 class="card-title">Change password</h2>
+    <h2 class="card-title">{$_("account.password.title")}</h2>
     <div class="card-body">
       <ErrorMessage message={passwordError} />
       {#if passwordSuccess}
@@ -290,7 +293,7 @@ onMount(async () => {
       <form class="flex flex-col gap-3 w-max" onsubmit={handleChangePassword}>
         <input
           type="password"
-          placeholder="Current password"
+          placeholder={$_("account.password.current")}
           class="input input-bordered"
           bind:value={oldPassword}
         />
@@ -298,21 +301,23 @@ onMount(async () => {
         <PasswordStrengthInput
           bind:password={newPassword}
         	userInfo={$userInfoStore!}
-          placeholder="New password"
+          placeholder={$_("account.password.new")}
+		  class="w-full"
         />
         <PasswordStrengthInput
           bind:password={newPasswordRepeat}
         	userInfo={$userInfoStore!}
-          placeholder="Repeat new password"
+          placeholder={$_("account.password.repeat")}
+		  class="w-full"
         />
         <div>
-          <button class="btn btn-primary w-max" type="submit">Change password</button>
+          <button class="btn btn-primary w-max" type="submit">{$_("account.password.change")}</button>
         </div>
       </form>
     </div>
   </div>
   <div class="card card-border mt-3">
-    <h2 class="card-title">Authenticator app (TOTP)</h2>
+    <h2 class="card-title">{$_("account.totp.title")}</h2>
     <div class="card-body">
       <ErrorMessage message={totpError} />
       {#if totpSuccess}
@@ -324,12 +329,12 @@ onMount(async () => {
 
       <div class="flex flex-col gap-3">
         <div class="text-sm opacity-80">
-          Use this if you want to set up or replace your 2FA token. After enabling it, you will have to enter a 6-digit code when logging in.
+          {$_("account.totp.description")}
         </div>
 
         <div class="flex gap-3 flex-wrap">
           <button class="btn btn-primary w-max" type="button" onclick={() => startTotpSetup()}>
-            Generate new token
+            {$_("account.totp.generate")}
           </button>
         </div>
 
@@ -337,15 +342,15 @@ onMount(async () => {
           <div class="alert flex">
             <div class="flex flex-col gap-2 w-full">
               <div>
-                <div class="font-semibold">Secret</div>
+                <div class="font-semibold">{$_("account.totp.secret")}</div>
                 <code class="break-all">{totpSetupData.secret}</code>
                 <div class="text-xs opacity-70 mt-1">
-                  If you cannot scan a QR code, most authenticator apps let you add an account by entering this secret manually.
+                  {$_("account.totp.secretHint")}
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
-                <label class="label" for="token-input"><span class="label-text">Confirm token</span></label>
+                <label class="label" for="token-input"><span class="label-text">{$_("account.totp.confirm")}</span></label>
                 <input
                   type="text"
                   id="token-input"
@@ -355,13 +360,13 @@ onMount(async () => {
                 />
                 <div>
                   <button class="btn btn-primary w-max" type="button" onclick={() => confirmTotp()}>
-                    Confirm token
+                    {$_("account.totp.confirm")}
                   </button>
                 </div>
               </div>
             </div>
             {#if totpSetupQrCodeUrl}
-            <img src={totpSetupQrCodeUrl} alt="TOTP Setup QR code" />
+            <img src={totpSetupQrCodeUrl} alt={$_("account.totp.qrAlt")} />
             {/if}
           </div>
         {/if}
@@ -369,7 +374,7 @@ onMount(async () => {
         {#if isTotpConfigured}
         <div class="divider divider-neutral"></div>
         <div class="flex flex-col gap-2">
-          <label class="label"><span class="label-text">Disable 2FA</span></label>
+          <label class="label"><span class="label-text">{$_("account.totp.disable")}</span></label>
           <input
             type="text"
             placeholder="123456"
@@ -377,7 +382,7 @@ onMount(async () => {
             bind:value={totpDisableCode}
           />
           <button class="btn w-max" type="button" onclick={() => disableTotp()}>
-            Disable 2FA
+            {$_("account.totp.disable")}
           </button>
         </div>
 	      {/if}
@@ -386,12 +391,12 @@ onMount(async () => {
   </div>
 
   <div class="card card-border mt-3">
-  	<h2 class="card-title">Webauthn</h2>
+  	<h2 class="card-title">{$_("account.passkeys.title")}</h2>
 
   	<div class="card-body">
 		  <ErrorMessage message={errorMessage} />
 		  {#if !isWebauthnConfigured}
-			  <button class="btn btn-primary w-max" onclick={() => registerWebauthn()}>Register passkey</button>
+			  <button class="btn btn-primary w-max" onclick={() => registerWebauthn()}>{$_("account.passkeys.register")}</button>
 		  {/if}
 		  {#if isWebauthnConfigured}
 		  	<div class="alert alert-success">
@@ -400,32 +405,32 @@ onMount(async () => {
 				</div>
 
 				<div class="flex gap-3">
-				  <button class="btn btn-primary w-max" onclick={() => loginWebauthn()}>Login with passkey</button>
-				  <button class="btn btn-primary w-max" onclick={() => deleteWebauthnCredentials()}>Delete passkey</button>
+				  <button class="btn btn-primary w-max" onclick={() => loginWebauthn()}>{$_("account.passkeys.login")}</button>
+				  <button class="btn btn-primary w-max" onclick={() => deleteWebauthnCredentials()}>{$_("account.passkeys.remove")}</button>
 			  </div>
 		  {/if}
 	  </div>
   </div>
     <div class="card card-border mt-3">
-    <h2 class="card-title">Delete account</h2>
+    <h2 class="card-title">{$_("account.delete.title")}</h2>
     <div class="card-body">
       <ErrorMessage message={deleteError} />
       <div class="text-sm opacity-80">
-        This will permanently delete your user and all your associations (for example project memberships). You will be logged out.
+        {$_("account.delete.description")}
       </div>
       <button
         class="btn btn-error w-max mt-2"
         type="button"
         onclick={() => (showDeleteDialog = true)}
       >
-        Delete my account
+        {$_("account.delete.action")}
       </button>
     </div>
   </div>
 
   <ConfirmationDialog
     show={showDeleteDialog}
-    message="Delete account"
+    message={$_("account.delete.title")}
     onconfirm={() => {
       showDeleteDialog = false;
       confirmDeleteAccount();

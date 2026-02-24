@@ -9,6 +9,7 @@ import {
 	UserRound,
 } from "@lucide/svelte";
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import {
 	createProject,
 	getArchivedProjects,
@@ -44,14 +45,14 @@ const singleOptions = [
 		icon: AArrowDown,
 		size: 26,
 		compare: (a: Project, b: Project) => b.name.localeCompare(a.name),
-		tooltip: "Sort by name (Z → A)",
+		tooltip: "projects.tooltipSortByNameDescending",
 	}, // A to Z
 	{
 		value: "alphabetAscending",
 		icon: AArrowUp,
 		size: 26,
 		compare: (a: Project, b: Project) => a.name.localeCompare(b.name),
-		tooltip: "Sort by name (A → Z)",
+		tooltip: "projects.tooltipSortByNameAscending",
 	}, // Z to A
 	{
 		value: "closestDeadline",
@@ -59,7 +60,7 @@ const singleOptions = [
 		size: 20,
 		compare: (a: Project, b: Project) =>
 			new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
-		tooltip: "Sort by deadline (earliest first)",
+		tooltip: "projects.tooltipSortbyDeadlineDescending",
 	}, // most urgent to least urgent
 	{
 		value: "furthestDeadline",
@@ -67,8 +68,8 @@ const singleOptions = [
 		size: 20,
 		compare: (a: Project, b: Project) =>
 			new Date(b.deadline).getTime() - new Date(a.deadline).getTime(),
-		tooltip: "Sort by deadline (latest first)",
-	}, // lest urgent to msot urgent
+		tooltip: "projects.tooltipSortByDeadlineAscending",
+	}, // lest urgent to most urgent
 ];
 
 const multiOptions = [
@@ -80,7 +81,7 @@ const multiOptions = [
 			const userProjects = new Set(userProjectsList.map((p) => p.id));
 			return list.filter((p) => userProjects.has(p.id));
 		},
-		tooltip: "Show my projects",
+		tooltip: "projects.tooltipMy",
 	},
 	{
 		value: "archived",
@@ -90,7 +91,7 @@ const multiOptions = [
 			const archivedIds = new Set(archivedProjectsList.map((p) => p.id));
 			return list.filter((p) => archivedIds.has(p.id));
 		},
-		tooltip: "Show archived projects",
+		tooltip: "projects.tooltipArchived",
 	},
 ];
 
@@ -171,13 +172,13 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<h1>Create a Project</h1>
+<h1 class="p-3">{$_("projects.createTitle")}</h1>
 
 <form id="project-submit" onsubmit={handleSubmit} class="p-3">
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
 
-      <h2 class="card-title">Create a Project</h2>
+      <h2 class="card-title">{$_("projects.createTitle")}</h2>
 
       <IconSelector bind:this={iconSelectorRef} initialIcon={null} onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}} />
 
@@ -185,13 +186,13 @@ async function handleSubmit(e: SubmitEvent) {
       <div class="grid grid-auto gap-3">
         <div class="form-control">
             <label for="project-name" class="label">
-                <span class="label-text">Name</span>
+                <span class="label-text">{$_("common.name")}</span>
             </label>
             <input
                 id="project-name"
                 type="text"
                 bind:value={name}
-                placeholder="Name"
+                placeholder={$_("common.name")}
                 class="input input-bordered w-full"
                 required
             />
@@ -199,13 +200,13 @@ async function handleSubmit(e: SubmitEvent) {
 
         <div class="form-control">
             <label for="project-deadline" class="label">
-                <span class="label-text">Deadline</span>
+                <span class="label-text">{$_("projects.deadline")}</span>
             </label>
             <input
                 id="project-deadline"
                 type="date"
                 bind:value={deadline}
-                placeholder="Deadline"
+                placeholder={$_("projects.deadline")}
                 class="input input-bordered w-full"
                 required
             />
@@ -214,7 +215,7 @@ async function handleSubmit(e: SubmitEvent) {
 
       <div class="card-actions justify-end">
         <button class="btn btn-primary" type="submit" disabled={iconRequiresConfirmation}>
-          Create
+          {$_("common.create")}
         </button>
       </div>
     </div>
@@ -224,17 +225,17 @@ async function handleSubmit(e: SubmitEvent) {
 <div class="p-3">
     <div class="flex justify-between items-center mb-5 gap-5">
         <div class="flex gap-5 items-center flex-1">
-            <h1 class="text-3xl">Projects</h1>
+            <h1 class="text-3xl">{$_("projects.title")}</h1>
             <div class="join">
                 <input
                         type="text"
                         bind:value={searchTerm}
-                        placeholder="Search Name"
+                        placeholder={$_("common.searchName")}
                         class="input"
                         style="border-radius: 10px 0 0 10px;"
                 />
                 {#each singleOptions as option}
-                    <div class="tooltip" data-tip="{option.tooltip}">
+                    <div class="tooltip" data-tip={$_(option.tooltip)}>
                         <button
                                 class="btn join-item transition-transform duration-150
                                 {activeFilter === option.value ? 'btn-active scale-110' : ''}"
@@ -251,7 +252,7 @@ async function handleSubmit(e: SubmitEvent) {
         </div>
         <div class="join shrink-0">
             {#each multiOptions as option}
-                <div class="tooltip tooltip-left" data-tip="{option.tooltip}">
+                <div class="tooltip tooltip-left" data-tip={$_(option.tooltip)}>
                     <button
                             class="btn join-item transition-transform duration-150
                             {activeMultiFilters.includes(option.value) ? 'btn-active scale-110' : ''}"
@@ -274,7 +275,7 @@ async function handleSubmit(e: SubmitEvent) {
           {/each}
       </ul>
   {:else}
-      <p>Keine Projekte geladen</p>
+      <p>{$_("projects.empty")}</p>
   {/if}
 </div>
 

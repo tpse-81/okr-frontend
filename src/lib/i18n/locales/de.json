@@ -1,0 +1,220 @@
+{
+	"nav": {
+		"login": "Login",
+		"dashboard": "Dashboard",
+		"account": "Konto",
+		"logout": "Abmelden"
+	},
+
+	"dashboard": {
+		"greeting": "Hallo, {name}!",
+		"greetingNoName": "Hallo!",
+		"title": "Dashboard",
+		"upcomingDeadline": "Anstehende Fristen",
+		"noUpcomingDeadlines": "Keine anstehenden Fristen",
+		"availableTasks": "Deine Aufgaben",
+		"status": "Status",
+		"markDone": "Als erledigt markieren",
+		"changeStatus": "Status ändern"
+	},
+
+	"projects": {
+		"title": "Projekte",
+		"objectivesForTitle": "Ziele für {projectName}",
+		"createTitle": "Projekt erstellen",
+		"deadline": "Frist",
+		"empty": "Keine Projekte vorhanden",
+		"edit": "Projekt bearbeiten",
+		"icon": "Projekt-Icon",
+		"preview": "Vorschau",
+		"iconAffirmation": "Dieses Icon verwenden?",
+		"iconAccepted": "Icon ausgewählt",
+		"done": "Erledigt",
+		"createdAtLabel": "Erstellt am:",
+		"dueAtLabel": "Fällig am:",
+		"delete": "Projekt löschen",
+		"tooltipMy": "Meine Projekte anzeigen",
+		"tooltipArchived": "Archivierte Projekte anzeigen",
+		"tooltipSortByNameAscending": "Nach Namen sortieren (Z-A)",
+		"tooltipSortByNameDescending": "Nach Namen sortieren (A-Z)",
+		"tooltipSortByDeadlineAscending": "Nach Frist sortieren (späteste zuerst)",
+		"tooltipSortbyDeadlineDescending": "Nach Frist sortieren (früheste zuerst)",
+		"overdue": "überfällig",
+		"dueIn": "fällig in"
+	},
+
+	"objectives": {
+		"title": "Ziele",
+		"createTitle": "Ziel erstellen",
+		"manageLinks": "Verknüpfte Ziele verwalten",
+		"empty": "Keine Ziele vorhanden",
+		"edit": "Ziel bearbeiten",
+		"delete": "Ziel löschen"
+	},
+
+	"keyResults": {
+		"title": "Schlüsselergebnisse",
+		"titleForObjective": "Schlüsselergebnisse für {objectiveName}",
+		"createTitleForObjective": "Erstelle ein Schlüsselergebnis für {objectiveName}",
+		"empty": "Keine Schlüsselergebnisse vorhanden",
+		"edit": "Schlüsselergebnis bearbeiten",
+		"start": "Startwert",
+		"current": "Aktueller Wert",
+		"target": "Zielwert",
+		"outOfBoundsError": "Der aktuelle Wert liegt außerhalb des gültigen Bereichs",
+		"updateError": "Der aktuelle Wert konnte nicht übernommen werden",
+		"delete": "Schlüsselergebnis löschen"
+	},
+
+	"tasks": {
+		"title": "Aufgaben",
+		"titleSingPlu": "Aufgabe(n)",
+		"empty": "Keine Aufgaben vorhanden",
+		"edit": "Aufgabe bearbeiten",
+		"state": "Status",
+		"open": "Offen",
+		"planned": "Geplant",
+		"in_progress": "In Bearbeitung",
+		"done": "Erledigt",
+		"cancelled": "Abgebrochen",
+		"createTitle": "Aufgabe erstellen",
+		"search": "Aufgaben suchen...",
+		"delete": "Aufgabe löschen"
+	},
+
+	"users": {
+		"title": "Benutzer verwalten",
+		"titlePlural": "Benutzer",
+		"createTitle": "Benutzer erstellen",
+		"email": "E-Mail",
+		"role": "Rolle",
+		"inProject": "In diesem Projekt",
+		"empty": "Keine Benutzer vorhanden",
+		"admin": "Administrator",
+		"member": "Mitglied",
+		"members": "Mitglieder",
+		"teamlead": "Teamleiter",
+		"actions": "Aktionen",
+		"noUsers": "Keine Benutzer vorhanden.",
+		"adminOnly": "Nur Admins können Benutzer verwalten.",
+		"generateNew": "Neu generieren",
+		"random": "Zufällig",
+		"onlyAdminCanAddUser": "Nur ein Administrator kann diesen Nutzer hinzufügen.",
+		"onlyAdminCanEdit": "Nur ein Administrator kann das bearbeiten.",
+		"teamleadsCannotEditTeamleads": "Teamleiter können die Berechtigungen anderer Teamleiter nicht bearbeiten.",
+		"readOnlyWarning": "Schreibgeschützt. Du kannst keine Mitglieder verwalten.",
+		"noMembersYet": "Noch keine Mitglieder vorhanden",
+		"addUsers": "Benutzer hinzufügen",
+		"add": "Hinzufügen",
+		"noUsersToAdd": "Keine Benutzer zum Hinzufügen verfügbar.",
+		"search": "Nutzer suchen",
+		"addedToProject": "{name} wurde dem Projekt hinzugefügt.",
+		"cannotLoadError": "Benutzer konnte nicht geladen werden.",
+		"creationError": "Benutzer konnte nicht erstellt werden.",
+		"creationSuccess": "Benutzer erstellt",
+		"creationSuccessBody": "Benutzer: {name}\nE-Mail: {email}\nPasswort: {password}",
+		"passwordChangeSuccess": "Passwort geändert",
+		"passwordChangeSuccessBody": "Benutzer: {name}\nE-Mail: {email}\nNeues Passwort: {password}",
+		"passwordChangeError": "Passwort ändern fehlgeschlagen",
+		"deletionError": "Benutzer löschen fehlgeschlagen",
+		"tooltipPasswordChange": "Passwort manuell ändern oder neu generieren",
+		"generatePasswordButton": "Neu generieren",
+		"setPassword": "Passwort setzen",
+		"deleteSelfError": "Du kannst dich nicht selbst löschen.",
+		"deletionQuestion": "Benutzer löschen?",
+		"deletionQuestionWithName": "Benutzer {name} löschen?",
+		"login": {
+			"empty": "Bitte gib einen Benutzernamen und Passwort ein.",
+			"passkey": "Bitte verwende deinen Passkey.",
+			"totp": "Bitte gib deinen 2FA-Code ein.",
+			"invalidTotp": "Ungültiger 2FA-Code.",
+			"wrong": "Benutzername oder Passwort ist falsch.",
+			"loadPasskey": "Passkey laden",
+			"name": "Benutzername",
+			"title": "Anmeldung",
+			"password": "Passwort",
+			"button": "Anmelden"
+		}
+	},
+
+	"account": {
+		"title": "Kontoeinstellungen",
+		"switchLanguage": "Sprache ändern",
+
+		"password": {
+			"title": "Passwort ändern",
+			"current": "Aktuelles Passwort",
+			"new": "Neues Passwort",
+			"repeat": "Neues Passwort wiederholen",
+			"change": "Passwort ändern",
+			"changedSuccess": "Passwort erfolgreich geändert.",
+			"fillAllError": "Bitte fülle alle Felder aus.",
+			"mismatchError": "Die neuen Passwörter stimmen nicht überein.",
+			"changeFailedError": "Passwort konnte nicht geändert werden."
+		},
+
+		"totp": {
+			"title": "Authenticator-App (TOTP)",
+			"description": "Hier kannst du deinen 2FA-Token einrichten oder ersetzen. Nach der Aktivierung musst du dich beim Login mit einem 6-stelligen Code bestätigen.",
+			"secret": "Geheimschlüssel",
+			"secretHint": "Wenn du keinen QR-Code scannen kannst, kannst du das Konto in den meisten Authenticator-Apps auch manuell über diesen Schlüssel hinzufügen.",
+			"generate": "Neuen Token erstellen",
+			"confirm": "Token bestätigen",
+			"disable": "2FA deaktivieren",
+			"qrAlt": "QR-Code für die TOTP-Einrichtung",
+
+			"enabledInfo": "Zwei-Faktor-Authentifizierung ist aktiviert.",
+			"createdSuccess": "Neuer 2FA-Token erstellt. Füge ihn in deiner Authenticator-App hinzu und bestätige anschließend mit einem Code.",
+			"enabledSuccess": "Zwei-Faktor-Authentifizierung aktiviert.",
+			"disabledSuccess": "Zwei-Faktor-Authentifizierung deaktiviert.",
+			"enterCodeError": "Bitte gib einen 2FA-Code ein.",
+			"invalidCodeError": "Ungültiger 2FA-Code.",
+			"setupFailedError": "2FA-Einrichtung konnte nicht gestartet werden.",
+			"disableFailedError": "2FA konnte nicht deaktiviert werden."
+		},
+
+		"passkeys": {
+			"title": "Passkeys (WebAuthn)",
+			"register": "Passkey registrieren",
+			"login": "Mit Passkey anmelden",
+			"remove": "Passkey entfernen",
+			"configuredInfo": "Passkey ist eingerichtet.",
+			"verifiedSuccess": "Erfolg! Dein Passkey funktioniert.",
+			"operationFailedError": "Passkey-Vorgang konnte nicht abgeschlossen werden."
+		},
+
+		"delete": {
+			"title": "Konto löschen",
+			"description": "Dein Konto und alle zugehörigen Daten (z. B. Projektmitgliedschaften) werden dauerhaft gelöscht. Du wirst abgemeldet.",
+			"action": "Mein Konto löschen",
+			"notLoggedInError": "Du bist nicht angemeldet.",
+			"failedError": "Dein Konto konnte nicht gelöscht werden."
+		}
+	},
+
+	"errors": {
+		"generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+	},
+
+	"common": {
+		"hello": "Hallo",
+		"create": "Erstellen",
+		"save": "Speichern",
+		"cancel": "Abbrechen",
+		"delete": "Löschen",
+		"copy": "Kopieren",
+		"deleteConfirmation": "Dieses Element löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
+		"confirm": "Bestätigen",
+		"close": "Schließen",
+		"edit": "Bearbeiten",
+		"selected": "ausgewählt",
+		"accept": "Akzeptieren",
+		"discard": "Verwerfen",
+		"name": "Name",
+		"description": "Beschreibung",
+		"linked": "Verknüpft",
+		"searchName": "Nach Namen suchen...",
+		"years": "{count} Jahr(en)",
+		"days": "{count} Tag(en)"
+	}
+}
