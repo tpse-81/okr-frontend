@@ -1,5 +1,6 @@
 <script lang="ts">
 import { CircleX, LogOut } from "@lucide/svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { changeUserPassword, logout } from "$lib/api";
 import type { User } from "$lib/types";
@@ -50,11 +51,11 @@ async function handleSubmit(e: SubmitEvent) {
 	errorMessage = null;
 
 	if (!oldPassword || !newPassword || !newPasswordRepeat) {
-		errorMessage = "Please fill out all fields.";
+		errorMessage = $_("account.password.fillAllError");
 		return;
 	}
 	if (newPassword !== newPasswordRepeat) {
-		errorMessage = "New passwords do not match.";
+		errorMessage = $_("account.password.mismatchError");
 		return;
 	}
 
@@ -72,8 +73,7 @@ async function handleSubmit(e: SubmitEvent) {
 		dialog.close();
 	} catch (err) {
 		console.error(err);
-		errorMessage =
-			"Could not change password. Please verify your current password.";
+		errorMessage = $_("account.password.changeFailedError");
 	} finally {
 		pending = false;
 	}
@@ -87,10 +87,8 @@ async function handleSubmit(e: SubmitEvent) {
 	onclose={ondismiss}
 >
 	<div class="modal-box">
-		<h3 class="text-lg font-bold">Change your password</h3>
-		<p class="opacity-80 mt-2">
-			Your account is using a temporary password. Please set a new password to continue.
-		</p>
+		<h3 class="text-lg font-bold">{$_("account.password.title")}</h3>
+		<p class="opacity-80 mt-2">{$_("account.password.temporaryPasswordWarning")}</p>
 
 		{#if errorMessage}
 			<div class="alert alert-error mt-4">
@@ -103,7 +101,7 @@ async function handleSubmit(e: SubmitEvent) {
 			<input
 				type="password"
 				autocomplete="current-password"
-				placeholder="Current (temporary) password"
+				placeholder={$_("account.password.current")}
 				class="input input-bordered w-full"
 				bind:value={oldPassword}
 				required
@@ -112,13 +110,13 @@ async function handleSubmit(e: SubmitEvent) {
 			<PasswordStrengthInput
 				bind:password={newPassword}
 				userInfo={userInfo}
-				placeholder="New password"
+				placeholder={$_("account.password.new")}
 				class="w-full"
 			/>
 			<PasswordStrengthInput
 				bind:password={newPasswordRepeat}
 				userInfo={userInfo}
-				placeholder="Repeat new password"
+				placeholder={$_("account.password.repeat")}
 				class="w-full"
 			/>
 
@@ -128,16 +126,16 @@ async function handleSubmit(e: SubmitEvent) {
 					class="btn btn-ghost"
 					onclick={handleLogout}
 					disabled={pending}
-					title="Logout"
+					title={$_("nav.logout")}
 				>
 					<LogOut size="18" />
-					<span>Logout</span>
+					<span>{$_("nav.logout")}</span>
 				</button>
 				<button class="btn btn-primary" type="submit" disabled={pending}>
 					{#if pending}
 						<span class="loading loading-spinner loading-sm"></span>
 					{/if}
-					<span>Update password</span>
+					<span>{$_("users.setPassword")}</span>
 				</button>
 			</div>
 		</form>
