@@ -9,7 +9,6 @@ export const load: PageLoad = async ({ params }) => {
 		return {
 			objectiveID: objective.id,
 			objectiveName: objective.name,
-			parentID: objective.parent_id,
 		};
 	} catch (_) {
 		throw error(404, "Not found");

@@ -170,7 +170,7 @@ onMount(() => {
 
 <ErrorMessage message={errorMessage} />
 
-<h1>{$_("users.createTitle")}</h1>
+<h1 class="p-3">{$_("users.createTitle")}</h1>
 
 {#if !$userInfoStore?.is_admin}
 	<p class="p-3 opacity-70">Nur Admins können User verwalten.</p>

@@ -41,7 +41,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<h1>{$_("tasks.createTitle")}</h1>
+<h1 class="p-3">{$_("tasks.createTitle")}</h1>
 
 <form
 	id="task-submit"
@@ -74,7 +74,7 @@ async function handleSubmit(e: SubmitEvent) {
 				placeholder={$_("common.description")}
 				class="textarea textarea-bordered w-full"
 				rows="3"
-        required
+				required
 			></textarea>
 		</div>
 
@@ -89,7 +89,7 @@ async function handleSubmit(e: SubmitEvent) {
 			>
 				<option value="open">{$_("tasks.open")}</option>
 				<option value="planned">{$_("tasks.planned")}</option>
-				<option value="in_progress">{$_("tasks.inProgress")}</option>
+				<option value="in_progress">{$_("tasks.in_progress")}</option>
 				<option value="done">{$_("tasks.done")}</option>
 				<option value="cancelled">{$_("tasks.cancelled")}</option>
 			</select>

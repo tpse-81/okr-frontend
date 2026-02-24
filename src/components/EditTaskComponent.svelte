@@ -46,6 +46,7 @@ async function onUpdateTask() {
 <dialog id="edit-task-modal" bind:this={modal} class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">{$_("tasks.edit")}</h3>
+<<<<<<< HEAD
 
     <form class="flex flex-col gap-3 mt-3" onsubmit={onUpdateTask}>
       <input
@@ -83,6 +84,17 @@ async function onUpdateTask() {
           </div>
         </div>
       </div>
+=======
+    <form class="flex flex-col gap-3 mt-3">
+	    <input type="text" bind:value={description} placeholder="Description" class="input w-full">
+	    <select bind:value={taskState} class="select select-bordered">
+	        <option value="open">{$_("tasks.open")}</option>
+	        <option value="planned">{$_("tasks.planned")}</option>
+	        <option value="in_progress">{$_("tasks.in_progress")}</option>
+	        <option value="done">{$_("tasks.done")}</option>
+	        <option value="cancelled">{$_("tasks.cancelled")}</option>
+	    </select>
+>>>>>>> origin/main
     </form>
   </div>
 </dialog>

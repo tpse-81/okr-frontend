@@ -17,7 +17,6 @@ export interface Objective {
 	id: string;
 	name: string;
 	description: string;
-	parent_id: string;
 }
 
 export interface KeyResult {
@@ -32,7 +31,7 @@ export interface KeyResult {
 export type TaskState =
 	| "open"
 	| "planned"
-	| "inProgress"
+	| "in_progress"
 	| "done"
 	| "cancelled";
 

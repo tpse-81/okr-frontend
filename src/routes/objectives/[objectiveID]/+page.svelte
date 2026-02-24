@@ -10,7 +10,6 @@ let { data } = $props();
 
 let objectiveID = $derived(data.objectiveID);
 let objectiveName = $derived(data.objectiveName);
-let projectID = $derived(data.parentID);
 
 let keyResultList: KeyResult[] = $state([]);
 
@@ -36,19 +35,13 @@ async function loadKeyResults() {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-	await createKeyResult(
-		description,
-		endValue,
-		startValue,
-		objectiveID,
-		projectID,
-	);
+	await createKeyResult(description, endValue, startValue, objectiveID);
 
 	keyResultList = await getKeyResultObjective(objectiveID);
 }
 </script>
 
-<h1>{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
+<h1 class="p-3">{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
 
 <form id="keyResultSubmit" onsubmit={handleSubmit} class="flex gap-3 p-3">
     <input type="text" id="description" bind:value={description} placeholder={$_("common.description")} class="input w-full" required>

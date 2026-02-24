@@ -11,14 +11,17 @@ keyResultBaseTest(
 		await page.locator("#task-submit select").selectOption("open");
 
 		const [createRes] = await Promise.all([
-		page.waitForResponse(
-			(res) => res.url().includes("/tasks") && res.request().method() === "POST",
-		),
-		page.locator("#task-submit button[type=submit]").click(),
+			page.waitForResponse(
+				(res) =>
+					res.url().includes("/tasks") && res.request().method() === "POST",
+			),
+			page.locator("#task-submit button[type=submit]").click(),
 		]);
 		expect(createRes.ok()).toBeTruthy();
 
-		await expect(page.locator("#tasks-list")).toContainText(taskDesc, { timeout: 10000 });
+		await expect(page.locator("#tasks-list")).toContainText(taskDesc, {
+			timeout: 10000,
+		});
 	},
 );
 
@@ -32,9 +35,8 @@ keyResultBaseTest(
 		// description absichtlich leer lassen
 		await page.locator("#task-submit button[type=submit]").click();
 
-		await expect(page.locator("#task-submit #task-description")).toHaveJSProperty(
-		"validity.valueMissing",
-		true,
-		);
+		await expect(
+			page.locator("#task-submit #task-description"),
+		).toHaveJSProperty("validity.valueMissing", true);
 	},
 );
