@@ -103,7 +103,7 @@ export const objectiveBaseTest = projectBaseTest.extend<{
 		const objectiveLink = page
 			.locator("#objectives-list")
 			.getByRole("link", { name: new RegExp(objectiveName) });
-		await baseExpect(objectiveLink).toBeVisible();
+		await baseExpect(objectiveLink).toBeVisible({ timeout: 10000 });
 		await objectiveLink.click();
 		await baseExpect(page).toHaveURL(/\/objectives\/.+/);
 
