@@ -19,9 +19,7 @@ keyResultBaseTest(
 		]);
 		expect(createRes.ok()).toBeTruthy();
 
-		await expect(page.locator("#tasks-list")).toContainText(taskDesc, {
-			timeout: 10000,
-		});
+		await expect(page.locator("#tasks-list")).toContainText(taskDesc);
 	},
 );
 

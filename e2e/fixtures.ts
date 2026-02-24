@@ -75,7 +75,7 @@ export const projectBaseTest = loginBaseTest.extend<{ projectPage: Page }>({
 		const projectLink = page
 			.locator("#projects-list")
 			.getByRole("link", { name: new RegExp(projectName) });
-		await baseExpect(projectLink).toBeVisible({ timeout: 50000 });
+		await baseExpect(projectLink).toBeVisible();
 		await projectLink.click();
 		await baseExpect(page).toHaveURL(/\/projects\/.+/);
 
@@ -132,7 +132,7 @@ export const keyResultBaseTest = objectiveBaseTest.extend<{
 		const krLink = page
 			.locator("#key-results-list")
 			.getByRole("link", { name: new RegExp(krDescription) });
-		await baseExpect(krLink).toBeVisible({ timeout: 20000 });
+		await baseExpect(krLink).toBeVisible();
 		await krLink.click();
 		await baseExpect(page).toHaveURL(/\/key_results\/.+/);
 

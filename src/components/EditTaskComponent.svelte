@@ -51,7 +51,7 @@ async function onUpdateTask() {
       <input
         type="text"
         bind:value={name}
-        placeholder="Title"
+        placeholder={$_("tasks.name")}
         class="input input-bordered w-full"
         required
       />
