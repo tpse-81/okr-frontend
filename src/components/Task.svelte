@@ -49,8 +49,8 @@ async function onDeleteTask() {
 
   <div class="text-sm opacity-70">
     {$_("tasks.state")}:
-    {task.task_state === "inProgress"
-      ? $_("tasks.inProgress")
+    {task.task_state === "in_progress"
+      ? $_("tasks.in_progress")
       : $_(`tasks.${task.task_state}`)}
   </div>
 </div>
