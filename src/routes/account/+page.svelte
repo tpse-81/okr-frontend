@@ -7,6 +7,7 @@ import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
 	APIError,
+	changePassword,
 	changeUserPassword,
 	deleteUser,
 	getWebauthnAuthenticationOptions,
@@ -20,7 +21,6 @@ import {
 	webauthnIsConfigured,
 	webauthnRegister,
 	webauthnRemoveCredentials,
-	changePassword,
 } from "$lib/api";
 import { setUserInfo, userInfoStore } from "$lib/user_info";
 import ConfirmationDialog from "../../components/ConfirmationDialog.svelte";
