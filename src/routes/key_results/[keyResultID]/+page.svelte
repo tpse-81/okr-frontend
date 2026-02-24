@@ -39,7 +39,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<h1>{$_("tasks.createTitle")}</h1>
+<h1 class="p-3">{$_("tasks.createTitle")}</h1>
 
 <form id="task-submit" onsubmit={handleSubmit} class="flex gap-3 p-3">
     <input type="text" id="description" bind:value={description} placeholder={$_("common.description")} class="input w-full" required>

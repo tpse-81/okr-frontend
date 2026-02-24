@@ -172,7 +172,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<h1>{$_("projects.createTitle")}</h1>
+<h1 class="p-3">{$_("projects.createTitle")}</h1>
 
 <form id="project-submit" onsubmit={handleSubmit} class="p-3">
   <div class="card bg-base-100 border border-base-300">
