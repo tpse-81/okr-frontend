@@ -3,7 +3,11 @@ import { _ } from "svelte-i18n";
 import { updateTask } from "$lib/api";
 import type { Task, TaskState } from "$lib/types";
 
-let { show, task, ondismiss }: { show: boolean; task: Task; ondismiss: () => void } = $props();
+let {
+	show,
+	task,
+	ondismiss,
+}: { show: boolean; task: Task; ondismiss: () => void } = $props();
 
 let modal: HTMLDialogElement;
 
@@ -12,30 +16,30 @@ let description = $state("");
 let taskState: TaskState = $state("open");
 
 $effect(() => {
-  if (!modal) return;
+	if (!modal) return;
 
-  if (show && !modal.open) {
-    // sync local form state from props on open
-    name = task.name ?? "";
-    description = task.description ?? "";
-    taskState = task.task_state;
+	if (show && !modal.open) {
+		// sync local form state from props on open
+		name = task.name ?? "";
+		description = task.description ?? "";
+		taskState = task.task_state;
 
-    modal.showModal();
-  } else if (!show && modal.open) {
-    modal.close();
-  }
+		modal.showModal();
+	} else if (!show && modal.open) {
+		modal.close();
+	}
 });
 
 async function onUpdateTask() {
-  const title = name.trim();
-  if (!title) return;
+	const title = name.trim();
+	if (!title) return;
 
-  task.name = title;
-  task.description = description;
-  task.task_state = taskState;
+	task.name = title;
+	task.description = description;
+	task.task_state = taskState;
 
-  await updateTask(task);
-  ondismiss();
+	await updateTask(task);
+	ondismiss();
 }
 </script>
 
