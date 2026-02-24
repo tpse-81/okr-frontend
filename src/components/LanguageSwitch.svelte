@@ -1,25 +1,16 @@
 <script lang="ts">
-  import { _, locale, locales } from "svelte-i18n";
-  import {onMount} from "svelte";
+import { _, locale, locales } from "svelte-i18n";
+import { LANGUAGE_STORAGE_KEY } from "$lib/i18n";
 
-  const STORAGE_KEY = "preferred_language";
+$: current = ($locale ?? "en").toLowerCase();
+$: short = current.substring(0, 2);
 
-  onMount(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && $locales.includes(saved)) {
-      locale.set(saved);
-    }
-  });
-
-  $: current = ($locale ?? "en").toLowerCase();
-  $: short = current.substring(0, 2);
-
-  function toggle() {
-    const currentIndex = $locales.indexOf(short);
-    const next = $locales[(currentIndex + 1) % $locales.length];
-    locale.set(next);
-    localStorage.setItem(STORAGE_KEY, next);
-  }
+function toggle() {
+	const currentIndex = $locales.indexOf(short);
+	const next = $locales[(currentIndex + 1) % $locales.length];
+	locale.set(next);
+	localStorage.setItem(LANGUAGE_STORAGE_KEY, next);
+}
 </script>
 
 <button
