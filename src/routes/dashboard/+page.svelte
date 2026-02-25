@@ -50,7 +50,7 @@ $effect(() => {
 </script>
 
 
-<h1 class="ml-15">
+<h1 class="ml-2 sm:ml-15">
     {#if $userInfoStore?.name}
         {$_("dashboard.greeting", { values: {name: $userInfoStore?.name ?? "" } })}
     {:else}
@@ -58,16 +58,20 @@ $effect(() => {
     {/if}
 </h1>
 
-<div class="flex gap-4 ml-15">
+<div class="flex flex-col lg:flex-row gap-4 ml-2 mr-2 lg:ml-15">
+
+    <!-- Main content -->
     <div class="flex-1">
 
         <div class="card card-border relative">
             <div class="p-3">
                 <h1>{$_("projects.title")}</h1>
                 {#if projectContainers.length > 0}
-                    <ul class="flex -gap-10 overflow-x-auto pb-2">
+                    <ul class="flex gap-3 overflow-x-auto pb-2">
                         {#each projectContainers as projectContainer}
-                            <div  class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors">
+                            <div
+                                    class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors shrink-0"
+                            >
                                 <DashboardProjectComponent
                                         projectContainer={projectContainer}
                                 />
@@ -91,6 +95,9 @@ $effect(() => {
         </div>
     </div>
 
+    <!-- Deadline / side panel -->
+    <div class="w-full lg:w-auto">
+        <DashboardDeadlineComponent projects={closestDeadlineProjects} />
+    </div>
 
-    <DashboardDeadlineComponent projects={closestDeadlineProjects} />
 </div>

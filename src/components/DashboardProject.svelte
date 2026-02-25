@@ -18,8 +18,11 @@ let btn: HTMLButtonElement | null = $state(null);
 </script>
 
 
-<li class="card card-border relative w-60 shrink-0 overflow-visible">
-    <figure class="w-full h-32 overflow-hidden bg-base-200 flex items-center justify-center">
+<li class="card card-border relative w-44 sm:w-52 lg:w-60 shrink-0 overflow-visible">
+
+    <figure
+            class="w-full h-24 sm:h-28 lg:h-32 overflow-hidden bg-base-200 flex items-center justify-center"
+    >
         {#if projectContainer.project.icon}
             <img
                     src="{projectContainer.project.icon}"
@@ -27,31 +30,36 @@ let btn: HTMLButtonElement | null = $state(null);
                     class="w-full h-full object-cover"
             />
         {:else}
-            <div class="opacity-60 flex items-center justify-center w-full h-full text-2xl">
+            <div
+                    class="opacity-60 flex items-center justify-center w-full h-full text-xl sm:text-2xl"
+            >
                 {projectContainer.project.name.at(0) ?? ""}
             </div>
         {/if}
     </figure>
 
     <a href={`/projects/${projectContainer.project.id}`}>
-        <div class="card-body p-3 flex flex-col gap-2">
-            <h2 class="card-title text-sm sm:text-base font-bold truncate">
+        <div class="card-body p-2 sm:p-3 flex flex-col gap-1.5 sm:gap-2">
+            <h2 class="card-title text-xs sm:text-sm lg:text-base font-bold truncate">
                 {projectContainer.project.name}
             </h2>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 sm:gap-2">
                 <progress
-                        class="progress progress-primary h-2 w-full"
+                        class="progress progress-primary h-1.5 sm:h-2 w-full"
                         value="{(projectContainer.progress * 100).toFixed(0)}"
                         max="100">
                 </progress>
-                <span class="text-xs sm:text-sm font-medium">
+                <span class="text-[10px] sm:text-xs lg:text-sm font-medium">
                     {(projectContainer.progress * 100).toFixed(0)}%
                 </span>
             </div>
         </div>
     </a>
-    <div class="divider flex">{$_("objectives.title")}</div>
+
+    <div class="divider my-1 sm:my-2 flex text-xs sm:text-sm">
+        {$_("objectives.title")}
+    </div>
 
     <button
             bind:this={btn}
@@ -61,19 +69,20 @@ let btn: HTMLButtonElement | null = $state(null);
     >
         <ChevronDown class="h-3 w-3"/>
     </button>
+
     {#if showObjectives && btn}
         {@const r = btn.getBoundingClientRect()}
 
         <div
-                class="fixed bg-base-100 border rounded-lg shadow-lg p-3 text-sm"
+                class="fixed bg-base-100 border rounded-lg shadow-lg p-2 sm:p-3 text-xs sm:text-sm"
                 style="
-            left: {r.left}px;
-            top: {r.bottom + 8}px;
-            width: {r.width}px;
-        "
+                left: {r.left}px;
+                top: {r.bottom + 8}px;
+                width: {r.width}px;
+            "
         >
             <div class="font-semibold mb-1">{$_("objectives.title")}</div>
-            <ul class="list-disc list-inside space-y-1">
+            <ul class="list-disc list-inside space-y-0.5 sm:space-y-1">
                 {#each projectContainer.objectives as obj}
                     <a href={`/objectives/${obj.id}`}>
                         <div>
