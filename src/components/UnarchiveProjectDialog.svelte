@@ -38,8 +38,7 @@
 
 	function confirm() {
 		if (!deadlineStr) return;
-		const [y, m, d] = deadlineStr.split("-").map(Number);
-		const newDeadline = new Date(y, (m ?? 1) - 1, d ?? 1);
+		const newDeadline = new Date(deadlineStr);
 
 		onconfirm(newDeadline);
 		ondismiss();
