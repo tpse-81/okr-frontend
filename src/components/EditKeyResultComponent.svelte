@@ -55,11 +55,54 @@ async function onUpdatekeyResult() {
     <h3 class="text-lg font-bold">{$_("keyResults.edit")}</h3>
     <ErrorMessage message={errorMessage} />
     <form class="flex flex-col gap-3 mt-3">
-	    <input type="text" bind:value={description} placeholder={$_("common.description")} class="input w-full">
-	    <input type="number" bind:value={startValue} placeholder={$_("keyResults.start")} class="input w-full">
-        <input type="number" bind:value={currentValue} placeholder={$_("keyResults.current")} class="input w-full">
-	    <input type="number" bind:value={endValue} placeholder={$_("keyResults.target")} class="input w-full">
-    </form>
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("common.description")}</span>
+    </div>
+    <input
+      type="text"
+      bind:value={description}
+      placeholder={$_("common.description")}
+      class="input w-full"
+    />
+  </label>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("keyResults.start")}</span>
+    </div>
+    <input
+      type="number"
+      bind:value={startValue}
+      placeholder={$_("keyResults.start")}
+      class="input w-full"
+    />
+  </label>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("keyResults.current")}</span>
+    </div>
+    <input
+      type="number"
+      bind:value={currentValue}
+      placeholder={$_("keyResults.current")}
+      class="input w-full"
+    />
+  </label>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("keyResults.target")}</span>
+    </div>
+    <input
+      type="number"
+      bind:value={endValue}
+      placeholder={$_("keyResults.target")}
+      class="input w-full"
+    />
+  </label>
+</form>
       <div class="modal-action">
           <div class="flex gap-3 w-full justify-end">
               <button type="button" class="btn" onclick={ondismiss}>{$_("common.close")}</button>
@@ -68,5 +111,7 @@ async function onUpdatekeyResult() {
       </div>
   </div>
 </dialog>
+
+
 
 
