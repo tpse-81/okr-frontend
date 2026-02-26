@@ -76,7 +76,7 @@
 	"tasks": {
 		"title": "Tasks",
 		"titleSingPlu": "task(s)",
-		"name": "Task title",
+		"name": "Title",
 		"empty": "No tasks available",
 		"edit": "Edit task",
 		"state": "State",

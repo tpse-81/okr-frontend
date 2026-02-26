@@ -76,6 +76,7 @@
 	"tasks": {
 		"title": "Aufgaben",
 		"titleSingPlu": "Aufgabe(n)",
+		"name": "Titel",
 		"empty": "Keine Aufgaben vorhanden",
 		"edit": "Aufgabe bearbeiten",
 		"state": "Status",

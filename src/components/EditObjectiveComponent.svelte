@@ -38,10 +38,31 @@ async function onUpdateObjective() {
 <dialog id="edit-objective-modal" bind:this={modal} class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">{$_("objectives.edit")}</h3>
-    <form class="flex flex-col gap-3 mt-3">
-	    <input type="text" bind:value={name} placeholder={$_("common.name")} class="input w-full">
-	    <input type="text" bind:value={description} placeholder={$_("common.description")} class="input w-full">
-    </form>
+   <form class="flex flex-col gap-3 mt-3">
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("common.name")}</span>
+    </div>
+    <input
+      type="text"
+      bind:value={name}
+      placeholder={$_("common.name")}
+      class="input w-full"
+    />
+  </label>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("common.description")}</span>
+    </div>
+    <input
+      type="text"
+      bind:value={description}
+      placeholder={$_("common.description")}
+      class="input w-full"
+    />
+  </label>
+</form>
     <div class="modal-action">
       <form method="dialog" class="flex gap-3 w-full justify-end">
         <button class="btn" onclick={ondismiss}>{$_("common.close")}</button>

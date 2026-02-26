@@ -46,11 +46,38 @@ async function onUpdateproject() {
   <div class="modal-box">
     <h3 class="text-lg font-bold">{$_("projects.edit")}</h3>
     <form class="flex flex-col gap-3 mt-3">
-      <IconSelector initialIcon={project.icon ?? null} onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}} />
+  <IconSelector
+    initialIcon={project.icon ?? null}
+    onStateChanged={(newIcon, needsConfirm) => {
+      icon = newIcon;
+      iconRequiresConfirmation = needsConfirm;
+    }}
+  />
 
-	    <input type="text" bind:value={name} placeholder="Name" class="input w-full">
-	    <input type="date" bind:value={deadline} placeholder="Deadline" class="input w-full">
-    </form>
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("common.name")}</span>
+    </div>
+    <input
+      type="text"
+      bind:value={name}
+      placeholder={$_("common.name")}
+      class="input w-full"
+    />
+  </label>
+
+  <label class="form-control w-full">
+    <div class="label">
+      <span class="label-text">{$_("projects.deadline")}</span>
+    </div>
+    <input
+      type="date"
+      bind:value={deadline}
+      placeholder={$_("projects.deadline")}
+      class="input w-full"
+    />
+  </label>
+</form>
     <div class="modal-action">
       <form method="dialog" class="flex gap-3 w-full justify-end">
         <button class="btn" onclick={ondismiss}>{$_("common.close")}</button>

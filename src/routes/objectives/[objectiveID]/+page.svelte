@@ -67,14 +67,63 @@ async function handleSubmit(e: SubmitEvent) {
 </script>
 
 <div class="card bg-base-100 border border-base-300">
-    <h1 class="ml-4 mt-1">{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
+  <h1 class="ml-4 mt-1">{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
 
-    <form id="keyResultSubmit" onsubmit={handleSubmit} class="flex flex-col lg:flex-row gap-3 p-3">
-        <input type="text" id="description" bind:value={description} placeholder={$_("common.description")} class="input w-full" required>
-        <input type="number" step="any" id="start-value" bind:value={startValue} placeholder={$_("keyResults.start")} class="input w-full" required>
-        <input type="number" step="any" id="end-value" bind:value={endValue} placeholder={$_("keyResults.target")} class="input w-full" required>
-        <input type="submit" value={$_("common.create")} class="btn btn-primary">
-    </form>
+  <form
+    id="keyResultSubmit"
+    onsubmit={handleSubmit}
+    class="flex flex-col lg:flex-row gap-3 p-3 items-end"
+	>
+	  <label class="form-control w-full">
+	    <div class="label">
+	      <span class="label-text">{$_("common.description")}</span>
+	    </div>
+	    <input
+	      type="text"
+	      id="description"
+	      bind:value={description}
+	      placeholder={$_("common.description")}
+	      class="input w-full"
+	      required
+	    />
+	  </label>
+
+	  <label class="form-control w-full">
+	    <div class="label">
+	      <span class="label-text">{$_("keyResults.start")}</span>
+	    </div>
+	    <input
+	      type="number"
+	      step="any"
+	      id="start-value"
+	      bind:value={startValue}
+	      placeholder={$_("keyResults.start")}
+	      class="input w-full"
+	      required
+	    />
+	  </label>
+
+	  <label class="form-control w-full">
+	    <div class="label">
+	      <span class="label-text">{$_("keyResults.target")}</span>
+	    </div>
+	    <input
+	      type="number"
+	      step="any"
+	      id="end-value"
+	      bind:value={endValue}
+	      placeholder={$_("keyResults.target")}
+	      class="input w-full"
+	      required
+	    />
+	  </label>
+
+	  <input
+	    type="submit"
+	    value={$_("common.create")}
+	    class="btn btn-primary"
+	  />
+	</form>
 </div>
 
 <div class="p-3">
