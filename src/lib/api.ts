@@ -2,6 +2,7 @@
 import { env } from "$env/dynamic/public";
 
 const PUBLIC_API_URL = env.PUBLIC_API_URL;
+export const AUTH_TOKEN_NAME = "token";
 
 import type {
 	KeyResult,
@@ -22,8 +23,29 @@ export class APIError extends Error {
 	}
 }
 
-const baseFetch = async (url: string, options: RequestInit = {}) => {
-	const response = await fetch(`${PUBLIC_API_URL}${url}`, {
+type FetchMethod = (
+	input: RequestInfo | URL,
+	init?: RequestInit,
+) => Promise<Response>;
+
+/**
+ * Fetch data from the API.
+ *
+ * If there is a chance that this code is executed on server-side, the custom `fetch`-method
+ * from the `load` method in `+page.server.ts` MUST be passed here.
+ **/
+const baseFetch = async (
+	url: string,
+	options: RequestInit = {},
+	customFetch: FetchMethod | null = null,
+) => {
+	// this is required for server-side loading of application data -
+	// if a server-side fetch method is provided, we have to use this one instead
+	// this ensures that auth tokens are sent properly, otherwise the server side
+	// request would omit this data, causing the API to return a Forbidden error
+	const fetchMethod = customFetch ?? fetch;
+
+	const response = await fetchMethod(`${PUBLIC_API_URL}${url}`, {
 		credentials: "include",
 		...options,
 		headers: {
@@ -173,8 +195,11 @@ export async function createProject(
 	return response;
 }
 
-export async function getProject(project_id: string): Promise<Project> {
-	const response = await baseFetch(`/projects/${project_id}`);
+export async function getProject(
+	project_id: string,
+	customFetch: FetchMethod | null = null,
+): Promise<Project> {
+	const response = await baseFetch(`/projects/${project_id}`, {}, customFetch);
 
 	return response.json();
 }
@@ -248,8 +273,15 @@ export async function createObjective(
 	return response;
 }
 
-export async function getObjective(objective_id: string): Promise<Objective> {
-	const response = await baseFetch(`/objectives/${objective_id}`);
+export async function getObjective(
+	objective_id: string,
+	customFetch: FetchMethod | null = null,
+): Promise<Objective> {
+	const response = await baseFetch(
+		`/objectives/${objective_id}`,
+		{},
+		customFetch,
+	);
 
 	return response.json();
 }
@@ -383,8 +415,15 @@ export async function createKeyResult(
 	return response.json();
 }
 
-export async function getKeyResult(key_result_id: string): Promise<KeyResult> {
-	const response = await baseFetch(`/key_results/${key_result_id}`);
+export async function getKeyResult(
+	key_result_id: string,
+	customFetch: FetchMethod | null = null,
+): Promise<KeyResult> {
+	const response = await baseFetch(
+		`/key_results/${key_result_id}`,
+		{},
+		customFetch,
+	);
 
 	return response.json();
 }
