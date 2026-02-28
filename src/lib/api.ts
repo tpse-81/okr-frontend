@@ -14,11 +14,13 @@ import type {
 } from "$lib/types";
 
 export class APIError extends Error {
+	status: number;
 	response: Response;
 
 	constructor(response: Response) {
 		super(response.statusText);
-
+		this.name = "APIError";
+		this.status = response.status;
 		this.response = response;
 	}
 }
@@ -61,14 +63,6 @@ const baseFetch = async (
 
 	return response;
 };
-
-export class ApiError extends Error {
-	status: number;
-	constructor(status: number, message: string) {
-		super(message);
-		this.status = status;
-	}
-}
 
 async function readErrorMessage(response: Response): Promise<string> {
 	try {
@@ -337,9 +331,10 @@ export async function linkObjectiveToProject(
 export async function unlinkObjectiveFromProject(
 	project_id: string,
 	objective_id: string,
+	confirm_orphan = false,
 ) {
 	const response = await baseFetch(
-		`/projects/${project_id}/objectives/${objective_id}`,
+		`/projects/${project_id}/objectives/${objective_id}?confirm_orphan=${confirm_orphan}`,
 		{
 			method: "DELETE",
 		},
