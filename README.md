@@ -1,38 +1,133 @@
-# sv
+# OKR Software for Groups
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A modern, team-based OKR management platform designed to structure goals, measure progress, and improve transparency across projects.
 
-## Creating a project
+This software was developed as part of a university software engineering project, with a strong focus on clean architecture, security, and maintainability, while keeping real-world usability in mind.
 
-If you're seeing this, you've probably already done this step. Congrats!
+---
 
-```sh
-# create a new project in the current directory
-pnpx sv create
+##  What are OKRs?
 
-# create a new project in my-app
-pnpx sv create my-app
-```
+**Objectives and Key Results (OKRs)** are a goal-setting framework used by teams and organizations to define ambitious goals and measurable outcomes.
 
-## Developing
+- **Objective** → What do we want to achieve?
+- **Key Result** → How do we measure success?
+- **Tasks** → What needs to be done to achieve it?
 
-Once you've created a project and installed dependencies with `pnpm install`, start a development server:
+Our platform provides a structured way to manage OKRs across multiple teams and projects.
 
-```sh
-pnpm run dev
+---
 
-# or start the server and open the app in a new browser tab
-pnpm run dev -- --open
-```
+##  Key Features
 
-## Building
+-  Dashboard with active projects, open tasks, and upcoming deadlines  
+-  Central project overview & project creation  
+-  Objective management per project  
+-  Cross-project objective linking (objectives can be connected across projects)  
+-  Key Result tracking with visible progress  
+-  Task management per Key Result  
+-  Team-based structure with role management:
+    - **Admin** – full system access
+    - **Team Lead** – manages assigned projects
+    - **Member** – contributes to project OKRs
+-  Currently supported languages:
+    - English
+    - German  
+   You can add new languages by adding a new locale file in the [i18n folder] (src/lib/i18n/locales).
+-  Advanced authentication:
+    - WebAuthn (passkey-based authentication)
+    - TOTP-based two-factor authentication
+-  Docker support for simplified deployment
 
-To create a production version of your app:
+---
 
-```sh
-pnpm run build
-```
+##  Screenshots
 
-You can preview the production build with `pnpm run preview`.
+###  Dashboard
+![Dashboard showing active projects, deadlines and tasks](docs/screenshots/dashboard.png)
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+###  Project Creation & Overview
+![Project creation view with project overview](docs/screenshots/project_creation.png)
+
+###  Objective Management & Linking
+![Objective creation view with cross-project linking](docs/screenshots/project_management_and_objective_creation.png)
+
+---
+
+##  Tech Stack
+
+### Frontend
+- **SvelteKit**
+- **DaisyUI**
+
+### Backend
+- **Litestar**
+- **SQLAlchemy**
+
+### Infrastructure
+- Docker support
+
+---
+
+##  Security
+
+Security was a core focus of this project.
+
+- Multi-factor authentication:
+    - WebAuthn support
+    - TOTP-based one-time passwords
+- Role-based access control
+- Secure session handling via JSON Web Tokens (JWT)
+
+---
+
+##  Project Background
+
+This project was developed in a university setting but designed with production-oriented standards in mind:
+
+- Modular architecture
+- Clean separation of frontend and backend
+- Secure authentication mechanisms
+- Maintainable and extensible code structure
+
+---
+
+## Development
+
+> [!NOTE]
+> Before you can follow any of the other steps, you first have to install all dependencies by running the command below.
+>
+
+### Install dependencies
+- `pnpm install`
+
+### Run the project (development)
+- `pnpm run dev`
+
+### Build and run the production build
+- `pnpm run build`
+- `pnpm run preview`
+
+### Running code quality checks
+- Type-checking (via Svelte Typecheck): `pnpm run check`
+- Linting (via Biome): `pnpm run lint`
+- Auto-formatting (via Biome): `pnpm run format`
+
+### Run E2E integration tests (Playwright)
+> [!NOTE]
+> The tests require you to have the backend running on port 8000!
+>
+- `pnpm run test:e2e`
+
+### Run the full CI pipeline locally (linter, type-checker and tests)
+- `pnpm run ci`
+
+> [!NOTE] 
+> Playwright uses `http://localhost:4173` as baseURL and will automatically start a preview server via `pnpm run build && pnpm run preview:ci`.
+>
+---
+
+## Backend / API
+
+- Backend repository: https://github.com/tpse-81/okr
+- Developer API documentation: https://tpse-81.github.io/okr/
