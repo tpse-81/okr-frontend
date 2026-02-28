@@ -3,6 +3,7 @@ import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
+	APIError,
 	createObjective,
 	getObjectiveProject,
 	linkObjectiveToProject,
@@ -95,7 +96,7 @@ async function handleSubmit(e: SubmitEvent) {
     </div>
   </div>
 
-  <!-- Liste der Objectives (bleibt sichtbar) -->
+  <!-- List of objectives (stays visible) -->
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
       <div class="flex">
@@ -121,14 +122,37 @@ async function handleSubmit(e: SubmitEvent) {
   title={$_("projects.objectivesForTitle", { values: { projectName: project_name } })}
   initialLinked={objectivelist}
   showErrors={false} 
-  writeChanges={async (toAdd, toRemove) => {
-    const addJobs = toAdd.map((obj) => linkObjectiveToProject(project_id, obj.id));
-    const removeJobs = toRemove.map((obj) =>
-      unlinkObjectiveFromProject(project_id, obj.id),
-    );
-    await Promise.all([...addJobs, ...removeJobs]);
-    return [];
-  }}
+
+  writeChanges={async (toAdd, toRemove, confirmOrphan = false) => {
+  const addJobs = toAdd.map((obj) => linkObjectiveToProject(project_id, obj.id));
+  const orphanCandidates: Objective[] = [];
+
+ const removeJobs = toRemove.map(async (obj) => {
+  try {
+    await unlinkObjectiveFromProject(project_id, obj.id, confirmOrphan);
+  } catch (e: any) {
+    if (!confirmOrphan && e instanceof APIError && e.response.status === 409) {
+      orphanCandidates.push(obj);
+      return;
+    }
+    throw e;
+  }
+});
+
+  await Promise.all([...addJobs, ...removeJobs]);
+
+  if (!confirmOrphan && orphanCandidates.length > 0) {
+      const err: any = new Error("ORPHAN_CONFIRM_NEEDED");
+      err.orphanObjectives = orphanCandidates;
+      err.orphanObjectiveIds = orphanCandidates.map(o => o.id);
+      throw err;
+    }
+
+  
+
+  return [];
+}}
+
   onLinkedChanged={(objectives) => (objectivelist = objectives)}
   ondismiss={() => (showLinkObjectivesModal = false)}
   show={showLinkObjectivesModal}

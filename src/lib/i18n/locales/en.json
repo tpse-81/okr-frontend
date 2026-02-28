@@ -21,6 +21,7 @@
 	"projects": {
 		"title": "Projects",
 		"objectivesForTitle": "Objectives for {projectName}",
+		"orphanConfirm": "If you continue, the following objectives will no longer belong to any project and might become archived:",
 		"createTitle": "Create a Project",
 		"deadline": "Deadline",
 		"empty": "No projects available",
@@ -229,6 +230,8 @@
 		"linked": "Linked",
 		"searchName": "Search by name...",
 		"years": "{count} year(s)",
-		"days": "{count} day(s)"
+		"days": "{count} day(s)",
+		"warning": "Warning!",
+		"continueQuestion": "Continue?"
 	}
 }
