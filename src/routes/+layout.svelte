@@ -1,5 +1,6 @@
 <script lang="ts">
 import { EllipsisIcon, MenuIcon, Moon, Sun, X } from "@lucide/svelte";
+import arrow from "$lib/assets/arrow-in-the-target.svg";
 import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
@@ -14,6 +15,7 @@ import {
 	userInfoStore,
 } from "$lib/user_info";
 import ForcePasswordChangeDialog from "../components/ForcePasswordChangeDialog.svelte";
+import IconSelector from "../components/IconSelector.svelte";
 import LanguageSwitch from "../components/LanguageSwitch.svelte";
 
 const i18nReady = waitLocale();
@@ -84,14 +86,14 @@ function getInitialTheme(): string {
 }
 
 function changeTheme() {
-	const theme = checkbox.checked ? "luxury" : "cupcake";
+	const theme = isDark ? "luxury" : "cupcake";
 	localStorage.setItem("theme", theme);
 	applyTheme(theme);
 }
 </script>
 
 <svelte:head>
-  <link rel="icon" href={favicon} />
+  <link rel="icon" href={arrow} />
   <title>{title}</title>
 </svelte:head>
 
@@ -158,6 +160,15 @@ function changeTheme() {
     </div>
   </div>
 
+  <a href="/">
+    <img
+            src={arrow}
+            alt="Arrow Logo"
+            class="h-8 w-8 ml-3 transition-colors duration-200"
+            class:invert={isDark}
+    />
+  </a>
+
   <div class="flex-1">
     <a class="btn btn-ghost text-xl" href="/">OKR-ng</a>
   </div>
@@ -171,7 +182,12 @@ function changeTheme() {
     <div class="ml-2">
     <label class="swap swap-rotate">
       <!-- this hidden checkbox controls the state -->
-      <input type="checkbox" class="theme-controller" value="luxury" bind:this={checkbox} onchange={changeTheme} checked={isDark}/>
+      <input
+              type="checkbox"
+              class="theme-controller"
+              bind:checked={isDark}
+              onchange={changeTheme}
+      />
 
       <!-- sun icon -->
       <Sun class="swap-off h-6.5 w-6.5" />
