@@ -240,6 +240,8 @@
 		"searchName": "Search by name...",
 		"years": "{count} year(s)",
 		"days": "{count} day(s)",
+		"noPermissions": "You don't have permissions to change this!"
+		"days": "{count} day(s)",
 		"warning": "Warning!",
 		"continueQuestion": "Continue?",
 		"archived": "Archived",

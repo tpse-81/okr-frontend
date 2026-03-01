@@ -90,7 +90,7 @@ async function onDeleteKeyResult() {
 </script>
 
 <li class="card card-border relative">
-		<div class="absolute right-2 top-2 flex gap-2">
+		<div class="absolute right-2 top-2 flex gap-2" title={!canEdit ? $_("common.noPermissions") : ""}>
 		  <button class="btn btn-square" onclick={() => canEdit && (showEditDialog = true)} disabled={!canEdit}><Edit size="16" /></button>
 		  <button class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)} disabled={!canEdit}><Trash size="16" /></button>
         </div>
@@ -110,7 +110,7 @@ async function onDeleteKeyResult() {
             </div>
         </div>
     </a>
-    <div class="-mt-2 ml-5 mb-3">
+    <div class="-mt-2 ml-5 mb-3" title={!canEdit ? $_("common.noPermissions") : ""}>
         <button class="btn btn-square" onclick={incrementCurrentValue} disabled={!canEdit}>
             <PlusCircle size="16" />
         </button>

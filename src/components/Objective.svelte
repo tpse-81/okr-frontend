@@ -43,7 +43,8 @@ async function onDeleteObjective() {
 </script>
 
 <li class="card card-border relative">
-  	<div class="absolute right-2 top-2 flex gap-2">
+  	<div class="absolute right-2 top-2 flex gap-2"
+         title={!canEdit ? $_("common.noPermissions") : ""}>
 		  <button class="btn btn-square" disabled={isArchived} onclick={() => canEdit && (showEditDialog = true)} disabled={!canEdit}><Edit size="16" /></button>
 		  <button class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)} disabled={!canEdit}><Trash size="16" /></button>
 		</div>

@@ -88,8 +88,43 @@ async function setTaskState(newState: TaskState) {
       {/each}
     </ul>
   </div>
+	<span
+            class="dropdown"
+            title={!canEdit ? $_("common.noPermissions") : ""}
+    >
+		<!-- trigger -->
+		<div
+                class="absolute left-2 top-2 badge {taskState.badge}
+			       {canEdit ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}"
+                role="button"
+                tabindex={canEdit ? 0 : -1}
+                onclick={() => canEdit && taskStateDropdown?.classList.toggle("dropdown-open")}
+        >
+			<Info size="16" />
+			<span>{$_(taskState.label)}</span>
+		</div>
 
-  <div class="absolute right-2 top-2 flex gap-2">
+      <!-- dropdown -->
+      {#if canEdit}
+			<ul
+                    bind:this={taskStateDropdown}
+                    tabindex="-1"
+                    class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+            >
+				{#each taskStates as state}
+					<li
+                            class="btn btn-ghost"
+                            role="button"
+                            onclick={() => setTaskState(state.state)}
+                    >
+						{$_(state.label)}
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</span>
+
+  <div class="absolute right-2 top-2 flex gap-2" title={!canEdit ? $_("common.noPermissions") : ""}>
     <button type="button" class="btn btn-square" onclick={() => canEdit && (showEditDialog = true)}
             disabled={!canEdit}>
     <button class="btn btn-square" disabled={isArchived} onclick={() => (showEditDialog = true)}>
