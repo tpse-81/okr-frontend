@@ -1,16 +1,12 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
-import { type Task, type TaskState, taskStates } from "$lib/types";
+import { type Task, type TaskState, taskStateIndex } from "$lib/types";
 import TaskComponent from "./Task.svelte";
 
 let {
 	tasks,
 	onTaskDeleted,
 }: { tasks: Task[]; onTaskDeleted: (id: string) => void } = $props();
-
-function taskStateIndex(category: TaskState) {
-	return taskStates.findIndex((state) => state.state === category);
-}
 
 let tasksGroupedByState = $derived(
 	Object.groupBy(tasks, (task) => task.task_state),
