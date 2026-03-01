@@ -194,6 +194,11 @@ export async function getUsers() {
 	return response.json();
 }
 
+export async function getTasksForUser(userId: string): Promise<Task[]> {
+	const response = await baseFetch(`/users/${userId}/tasks`);
+	return response.json();
+}
+
 export async function getFileBytes(file: File) {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
