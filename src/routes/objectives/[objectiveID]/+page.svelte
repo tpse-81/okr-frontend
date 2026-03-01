@@ -1,5 +1,4 @@
 <script lang="ts">
-import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
@@ -26,7 +25,7 @@ let linkedChildren: Objective[] = $state([]);
 
 let description: string = $state("");
 let startValue: number = $state(0);
-let endValue: number = $state(0);
+let endValue: number = $state(100);
 
 $effect(() => {
 	// Always reload when the objective ID changes
