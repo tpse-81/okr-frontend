@@ -2,7 +2,12 @@
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
-import { getDashboard, getTasks } from "$lib/api";
+import {
+	getDashboard,
+	getProjectsForUser,
+	getTasks,
+	getTasksForUser,
+} from "$lib/api";
 import {
 	type Project,
 	type ProjectContainer,
@@ -17,33 +22,71 @@ import DashboardTaskComponent from "../../components/DashboardTask.svelte";
 let projectContainers: ProjectContainer[] = $state([]);
 let projectsList: Project[] = $state([]);
 let closestDeadlineProjects: Project[] = $state([]);
-
 let taskList: Task[] = $state([]);
+
+let allProjectContainers: ProjectContainer[] = $state([]);
+let allTasksList: Task[] = $state([]);
+
+// toggle
+let showOnlyMine = $state(false);
+
+// ids of projects the user is part of
+let myProjectIds = $state<Set<string>>(new Set());
+let myTasksList: Task[] = $state([]);
 
 onMount(async () => {
 	try {
-		projectContainers = await getDashboard();
-		const rawProjects = projectContainers.map((pc) => pc.project);
+		allProjectContainers = await getDashboard();
+
+		const rawProjects = allProjectContainers.map((pc) => pc.project);
 		projectsList = rawProjects.map((p) => ({
 			...p,
 			creation_date: new Date(p.creation_date),
 			deadline: new Date(p.deadline),
 		}));
+
+		projectContainers = allProjectContainers;
 	} catch (err) {
 		console.error(err);
 	}
+
 	try {
-		taskList = (await getTasks()).toSorted(
+		allTasksList = (await getTasks()).toSorted(
 			(a, b) => taskStateIndex(a.task_state) - taskStateIndex(b.task_state),
 		);
+
+		taskList = allTasksList;
 	} catch (err) {
 		console.error(err);
 		await goto("/expected");
 	}
+
+	// load user's projects once
+	if ($userInfoStore?.id) {
+		const myProjects: Project[] = await getProjectsForUser($userInfoStore.id);
+		myProjectIds = new Set(myProjects.map((p) => p.id));
+		myTasksList = await getTasksForUser($userInfoStore.id);
+	}
 });
 
 $effect(() => {
-	closestDeadlineProjects = [...projectsList]
+	if (!showOnlyMine) {
+		projectContainers = allProjectContainers;
+		taskList = allTasksList;
+	} else {
+		projectContainers = allProjectContainers.filter((pc) =>
+			myProjectIds.has(pc.project.id),
+		);
+		taskList = myTasksList;
+	}
+});
+
+$effect(() => {
+	const source = showOnlyMine
+		? projectContainers.map((pc) => pc.project)
+		: projectsList;
+
+	closestDeadlineProjects = [...source]
 		.sort((a, b) => a.deadline.getTime() - b.deadline.getTime())
 		.slice(0, 5);
 });
@@ -65,7 +108,18 @@ $effect(() => {
 
         <div class="card card-border relative">
             <div class="p-3">
-                <h1>{$_("projects.title")}</h1>
+                <div class="flex items-center justify-between mb-2">
+                    <h1>{$_("projects.title")}</h1>
+
+                    <button
+                            class="btn btn-sm btn-outline"
+                            onclick={() => (showOnlyMine = !showOnlyMine)}
+                    >
+                        {showOnlyMine
+                            ? $_("projects.showAll")
+                            : $_("projects.onlyMine")}
+                    </button>
+                </div>
                 {#if projectContainers.length > 0}
                     <ul class="flex gap-3 overflow-x-auto pb-2">
                         {#each projectContainers as projectContainer}

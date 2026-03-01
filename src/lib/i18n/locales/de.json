@@ -50,7 +50,9 @@
 			"finalized": "Abgeschlossen",
 			"give_up": "Aufgegeben"
 		},
-		"unarchiveNewDeadline": "Neue Frist"
+		"unarchiveNewDeadline": "Neue Frist",
+		"onlyMine": "Zeige nur meine eigenen Projekte an",
+		"showAll": "Zeige alle Projekte an"
 	},
 
 	"objectives": {

@@ -50,7 +50,9 @@
 			"finalized": "Finished",
 			"give_up": "Cancelled"
 		},
-		"unarchiveNewDeadline": "New deadline"
+		"unarchiveNewDeadline": "New deadline",
+		"onlyMine": "Show only my Projects",
+		"showAll": "Show all Projects"
 	},
 
 	"objectives": {
