@@ -8,8 +8,9 @@
 -->
 <script lang="ts">
 import { Edit, Trash, XCircle } from "@lucide/svelte";
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import { deleteTask, updateTask } from "$lib/api";
+import { deleteTask, getTaskPermission, updateTask } from "$lib/api";
 import { type Task, type TaskState, taskStates } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
@@ -39,6 +40,34 @@ let selectedTask: Task | null = $state(null);
 let searchTerm = $state("");
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
+let taskPermissions = $state<Record<string, { can_write: boolean }>>({});
+
+onMount(loadTaskPermissions);
+
+$effect(() => {
+	loadTaskPermissions();
+});
+
+async function loadTaskPermissions() {
+	if (!tasks?.length) return;
+
+	const entries = await Promise.all(
+		tasks.map(async (task) => {
+			try {
+				const caps = await getTaskPermission(task.id);
+				return [task.id, caps] as const;
+			} catch {
+				return [task.id, { can_write: false }] as const;
+			}
+		}),
+	);
+
+	taskPermissions = Object.fromEntries(entries);
+}
+
+function canWrite(taskId: string) {
+	return taskPermissions[taskId]?.can_write ?? false;
+}
 
 async function onDeleteTask() {
 	showConfirmationDialog = false;
@@ -159,12 +188,20 @@ async function deleteSelectedTasks() {
             {#each visibleTasks as task}
                 <tr class="hover transition duration-200 {selectedTasks.includes(task.id) ? 'bg-base-300' : ''}">
                     <td>
-                        <input type="checkbox" class="checkbox checkbox-sm" checked={selectedTasks.includes(task.id)} onchange={() => {
+                        <input
+                                type="checkbox"
+                                class="checkbox checkbox-sm"
+                                checked={selectedTasks.includes(task.id)}
+                                disabled={!canWrite(task.id)}
+                                onchange={() => {
+                                if (!canWrite(task.id)) return;
+
                                 if (selectedTasks.includes(task.id)) {
                                     selectedTasks = selectedTasks.filter(id => id !== task.id);
                                 } else {
                                     selectedTasks = [...selectedTasks, task.id];
-                                }}}
+                                }
+                            }}
                         />
                     </td>
                     <td class="truncate">
@@ -182,7 +219,13 @@ async function deleteSelectedTasks() {
                     </td>
                     <td class="text-right">
                         <div class="dropdown dropdown-left">
-                            <div tabindex="0" role="button" class="btn btn-ghost btn-xs sm:btn-lg">...</div>
+                            <button
+                                    type="button"
+                                    class="btn btn-ghost btn-xs sm:btn-lg"
+                                    disabled={!canWrite(task.id)}
+                            >
+                                ...
+                            </button>
                             <ul tabindex="-1" class="dropdown-content menu bg-base-300 rounded-box z-1 w-28 sm:w-30 p-2 shadow-sm text-xs sm:text-sm">
                                 <li>
                                     <button

@@ -6,6 +6,7 @@ import {
 	APIError,
 	createObjective,
 	getObjectiveProject,
+	getProjectPermission,
 	linkObjectiveToProject,
 	unlinkObjectiveFromProject,
 } from "$lib/api";
@@ -25,11 +26,14 @@ let objectivelist: Objective[] = $state([]);
 let name: string = $state("");
 let description: string = $state("");
 
+let canCreate = $state(false);
 let showLinkObjectivesModal = $state(false);
 
 onMount(async () => {
 	try {
 		await objectives();
+		const permissions = await getProjectPermission(project_id);
+		canCreate = permissions.can_write;
 	} catch (err) {
 		console.error(err);
 	}
@@ -70,38 +74,42 @@ async function handleSubmit(e: SubmitEvent) {
   <ProjectMembers projectId={project_id} />
 
   <!-- Create Objective -->
-  <div class="card bg-base-100 border border-base-300">
-    <div class="card-body gap-4">
-      <h2 class="card-title">{$_("objectives.createTitle")}</h2>
+  {#if canCreate}
+    <div class="card bg-base-100 border border-base-300">
+      <div class="card-body gap-4">
+        <h2 class="card-title">{$_("objectives.createTitle")}</h2>
 
-      <form id="objective-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3">
-        <div class="form-control">
-          <label for="objective-name" class="label">
-            <span class="label-text">{$_("common.name")}</span>
-          </label>
-          <input id="objective-name" type="text" bind:value={name} placeholder={$_("common.name")} class="input input-bordered w-full" required/>
-        </div>
+        <form id="objective-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3">
+          <div class="form-control">
+            <label for="objective-name" class="label">
+              <span class="label-text">{$_("common.name")}</span>
+            </label>
+            <input id="objective-name" type="text" bind:value={name} placeholder={$_("common.name")} class="input input-bordered w-full" required/>
+          </div>
 
-        <div class="form-control">
-          <label for="objective-description" class="label">
-            <span class="label-text">{$_("common.description")}</span>
-          </label>
-          <input id="objective-description" type="text" bind:value={description} placeholder={$_("common.description")} class="input input-bordered w-full" required/>
-        </div>
+          <div class="form-control">
+            <label for="objective-description" class="label">
+              <span class="label-text">{$_("common.description")}</span>
+            </label>
+            <input id="objective-description" type="text" bind:value={description} placeholder={$_("common.description")} class="input input-bordered w-full" required/>
+          </div>
 
-        <div class="md:col-span-2 flex justify-end">
-          <button type="submit" class="btn btn-primary">{$_("common.create")}</button>
-        </div>
-      </form>
+          <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="btn btn-primary">{$_("common.create")}</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
+    {/if}
 
   <!-- List of objectives (stays visible) -->
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
-      <div class="flex">
+      <div class="flex" >
         <h2 class="card-title flex-1">{$_("objectives.title")}</h2>
-        <button class="btn btn-primary" onclick={() => showLinkObjectivesModal = true}>{$_("objectives.manageLinks")}</button>
+        <div title={!canCreate ? $_("common.noPermissions") : ""}>
+        <button class="btn btn-primary" onclick={() => canCreate && (showLinkObjectivesModal = true)} disabled={!canCreate}>{$_("objectives.manageLinks")}</button>
+        </div>
       </div>
 
       {#if objectivelist.length > 0}

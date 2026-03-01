@@ -240,6 +240,7 @@
 		"searchName": "Nach Namen suchen...",
 		"years": "{count} Jahr(en)",
 		"days": "{count} Tag(en)",
+		"noPermissions": "Sie haben keine Berechtigung, dies zu ändern!",
 		"warning": "Achtung!",
 		"continueQuestion": "Fortfahren?",
 		"archived": "Archiviert",

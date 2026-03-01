@@ -8,8 +8,9 @@
 -->
 <script lang="ts">
 import { Archive, Edit, Trash } from "@lucide/svelte";
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import { deleteObjective } from "$lib/api";
+import { deleteObjective, getObjectivePermission } from "$lib/api";
 import type { Objective } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditObjectiveComponent from "./EditObjectiveComponent.svelte";
@@ -21,6 +22,16 @@ let {
 
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
+let canEdit = $state(false);
+
+onMount(async () => {
+	try {
+		const permissions = await getObjectivePermission(objective.id);
+		canEdit = permissions.can_write; // user can edit
+	} catch (err) {
+		console.error("Failed to load project permissions", err);
+	}
+});
 
 const isArchived = $derived(objective.is_archived === true);
 
@@ -32,9 +43,10 @@ async function onDeleteObjective() {
 </script>
 
 <li class="card card-border relative">
-  	<div class="absolute right-2 top-2 flex gap-2">
-		  <button class="btn btn-square" disabled={isArchived} onclick={() => showEditDialog = true}><Edit size="16" /></button>
-		  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
+  	<div class="absolute right-2 top-2 flex gap-2"
+         title={!canEdit ? $_("common.noPermissions") : ""}>
+		  <button class="btn btn-square" disabled={isArchived || !canEdit} onclick={() => canEdit && (showEditDialog = true)}><Edit size="16" /></button>
+		  <button class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)} disabled={!canEdit}><Trash size="16" /></button>
 		</div>
     <a href={`/objectives/${objective.id}`} class="card-body">
 		{#if isArchived}

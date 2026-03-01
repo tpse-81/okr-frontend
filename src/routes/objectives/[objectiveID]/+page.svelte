@@ -1,10 +1,12 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
 	createKeyResult,
 	getKeyResultObjective,
 	getObjectiveChildren,
+	getObjectivePermission,
 	linkObjectiveToObjective,
 	unlinkObjectiveFromObjective,
 } from "$lib/api";
@@ -26,6 +28,17 @@ let linkedChildren: Objective[] = $state([]);
 let description: string = $state("");
 let startValue: number = $state(0);
 let endValue: number = $state(100);
+
+let canCreate = $state(false);
+
+onMount(async () => {
+	try {
+		const permissions = await getObjectivePermission(objectiveID);
+		canCreate = permissions.can_write;
+	} catch (err) {
+		console.error(err);
+	}
+});
 
 $effect(() => {
 	// Always reload when the objective ID changes
@@ -65,65 +78,67 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<div class="card bg-base-100 border border-base-300">
-  <h1 class="ml-4 mt-1">{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
+{#if canCreate}
+	<div class="card bg-base-100 border border-base-300">
+	  <h1 class="ml-4 mt-1">{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
 
-  <form
-    id="keyResultSubmit"
-    onsubmit={handleSubmit}
-    class="flex flex-col lg:flex-row gap-3 p-3 items-end"
-	>
-	  <label class="form-control w-full">
-	    <div class="label">
-	      <span class="label-text">{$_("common.description")}</span>
-	    </div>
-	    <input
-	      type="text"
-	      id="description"
-	      bind:value={description}
-	      placeholder={$_("common.description")}
-	      class="input w-full"
-	      required
-	    />
-	  </label>
+	  <form
+		id="keyResultSubmit"
+		onsubmit={handleSubmit}
+		class="flex flex-col lg:flex-row gap-3 p-3 items-end"
+		>
+		  <label class="form-control w-full">
+			<div class="label">
+			  <span class="label-text">{$_("common.description")}</span>
+			</div>
+			<input
+			  type="text"
+			  id="description"
+			  bind:value={description}
+			  placeholder={$_("common.description")}
+			  class="input w-full"
+			  required
+			/>
+		  </label>
 
-	  <label class="form-control w-full">
-	    <div class="label">
-	      <span class="label-text">{$_("keyResults.start")}</span>
-	    </div>
-	    <input
-	      type="number"
-	      step="any"
-	      id="start-value"
-	      bind:value={startValue}
-	      placeholder={$_("keyResults.start")}
-	      class="input w-full"
-	      required
-	    />
-	  </label>
+		  <label class="form-control w-full">
+			<div class="label">
+			  <span class="label-text">{$_("keyResults.start")}</span>
+			</div>
+			<input
+			  type="number"
+			  step="any"
+			  id="start-value"
+			  bind:value={startValue}
+			  placeholder={$_("keyResults.start")}
+			  class="input w-full"
+			  required
+			/>
+		  </label>
 
-	  <label class="form-control w-full">
-	    <div class="label">
-	      <span class="label-text">{$_("keyResults.target")}</span>
-	    </div>
-	    <input
-	      type="number"
-	      step="any"
-	      id="end-value"
-	      bind:value={endValue}
-	      placeholder={$_("keyResults.target")}
-	      class="input w-full"
-	      required
-	    />
-	  </label>
+		  <label class="form-control w-full">
+			<div class="label">
+			  <span class="label-text">{$_("keyResults.target")}</span>
+			</div>
+			<input
+			  type="number"
+			  step="any"
+			  id="end-value"
+			  bind:value={endValue}
+			  placeholder={$_("keyResults.target")}
+			  class="input w-full"
+			  required
+			/>
+		  </label>
 
-	  <input
-	    type="submit"
-	    value={$_("common.create")}
-	    class="btn btn-primary"
-	  />
-	</form>
-</div>
+		  <input
+			type="submit"
+			value={$_("common.create")}
+			class="btn btn-primary"
+		  />
+		</form>
+	</div>
+{/if}
 
 <div class="p-3">
     <h1>{$_("keyResults.titleForObjective", {values: {objectiveName: objectiveName}})}</h1>
@@ -138,28 +153,30 @@ async function handleSubmit(e: SubmitEvent) {
     {/if}
 </div>
 
-<div class="p-3">
-	<div class="card bg-base-100 border border-base-300">
-		<div class="card-body gap-4">
-			<div class="flex items-start gap-3">
-				<h2 class="card-title flex-1">{$_("objectives.child")}</h2>
-				<button class="btn btn-primary" onclick={() => showLinkChildrenModal = true}>
-					{$_("objectives.addChild")}
-				</button>
-			</div>
+{#if canCreate}
+	<div class="p-3">
+		<div class="card bg-base-100 border border-base-300">
+			<div class="card-body gap-4">
+				<div class="flex items-start gap-3">
+					<h2 class="card-title flex-1">{$_("objectives.child")}</h2>
+					<button class="btn btn-primary" onclick={() => showLinkChildrenModal = true}>
+						{$_("objectives.addChild")}
+					</button>
+				</div>
 
-			{#if linkedChildren.length > 0}
-				<ul id="objectives-list" class="grid grid-auto">
-					{#each linkedChildren as objective}
-						<ObjectiveComponent objective={objective} onObjectiveDeleted={() => linkedChildren = linkedChildren.filter(obj => objective.id != obj.id)} />
-					{/each}
-				</ul>
-			{:else}
-				<p class="opacity-70">{$_("objectives.emptyChild")}</p>
-			{/if}
+				{#if linkedChildren.length > 0}
+					<ul id="objectives-list" class="grid grid-auto">
+						{#each linkedChildren as objective}
+							<ObjectiveComponent objective={objective} onObjectiveDeleted={() => linkedChildren = linkedChildren.filter(obj => objective.id != obj.id)} />
+						{/each}
+					</ul>
+				{:else}
+					<p class="opacity-70">{$_("objectives.emptyChild")}</p>
+				{/if}
+			</div>
 		</div>
 	</div>
-</div>
+{/if}
 
 <LinkObjectiveDialog
  title={$_("objectives.childrenForTitle", { values: { objectiveName: objectiveName } })}
