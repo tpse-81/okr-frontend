@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 import { Archive, Edit, Trash } from "@lucide/svelte";
+import { _ } from "svelte-i18n";
 import { deleteObjective } from "$lib/api";
 import type { Objective } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
@@ -47,4 +48,4 @@ async function onDeleteObjective() {
 </li>
 
 <EditObjectiveComponent show={showEditDialog} objective={objective} ondismiss={() => showEditDialog = false} />
-<ConfirmationDialog show={showConfirmationDialog} message="Delete objective" onconfirm={onDeleteObjective} ondismiss={() => showConfirmationDialog = false} />
+<ConfirmationDialog show={showConfirmationDialog} message={$_("objectives.delete")} onconfirm={onDeleteObjective} ondismiss={() => showConfirmationDialog = false} />

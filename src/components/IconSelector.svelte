@@ -1,4 +1,5 @@
 <script lang="ts">
+import { _ } from "svelte-i18n";
 import { getFileBytes } from "$lib/api";
 
 let iconInput: HTMLInputElement;
@@ -40,7 +41,7 @@ function confirmIcon() {
 	onStateChanged(confirmedIcon, false);
 }
 
-function discardIcon() {
+export function discardIcon() {
 	pendingIcon = null;
 	confirmedIcon = null;
 	needsConfirm = false;
@@ -56,7 +57,7 @@ function discardIcon() {
 <div class="flex flex-col gap-3">
   <div class="form-control">
     <label for="project-logo" class="label">
-        <span class="label-text">Projekt-Logo</span>
+        <span class="label-text">{$_("projects.icon")}</span>
     </label>
     <input
         id="project-logo"
@@ -73,7 +74,7 @@ function discardIcon() {
   {#if previewUrl}
     <div class="alert flex flex-col gap-3">
       <div class="w-full">
-        <div class="text-sm font-semibold mb-2">Preview</div>
+        <div class="text-sm font-semibold mb-2">{$_("projects.preview")}</div>
         <div class="h-32 w-full rounded bg-base-200 flex items-center justify-center overflow-hidden">
           <img src={previewUrl} alt="Logo preview" class="h-full w-full object-contain" />
         </div>
@@ -82,16 +83,16 @@ function discardIcon() {
       {#if needsConfirm}
         <div class="w-full flex flex-col gap-2">
           <div class="text-sm whitespace-normal">
-            Do you really want to use this logo?
+            {$_("projects.iconAffirmation")}
           </div>
           <div class="flex gap-2 flex-wrap">
-            <button type="button" class="btn btn-primary" onclick={confirmIcon}>Accept</button>
-            <button type="button" class="btn btn-ghost" onclick={discardIcon}>Discard</button>
+            <button type="button" class="btn btn-primary" onclick={confirmIcon}>{$_("common.accept")}</button>
+            <button type="button" class="btn btn-ghost" onclick={discardIcon}>{$_("common.discard")}</button>
           </div>
         </div>
       {:else if confirmedIcon}
         <div class="w-full text-sm opacity-80">
-          Logo accepted
+          {$_("projects.iconAccepted")}
         </div>
       {/if}
     </div>

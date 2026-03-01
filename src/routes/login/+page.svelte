@@ -29,7 +29,7 @@ async function login(e: SubmitEvent) {
 	errorMessage = "";
 	infoMessage = "";
 	if (username === "" || password === "") {
-		errorMessage = "Empty username or password.";
+		errorMessage = $_("users.login.empty");
 		return;
 	}
 
@@ -57,22 +57,22 @@ async function login(e: SubmitEvent) {
 
 			if (twoFaRequiredResponse.type === "webauthn") {
 				webauthnRequired = true;
-				infoMessage = "Please load your passkey.";
+				infoMessage = $_("users.login.passkey");
 			}
 
 			if (twoFaRequiredResponse.type === "totp") {
 				totpRequired = true;
-				infoMessage = "Please enter your 2FA code.";
+				infoMessage = $_("users.login.totp");
 			}
 			return;
 		}
 
 		console.error(e);
 		if (totpRequired) {
-			errorMessage = "Invalid 2FA code.";
+			errorMessage = $_("users.login.invalidTotp");
 			return;
 		}
-		errorMessage = "Wrong username or password.";
+		errorMessage = $_("users.login.wrong");
 	}
 }
 
@@ -89,28 +89,75 @@ async function loadWebauthn() {
 }
 </script>
 
-<div class="h-screen flex align-center">
-	<form id="login-submit" onsubmit={login} class="flex flex-col justify-center gap-3 w-8/10 m-auto">
-		<h1>Login</h1>
-		{#if errorMessage}
-		<div id="login-error" class="alert alert-error">
-			<CircleX size="20" />
-			<span>{errorMessage}</span>
-		</div>
-		{:else if infoMessage}
-		<div id="login-info" class="alert alert-info">
-			<Info size="20" />
-			<span>{infoMessage}</span>
-		</div>
-		{/if}
-	  <input type="text" autocomplete="username" id="username" bind:value={username} placeholder={$_('username')} class="input w-full" required>
-	  <input type="password" id="password" autocomplete="current-password" bind:value={password} placeholder={$_('password')} class="input w-full" required>
-	  {#if webauthnRequired}
-		  <button type="button" class="btn btn-primary" onclick={() => loadWebauthn()}>Load passkey</button>
-		{/if}
-		{#if totpRequired}
-		  <input type="text" autocomplete="one-time-code" id="two_fa_code" pattern={'\\d{3}[\\- ]?\\d{3}'} bind:value={twoFaCode} placeholder={$_('two_fa_code')} class="input w-full" required>
-		{/if}
-	  <input type="submit" value={$_('login')} class="btn btn-primary" disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && twoFaCode.trim() === "")}>
+<div class="flex items-center justify-center mt-50">
+	<form id="login-submit" onsubmit={login}>
+		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-100 p-6">
+			<legend class="fieldset-legend text-3xl font-semibold">{$_("users.login.title")}</legend>
+
+			{#if errorMessage}
+				<div id="login-error" class="alert alert-error">
+					<CircleX size="20" />
+					<span>{errorMessage}</span>
+				</div>
+			{:else if infoMessage}
+				<div id="login-info" class="alert alert-info">
+					<Info size="20" />
+					<span>{infoMessage}</span>
+				</div>
+			{/if}
+
+			<label class="label" for="username">{$_("users.login.name")}</label>
+			<input
+					type="text"
+					id="username"
+					bind:value={username}
+					autocomplete="username"
+					placeholder={$_("users.login.name")}
+					class="input w-full"
+					required
+			/>
+
+			<label class="label mt-4" for="password">{$_("users.login.password")}</label>
+			<input
+					type="password"
+					id="password"
+					bind:value={password}
+					autocomplete="current-password"
+					placeholder={$_("users.login.password")}
+					class="input w-full"
+					required
+			/>
+
+			{#if webauthnRequired}
+				<button
+						type="button"
+						class="btn btn-primary mt-4 w-full"
+						onclick={() => loadWebauthn()}
+				>
+					{$_("users.login.loadPasskey")}
+				</button>
+			{/if}
+
+			{#if totpRequired}
+				<label class="label mt-4" for="two_fa_code">{$_('two_fa_code')}</label>
+				<input
+						type="text"
+						id="two_fa_code"
+						bind:value={twoFaCode}
+						pattern={'\\d{3}[\\- ]?\\d{3}'}
+						autocomplete="one-time-code"
+						placeholder={$_('two_fa_code')}
+						class="input w-full"
+						required
+				/>
+			{/if}
+
+			<input
+					type="submit"
+					value={$_("users.login.button")}
+					class="btn btn-primary mt-6 w-full"
+					disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && twoFaCode.trim() === "")}
+			/>
+		</fieldset>
 	</form>
 </div>

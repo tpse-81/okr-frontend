@@ -8,7 +8,7 @@ test("try successful login", async ({ page }) => {
 	await page.locator("#password").fill("password");
 	await page.locator("#login-submit input[type=submit]").click();
 
-	await expect(page).toHaveURL(/\/$/);
+	await expect(page).toHaveURL(/\/dashboard$/);
 });
 
 test("try empty username", async ({ page }) => {
@@ -36,7 +36,7 @@ test("try wrong username", async ({ page }) => {
 
 	await expect(page.locator("#login-error")).toBeVisible();
 	await expect(page.locator("#login-error")).toHaveText(
-		/Wrong username or password\./,
+		/Incorrect username or password\./,
 	);
 	await expect(page).toHaveURL(/\/login$/);
 });

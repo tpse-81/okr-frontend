@@ -1,5 +1,9 @@
-// load api url from .env file
-import { PUBLIC_API_URL } from "$env/static/public";
+// load api url from .env file or runtime environment if provided
+import { env } from "$env/dynamic/public";
+
+const PUBLIC_API_URL = env.PUBLIC_API_URL;
+export const AUTH_TOKEN_NAME = "token";
+
 import type {
 	ArchiveReason,
 	KeyResult,
@@ -11,17 +15,40 @@ import type {
 } from "$lib/types";
 
 export class APIError extends Error {
+	status: number;
 	response: Response;
 
 	constructor(response: Response) {
 		super(response.statusText);
-
+		this.name = "APIError";
+		this.status = response.status;
 		this.response = response;
 	}
 }
 
-const baseFetch = async (url: string, options: RequestInit = {}) => {
-	const response = await fetch(`${PUBLIC_API_URL}${url}`, {
+type FetchMethod = (
+	input: RequestInfo | URL,
+	init?: RequestInit,
+) => Promise<Response>;
+
+/**
+ * Fetch data from the API.
+ *
+ * If there is a chance that this code is executed on server-side, the custom `fetch`-method
+ * from the `load` method in `+page.server.ts` MUST be passed here.
+ **/
+const baseFetch = async (
+	url: string,
+	options: RequestInit = {},
+	customFetch: FetchMethod | null = null,
+) => {
+	// this is required for server-side loading of application data -
+	// if a server-side fetch method is provided, we have to use this one instead
+	// this ensures that auth tokens are sent properly, otherwise the server side
+	// request would omit this data, causing the API to return a Forbidden error
+	const fetchMethod = customFetch ?? fetch;
+
+	const response = await fetchMethod(`${PUBLIC_API_URL}${url}`, {
 		credentials: "include",
 		...options,
 		headers: {
@@ -38,6 +65,15 @@ const baseFetch = async (url: string, options: RequestInit = {}) => {
 	return response;
 };
 
+async function readErrorMessage(response: Response): Promise<string> {
+	try {
+		const data = await response.json();
+		return data?.detail ?? data?.message ?? JSON.stringify(data);
+	} catch {
+		return response.statusText || `HTTP ${response.status}`;
+	}
+}
+
 export async function createUser(
 	name: string,
 	email: string,
@@ -49,6 +85,14 @@ export async function createUser(
 	});
 
 	if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+	return response.json();
+}
+
+export async function promoteUser(user_id: string) {
+	const response = await baseFetch(`/users/${user_id}/promote`, {
+		method: "PATCH",
+	});
+
 	return response.json();
 }
 
@@ -146,8 +190,11 @@ export async function createProject(
 	return response;
 }
 
-export async function getProject(project_id: string): Promise<Project> {
-	const response = await baseFetch(`/projects/${project_id}`);
+export async function getProject(
+	project_id: string,
+	customFetch: FetchMethod | null = null,
+): Promise<Project> {
+	const response = await baseFetch(`/projects/${project_id}`, {}, customFetch);
 
 	return response.json();
 }
@@ -246,8 +293,15 @@ export async function createObjective(
 	return response;
 }
 
-export async function getObjective(objective_id: string): Promise<Objective> {
-	const response = await baseFetch(`/objectives/${objective_id}`);
+export async function getObjective(
+	objective_id: string,
+	customFetch: FetchMethod | null = null,
+): Promise<Objective> {
+	const response = await baseFetch(
+		`/objectives/${objective_id}`,
+		{},
+		customFetch,
+	);
 
 	return response.json();
 }
@@ -313,14 +367,65 @@ export async function linkObjectiveToProject(
 export async function unlinkObjectiveFromProject(
 	project_id: string,
 	objective_id: string,
+	confirm_orphan = false,
 ) {
 	const response = await baseFetch(
-		`/projects/${project_id}/objectives/${objective_id}`,
+		`/projects/${project_id}/objectives/${objective_id}?confirm_orphan=${confirm_orphan}`,
 		{
 			method: "DELETE",
 		},
 	);
 
+	const text = await response.text();
+	return text ? JSON.parse(text) : null;
+}
+
+export async function linkObjectiveToObjective(
+	parent_objective_id: string,
+	objective_id: string,
+) {
+	const response = await baseFetch(
+		`/objectives/${parent_objective_id}/children/${objective_id}`,
+		{
+			method: "POST",
+		},
+	);
+
+	if (!response.ok) {
+		let body: any = null;
+		try {
+			body = await response.json();
+		} catch {
+			// ignore, fallback below
+		}
+		if (body && typeof body === "object") {
+			throw { ...body, status: response.status };
+		}
+		throw { detail: body ?? response.statusText, status: response.status };
+	}
+
+	return response.json();
+}
+
+export async function unlinkObjectiveFromObjective(
+	parent_objective_id: string,
+	objective_id: string,
+) {
+	const response = await baseFetch(
+		`/objectives/${parent_objective_id}/children/${objective_id}`,
+		{
+			method: "DELETE",
+		},
+	);
+
+	const text = await response.text();
+	return text ? JSON.parse(text) : null;
+}
+
+export async function getObjectiveChildren(
+	objective_id: string,
+): Promise<Objective[]> {
+	const response = await baseFetch(`/objectives/${objective_id}/children`);
 	return response.json();
 }
 
@@ -329,12 +434,10 @@ export async function createKeyResult(
 	end_value: number,
 	start_value: number,
 	objective_id: string,
-	project_id: string,
 ) {
 	const response = await baseFetch(`/objectives/${objective_id}/key_results`, {
 		method: "POST",
 		body: JSON.stringify({
-			project_id,
 			description,
 			start_value,
 			end_value,
@@ -343,8 +446,15 @@ export async function createKeyResult(
 	return response.json();
 }
 
-export async function getKeyResult(key_result_id: string): Promise<KeyResult> {
-	const response = await baseFetch(`/key_results/${key_result_id}`);
+export async function getKeyResult(
+	key_result_id: string,
+	customFetch: FetchMethod | null = null,
+): Promise<KeyResult> {
+	const response = await baseFetch(
+		`/key_results/${key_result_id}`,
+		{},
+		customFetch,
+	);
 
 	return response.json();
 }
@@ -406,12 +516,14 @@ export async function getKeyResultObjective(objective_id: string) {
 
 export async function createTaskKeyResult(
 	key_result_id: string,
+	name: string,
 	description: string,
 	task_state: TaskState,
 ) {
 	const response = await baseFetch(`/key_results/${key_result_id}/tasks`, {
 		method: "POST",
 		body: JSON.stringify({
+			name,
 			description: description,
 			task_state: task_state,
 		}),
@@ -470,13 +582,37 @@ export async function addUserProject(
 			method: "POST",
 		},
 	);
-
 	return response.json();
+}
+
+export async function removeUserProject(project_id: string, user_id: string) {
+	const response = await baseFetch(`/projects/${project_id}/users/${user_id}`, {
+		method: "DELETE",
+	});
+	return response.json();
+}
+
+export async function updateUserRoleProject(
+	project_id: string,
+	user_id: string,
+	role: string,
+) {
+	const response = await baseFetch(
+		`/projects/${project_id}/users/${user_id}/role?role=${role}`,
+		{ method: "PATCH" },
+	);
+	return response.json();
+}
+
+export async function getUserRoleProject(project_id: string, user_id: string) {
+	const response = await baseFetch(
+		`/projects/${project_id}/users/${user_id}/role`,
+	);
+	return response.json(); // // Returns the user's role in this project (e.g. "member" or "leader").
 }
 
 export async function getUsersProject(project_id: string) {
 	const response = await baseFetch(`/projects/${project_id}/users`);
-
 	return response.json();
 }
 
@@ -614,4 +750,59 @@ export async function totpIsConfigured(userId: string): Promise<boolean> {
 	const response = await baseFetch(`/users/${userId}/2fa/totp/is_configured`);
 
 	return (await response.json()).is_configured;
+}
+
+// ---- Project members / user assignment ----
+
+export async function getProjectUsers(projectId: string) {
+	const r = await baseFetch(`/projects/${projectId}/users`, { method: "GET" });
+	return r.json();
+}
+
+export async function getMyRoleInProject(projectId: string, myUserId: string) {
+	const r = await baseFetch(`/projects/${projectId}/users/${myUserId}/role`, {
+		method: "GET",
+	});
+	return r.json();
+}
+
+export async function addUserToProject(
+	projectId: string,
+	userId: string,
+	role: "member" | "leader" = "member",
+) {
+	const r = await baseFetch(
+		`/projects/${projectId}/users/${userId}?role=${role}`,
+		{
+			method: "POST",
+		},
+	);
+	return r.json();
+}
+
+export async function removeUserFromProject(projectId: string, userId: string) {
+	// falls euer Backend wirklich /remove nutzt
+	const r = await baseFetch(`/projects/${projectId}/users/${userId}/remove`, {
+		method: "POST",
+	});
+	return r.json();
+}
+
+export async function updateUserRoleInProject(
+	projectId: string,
+	userId: string,
+	role: "member" | "leader",
+) {
+	const r = await baseFetch(
+		`/projects/${projectId}/users/${userId}/role?role=${role}`,
+		{ method: "PATCH" },
+	);
+	return r.json();
+}
+
+export async function getUserRoleInProject(projectId: string, userId: string) {
+	const r = await baseFetch(`/projects/${projectId}/users/${userId}/role`, {
+		method: "GET",
+	});
+	return r.json();
 }

@@ -50,7 +50,7 @@ export const loginBaseTest = base.extend<{ loginPage: Page }>({
 		await page.locator("#password").fill(E2E_PASSWORD);
 
 		await page.locator("#login-submit input[type=submit]").click();
-		await baseExpect(page).toHaveURL(/\/$/);
+		await baseExpect(page).toHaveURL(/\/dashboard$/);
 
 		await use(page);
 	},
@@ -67,7 +67,9 @@ export const projectBaseTest = loginBaseTest.extend<{ projectPage: Page }>({
 		await Promise.all([
 			page.waitForResponse(
 				(res) =>
-					res.url().includes("/projects") && res.request().method() === "POST",
+					res.url().includes("/projects") &&
+					res.request().method() === "POST" &&
+					res.ok(),
 			),
 			page.locator("#project-submit button[type=submit]").click(),
 		]);

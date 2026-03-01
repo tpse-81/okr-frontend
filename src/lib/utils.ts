@@ -1,3 +1,6 @@
+import { get } from "svelte/store";
+import { _, locale } from "svelte-i18n";
+
 const YEAR_IN_MILLIS = 365 * 24 * 60 * 60 * 1000;
 const DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
 
@@ -15,27 +18,27 @@ export function calculateDateDifference(start: Date, end: Date): DateDiff {
 	return { years, days };
 }
 
-export function formatDeadline(deadline: Date): string {
+export function formatDeadline(deadline: Date, _loc?: string | null): string {
 	const now = new Date();
 	const { years, days } = calculateDateDifference(now, deadline);
 
 	if (years <= 0 && days <= 0) {
-		return "overdue";
+		return get(_)("projects.overdue");
 	}
 
 	let args = [];
 	if (years > 0) {
-		args.push(`${years} years`);
+		args.push(get(_)("common.years", { values: { count: years } }));
 	}
 	if (days > 0) {
-		args.push(`${days} days`);
+		args.push(get(_)("common.days", { values: { count: days } }));
 	}
 
-	return `due in  + ${args.join(" ")}`;
+	return `${get(_)("projects.dueIn")} ${args.join(" ")}`;
 }
 
-export function formatDate(date: Date): string {
-	return date.toLocaleDateString(undefined, {
+export function formatDate(date: Date, loc?: string | null): string {
+	return date.toLocaleDateString(loc || "en", {
 		weekday: "short",
 		year: "numeric",
 		month: "long",

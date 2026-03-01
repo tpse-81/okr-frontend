@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 import { Archive, Edit, MinusCircle, PlusCircle, Trash } from "@lucide/svelte";
+import { _ } from "svelte-i18n";
 import { deleteKeyResult, updateKeyResultCurrentValue } from "$lib/api";
 import type { KeyResult } from "$lib/types";
 import { isBetween } from "$lib/utils";
@@ -48,7 +49,7 @@ async function decrementCurrentValue() {
 async function updateCurrentValue(nextValue: number) {
 	if (!isBetween(nextValue, keyResult.start_value, keyResult.end_value)) {
 		errorMessage = null;
-		errorMessage = "Current value is out of bounds";
+		errorMessage = $_("keyResults.outOfBoundsError");
 		return;
 	}
 
@@ -58,7 +59,7 @@ async function updateCurrentValue(nextValue: number) {
 	} catch (err) {
 		console.error(err);
 		errorMessage = null;
-		errorMessage = "Current value could not be updated";
+		errorMessage = $_("keyResults.updateError");
 	}
 }
 
@@ -87,9 +88,9 @@ async function onDeleteKeyResult() {
         <div class="flex gap-4">
             <div class="radial-progress" style={`--value:${progress};`} aria-valuenow={progress} role="progressbar">{progress}%</div>
             <div>
-                <p>Start: {keyResult.start_value}</p>
-                <p>Current: {keyResult.current_value}</p>
-                <p>Goal: {keyResult.end_value}</p>
+                <p>{$_("keyResults.start")}: {keyResult.start_value}</p>
+                <p>{$_("keyResults.current")}: {keyResult.current_value}</p>
+                <p>{$_("keyResults.target")}: {keyResult.end_value}</p>
             </div>
         </div>
     </a>
@@ -105,4 +106,4 @@ async function onDeleteKeyResult() {
 </li>
 
 <EditKeyResultComponent show={showEditDialog} keyResult={keyResult} ondismiss={() => showEditDialog = false} />
-<ConfirmationDialog show={showConfirmationDialog} message="Delete key result" onconfirm={onDeleteKeyResult} ondismiss={() => showConfirmationDialog = false} />
+<ConfirmationDialog show={showConfirmationDialog} message={$_("keyResults.delete")} onconfirm={onDeleteKeyResult} ondismiss={() => showConfirmationDialog = false} />

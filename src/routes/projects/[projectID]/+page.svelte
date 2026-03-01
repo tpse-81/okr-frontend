@@ -1,11 +1,19 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
-import { createObjective, getObjectiveProject } from "$lib/api";
+import {
+	APIError,
+	createObjective,
+	getObjectiveProject,
+	linkObjectiveToProject,
+	unlinkObjectiveFromProject,
+} from "$lib/api";
 import type { Objective } from "$lib/types";
 import AvatarComponent from "../../../components/Avatar.svelte";
-import LinkProjectObjectiveComponent from "../../../components/LinkProjectObjectiveComponent.svelte";
+import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
+import ProjectMembers from "../../../components/ProjectMembers.svelte";
 
 let { data } = $props();
 
@@ -53,45 +61,47 @@ async function handleSubmit(e: SubmitEvent) {
         <AvatarComponent icon={project_icon ?? null} name={project_name} big={true} />
         <div class="min-w-0">
           <div class="text-2xl font-bold truncate">{project_name}</div>
-          <div class="opacity-70">Objectives</div>
+          <div class="opacity-70">{$_("objectives.title")}</div>
         </div>
       </div>
     </div>
   </div>
 
+  <ProjectMembers projectId={project_id} />
+
   <!-- Create Objective -->
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
-      <h2 class="card-title">Create an Objective</h2>
+      <h2 class="card-title">{$_("objectives.createTitle")}</h2>
 
       <form id="objective-submit" onsubmit={handleSubmit} class="grid grid-auto gap-3">
         <div class="form-control">
           <label for="objective-name" class="label">
-            <span class="label-text">Name</span>
+            <span class="label-text">{$_("common.name")}</span>
           </label>
-          <input id="objective-name" type="text" bind:value={name} placeholder="Name" class="input input-bordered w-full" required/>
+          <input id="objective-name" type="text" bind:value={name} placeholder={$_("common.name")} class="input input-bordered w-full" required/>
         </div>
 
         <div class="form-control">
           <label for="objective-description" class="label">
-            <span class="label-text">Description</span>
+            <span class="label-text">{$_("common.description")}</span>
           </label>
-          <input id="objective-description" type="text" bind:value={description} placeholder="Description" class="input input-bordered w-full" required/>
+          <input id="objective-description" type="text" bind:value={description} placeholder={$_("common.description")} class="input input-bordered w-full" required/>
         </div>
 
         <div class="md:col-span-2 flex justify-end">
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="submit" class="btn btn-primary">{$_("common.create")}</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Liste der Objectives (bleibt sichtbar) -->
+  <!-- List of objectives (stays visible) -->
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body gap-4">
       <div class="flex">
-        <h2 class="card-title flex-1">Objectives</h2>
-        <button class="btn btn-primary" onclick={() => showLinkObjectivesModal = true}>Manage linked objectives</button>
+        <h2 class="card-title flex-1">{$_("objectives.title")}</h2>
+        <button class="btn btn-primary" onclick={() => showLinkObjectivesModal = true}>{$_("objectives.manageLinks")}</button>
       </div>
 
       {#if objectivelist.length > 0}
@@ -101,19 +111,49 @@ async function handleSubmit(e: SubmitEvent) {
           {/each}
         </ul>
       {:else}
-        <p class="opacity-70">Keine Objectives geladen</p>
+        <p class="opacity-70">{$_("objectives.empty")}</p>
       {/if}
     </div>
   </div>
 
 </div>
 
-{#if showLinkObjectivesModal}
-  <LinkProjectObjectiveComponent
-    projectId={project_id}
-    projectName={project_name}
-    linkedObjectives={objectivelist}
-    onLinkedObjectivesChanged={(objectives) => objectivelist = objectives}
-    ondismiss={() => showLinkObjectivesModal = false}
-    show={showLinkObjectivesModal} />
-{/if}
+<LinkObjectiveDialog
+  title={$_("projects.objectivesForTitle", { values: { projectName: project_name } })}
+  initialLinked={objectivelist}
+  showErrors={false} 
+
+  writeChanges={async (toAdd, toRemove, confirmOrphan = false) => {
+  const addJobs = toAdd.map((obj) => linkObjectiveToProject(project_id, obj.id));
+  const orphanCandidates: Objective[] = [];
+
+ const removeJobs = toRemove.map(async (obj) => {
+  try {
+    await unlinkObjectiveFromProject(project_id, obj.id, confirmOrphan);
+  } catch (e: any) {
+    if (!confirmOrphan && e instanceof APIError && e.response.status === 409) {
+      orphanCandidates.push(obj);
+      return;
+    }
+    throw e;
+  }
+});
+
+  await Promise.all([...addJobs, ...removeJobs]);
+
+  if (!confirmOrphan && orphanCandidates.length > 0) {
+      const err: any = new Error("ORPHAN_CONFIRM_NEEDED");
+      err.orphanObjectives = orphanCandidates;
+      err.orphanObjectiveIds = orphanCandidates.map(o => o.id);
+      throw err;
+    }
+
+  
+
+  return [];
+}}
+
+  onLinkedChanged={(objectives) => (objectivelist = objectives)}
+  ondismiss={() => (showLinkObjectivesModal = false)}
+  show={showLinkObjectivesModal}
+/>

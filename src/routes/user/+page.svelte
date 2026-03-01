@@ -1,7 +1,14 @@
 <script lang="ts">
 import { Check, Minus } from "@lucide/svelte";
 import { onMount } from "svelte";
-import { createUser, deleteUser, getUsers, resetUserPassword } from "$lib/api";
+import { _ } from "svelte-i18n";
+import {
+	createUser,
+	deleteUser,
+	getUsers,
+	promoteUser,
+	resetUserPassword,
+} from "$lib/api";
 import type { User } from "$lib/types";
 import { userInfoStore } from "$lib/user_info";
 import { copyToClipboard, generatePassword } from "$lib/utils";
@@ -13,6 +20,7 @@ let password: string = $state("");
 let email: string = $state("");
 
 let users: User[] = $state([]);
+let adminCount = $derived(users.filter((u) => u.is_admin).length);
 let loading = $state(false);
 let errorMessage: string | null = $state(null);
 
@@ -30,6 +38,10 @@ let setPasswordModal: HTMLDialogElement;
 let showSetPasswordDialog = $state(false);
 let userForPassword: User | null = $state(null);
 let passwordInput = $state("");
+
+// Promote to admin
+let showPromoteToAdminDialog = $state(false);
+let userForPromotion: User | null = $state(null);
 
 $effect(() => {
 	if (!passwordModal) return;
@@ -50,7 +62,7 @@ async function refreshUsers() {
 		users = await getUsers();
 	} catch (e) {
 		console.error(e);
-		errorMessage = "Konnte User nicht laden.";
+		errorMessage = $_("users.cannotLoadError");
 	} finally {
 		loading = false;
 	}
@@ -74,8 +86,8 @@ async function onCreateUser(e: SubmitEvent) {
 		await createUser(name, email, password);
 
 		openPasswordDialog(
-			"User erstellt",
-			`User: ${name}\nEmail: ${email}\nPasswort: ${password}`,
+			$_("users.creationSuccess"),
+			$_("users.creationSuccessBody", { values: { name, email, password } }),
 		);
 
 		name = "";
@@ -85,7 +97,7 @@ async function onCreateUser(e: SubmitEvent) {
 		await refreshUsers();
 	} catch (e) {
 		console.error(e);
-		errorMessage = "User erstellen fehlgeschlagen.";
+		errorMessage = $_("users.creationError");
 	}
 }
 
@@ -93,6 +105,11 @@ function openSetPassword(u: User) {
 	userForPassword = u;
 	passwordInput = generatePassword(); // default 8
 	showSetPasswordDialog = true;
+}
+
+function openPromoteToAdmin(u: User) {
+	userForPromotion = u;
+	showPromoteToAdminDialog = true;
 }
 
 async function confirmSetPassword() {
@@ -105,15 +122,21 @@ async function confirmSetPassword() {
 		showSetPasswordDialog = false;
 
 		openPasswordDialog(
-			"Passwort geändert",
-			`User: ${userForPassword.name}\nEmail: ${userForPassword.email}\nNeues Passwort: ${passwordInput}`,
+			$_("users.passwordChangeSuccess"),
+			$_("users.creationSuccessBody", {
+				values: {
+					name: userForPassword.name,
+					email: userForPassword.email,
+					password: passwordInput,
+				},
+			}),
 		);
 
 		userForPassword = null;
 		passwordInput = "";
 	} catch (e) {
 		console.error(e);
-		errorMessage = "Passwort ändern fehlgeschlagen.";
+		errorMessage = $_("users.passwordChangeError");
 	}
 }
 
@@ -139,13 +162,33 @@ async function confirmDelete() {
 		await refreshUsers();
 	} catch (e) {
 		console.error(e);
-		errorMessage = "User löschen fehlgeschlagen.";
+		errorMessage = $_("users.deletionError");
 	}
 }
 
 function dismissDelete() {
 	showDeleteDialog = false;
 	userToDelete = null;
+}
+
+async function confirmPromoteUserToAdmin() {
+	if (!userForPromotion) return;
+
+	errorMessage = null;
+	try {
+		await promoteUser(userForPromotion.id);
+		showPromoteToAdminDialog = false;
+		userForPromotion = null;
+		await refreshUsers();
+	} catch (e) {
+		console.error(e);
+		errorMessage = $_("users.promoteToAdminError");
+	}
+}
+
+function dismissPromoteToAdmin() {
+	showPromoteToAdminDialog = false;
+	userForPromotion = null;
 }
 
 // can't be put into onMount because it's a race condition
@@ -163,7 +206,7 @@ onMount(() => {
 
 <ErrorMessage message={errorMessage} />
 
-<h1>Create User</h1>
+<h1 class="p-3">{$_("users.createTitle")}</h1>
 
 {#if !$userInfoStore?.is_admin}
 	<p class="p-3 opacity-70">Nur Admins können User verwalten.</p>
@@ -173,7 +216,7 @@ onMount(() => {
 			type="text"
 			pattern="^((?!@).)*$"
 			bind:value={name}
-			placeholder="Name"
+			placeholder={$_("common.name")}
 			class="input w-full"
 			required
 		/>
@@ -181,20 +224,20 @@ onMount(() => {
 		<input
 			type="text"
 			bind:value={password}
-			placeholder="Password"
+			placeholder={$_("users.login.password")}
 			class="input w-full"
 			required
-			title="Du kannst das Passwort ändern oder neu generieren"
+			title={$_("users.tooltipPasswordChange")}
 		/>
 
 		<button type="button" class="btn" onclick={() => (password = generatePassword())}>
-			Neu generieren
+			{$_("users.generatePasswordButton")}
 		</button>
 
 		<input
 			type="email"
 			bind:value={email}
-			placeholder="Email"
+			placeholder={$_("users.email")}
 			class="input w-full"
 			required
 		/>
@@ -203,21 +246,21 @@ onMount(() => {
 	</form>
 
 	<div class="p-3">
-		<h2 class="text-xl font-semibold mb-2">Users</h2>
+		<h2 class="text-xl font-semibold mb-2">{$_("users.titlePlural")}</h2>
 
 		{#if loading}
 			<span class="loading loading-spinner loading-md"></span>
 		{:else if users.length === 0}
-			<p class="opacity-70">Keine User vorhanden.</p>
+			<p class="opacity-70">{$_("users.empty")}</p>
 		{:else}
 			<div class="overflow-x-auto">
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Admin</th>
-							<th class="text-right">Actions</th>
+							<th>{$_("common.name")}</th>
+							<th>{$_("users.email")}</th>
+							<th>{$_("users.admin")}</th>
+							<th class="text-right">{$_("users.actions")}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -234,19 +277,27 @@ onMount(() => {
 								</td>
 								<td class="text-right">
 									<div class="flex gap-2 justify-end">
+										{#if !u.is_admin}
 										<button class="btn btn-sm" onclick={() => openSetPassword(u)}>
-											Set PW
+											{$_("users.setPassword")}
 										</button>
 
+										<button class="btn btn-sm btn-warning" onclick={() => openPromoteToAdmin(u)}>
+											{$_("users.promoteToAdmin")}
+										</button>
+										{/if}
+
 										<button
-											class="btn btn-sm btn-error"
-											disabled={u.id === $userInfoStore?.id}
+											class="btn btn-sm btn-error pointer-events-auto"
+											disabled={($userInfoStore.id !== u.id && u.is_admin) || ($userInfoStore.id === u.id && adminCount == 1)}
 											onclick={() => askDelete(u)}
-											title={u.id === $userInfoStore?.id
-												? "Du kannst dich nicht selbst löschen"
+											title={u.id === $userInfoStore?.id && adminCount == 1
+												? $_("users.deleteSelfError")
+												: u.id !== $userInfoStore.id && u.is_admin
+												? $_("users.deleteAdminError")
 												: ""}
 										>
-											Delete
+											{$_("common.delete")}
 										</button>
 									</div>
 								</td>
@@ -261,14 +312,22 @@ onMount(() => {
 
 <ConfirmationDialog
 	show={showDeleteDialog}
-	message={userToDelete ? `User "${userToDelete.name}" löschen?` : "User löschen?"}
+	message={userToDelete ? $_("users.deletionQuestionWithName", {values: {name: userToDelete.name}}) : $_("users.deletionQuestion")}
 	onconfirm={() => void confirmDelete()}
 	ondismiss={dismissDelete}
 />
 
+<ConfirmationDialog
+	show={showPromoteToAdminDialog}
+	message={userForPromotion ? $_("users.promoteToAdminMessage", {values: {name: userForPromotion.name}}) : $_("users.promoteToAdmin")}
+	explanation={$_("users.promoteToAdminWarning")}
+	onconfirm={() => void confirmPromoteUserToAdmin()}
+	ondismiss={dismissPromoteToAdmin}
+/>
+
 <dialog bind:this={setPasswordModal} class="modal">
 	<div class="modal-box">
-		<h3 class="text-lg font-bold">Passwort setzen</h3>
+		<h3 class="text-lg font-bold">{$_("users.setPassword")}</h3>
 
 		{#if userForPassword}
 			<p class="opacity-70 mb-3">
@@ -281,11 +340,11 @@ onMount(() => {
 				type="text"
 				class="input input-bordered w-full"
 				bind:value={passwordInput}
-				placeholder="Neues Passwort"
+				placeholder={$_("users.account.password.new")}
 				required
 			/>
 			<button type="button" class="btn" onclick={() => (passwordInput = generatePassword())}>
-				Random
+				{$_("users.random")}
 			</button>
 		</div>
 
@@ -293,7 +352,7 @@ onMount(() => {
 			<form method="dialog" class="flex gap-3 w-full justify-end">
 				<button class="btn" onclick={dismissSetPassword}>Cancel</button>
 				<button class="btn btn-primary" onclick={() => void confirmSetPassword()}>
-					Save
+					{$_("common.save")}
 				</button>
 			</form>
 		</div>
@@ -307,7 +366,7 @@ onMount(() => {
 		<div class="modal-action">
 			<form method="dialog" class="flex gap-3 w-full justify-end">
 				<button class="btn" onclick={() => void copyToClipboard(passwordDialogText)}>
-					Copy
+					{$_("common.copy")}
 				</button>
 				<button class="btn btn-primary" onclick={() => (showPasswordDialog = false)}>
 					OK

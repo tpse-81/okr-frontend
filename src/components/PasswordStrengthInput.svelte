@@ -6,14 +6,19 @@ let {
 	password = $bindable(),
 	userInfo,
 	placeholder,
-}: { password: string; userInfo: User; placeholder: string } = $props();
-
+	class: extraClasses = "",
+}: {
+	password: string;
+	userInfo: User;
+	placeholder: string;
+	class: string;
+} = $props();
 let passwordStrength: ZXCVBNResult = $derived(
 	zxcvbn(password, [userInfo.name, userInfo.email]),
 );
 </script>
 
-<input type="password" class="input input-bordered" placeholder={placeholder} bind:value={password} />
+<input type="password" class="input input-bordered {extraClasses}" placeholder={placeholder} bind:value={password} />
 {#if password}
 <progress class={"progress w-full " + (passwordStrength.score >= 3 ? "progress-success" : "progress-error")} value={passwordStrength.score} max="4"></progress>
 <div>{passwordStrength.feedback.warning}</div>

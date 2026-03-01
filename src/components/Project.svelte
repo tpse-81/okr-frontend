@@ -10,6 +10,7 @@
 import { Archive, Check, Edit, Info, Trash, RotateCcw } from "@lucide/svelte";
 import { archiveProject, unarchiveProject, deleteProject } from "$lib/api";
 import type { ArchiveReason, Project } from "$lib/types";
+import { _, locale } from "svelte-i18n";
 import { formatDate, formatDeadline } from "$lib/utils";
 import AvatarComponent from "./Avatar.svelte";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
@@ -118,14 +119,14 @@ async function onUnarchiveProject(newDeadline: Date) {
         {:else if project.done}
             <div class="badge badge-success"><Check size="16" /> Done</div>
         {:else}
-            <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline))}</div>
+            <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline), $locale)}</div>
         {/if}
         <div class="card-title flex mt-2">
             <AvatarComponent icon={project.icon ?? null} name={project.name} big={false} />
             <h2>{project.name}</h2>
         </div>
-        <p>Erstellt am {formatDate(new Date(project.creation_date))}</p>
-        <p>Fällig am {formatDate(new Date(project.deadline))}</p>
+        <p>{$_("projects.createdAtLabel")} {formatDate(new Date(project.creation_date), $locale)}</p>
+        <p>{$_("projects.dueAtLabel")} {formatDate(new Date(project.deadline), $locale)}</p>
     </a>
 </li>
 

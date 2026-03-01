@@ -1,28 +1,44 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
-import { createKeyResult, getKeyResultObjective } from "$lib/api";
-import type { KeyResult } from "$lib/types";
+import {
+	createKeyResult,
+	getKeyResultObjective,
+	getObjectiveChildren,
+	linkObjectiveToObjective,
+	unlinkObjectiveFromObjective,
+} from "$lib/api";
+import type { KeyResult, Objective } from "$lib/types";
 import KeyResultComponent from "../../../components/KeyResult.svelte";
+import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
+import ObjectiveComponent from "../../../components/Objective.svelte";
 
 let { data } = $props();
 
 let objectiveID = $derived(data.objectiveID);
 let objectiveName = $derived(data.objectiveName);
-let projectID = $derived(data.parentID);
 
 let keyResultList: KeyResult[] = $state([]);
+
+let showLinkChildrenModal = $state(false);
+let linkedChildren: Objective[] = $state([]);
 
 let description: string = $state("");
 let startValue: number = $state(0);
 let endValue: number = $state(0);
 
-onMount(async () => {
-	try {
-		await loadKeyResults();
-	} catch (err) {
-		console.error(err);
-	}
+$effect(() => {
+	// Always reload when the objective ID changes
+	if (!objectiveID) return;
+
+	(async () => {
+		try {
+			await Promise.all([loadKeyResults(), loadChildren()]);
+		} catch (err) {
+			console.error(err);
+		}
+	})();
 });
 
 async function loadKeyResults() {
@@ -33,31 +49,85 @@ async function loadKeyResults() {
 	}
 }
 
+async function loadChildren() {
+	try {
+		linkedChildren = await getObjectiveChildren(objectiveID);
+	} catch (err) {
+		console.error("Failed to load children", err);
+		linkedChildren = [];
+	}
+}
+
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-	await createKeyResult(
-		description,
-		endValue,
-		startValue,
-		objectiveID,
-		projectID,
-	);
+	await createKeyResult(description, endValue, startValue, objectiveID);
 
 	keyResultList = await getKeyResultObjective(objectiveID);
 }
 </script>
 
-<h1>Create a Key Result for {objectiveName}</h1>
+<div class="card bg-base-100 border border-base-300">
+  <h1 class="ml-4 mt-1">{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
 
-<form id="keyResultSubmit" onsubmit={handleSubmit} class="flex gap-3 p-3">
-    <input type="text" id="description" bind:value={description} placeholder="description" class="input w-full" required>
-    <input type="number" id="start-value" bind:value={startValue} placeholder="start value" class="input w-full" required>
-    <input type="number" id="end-value" bind:value={endValue} placeholder="end value" class="input w-full" required>
-    <input type="submit" value="Create" class="btn btn-primary">
-</form>
+  <form
+    id="keyResultSubmit"
+    onsubmit={handleSubmit}
+    class="flex flex-col lg:flex-row gap-3 p-3 items-end"
+	>
+	  <label class="form-control w-full">
+	    <div class="label">
+	      <span class="label-text">{$_("common.description")}</span>
+	    </div>
+	    <input
+	      type="text"
+	      id="description"
+	      bind:value={description}
+	      placeholder={$_("common.description")}
+	      class="input w-full"
+	      required
+	    />
+	  </label>
+
+	  <label class="form-control w-full">
+	    <div class="label">
+	      <span class="label-text">{$_("keyResults.start")}</span>
+	    </div>
+	    <input
+	      type="number"
+	      step="any"
+	      id="start-value"
+	      bind:value={startValue}
+	      placeholder={$_("keyResults.start")}
+	      class="input w-full"
+	      required
+	    />
+	  </label>
+
+	  <label class="form-control w-full">
+	    <div class="label">
+	      <span class="label-text">{$_("keyResults.target")}</span>
+	    </div>
+	    <input
+	      type="number"
+	      step="any"
+	      id="end-value"
+	      bind:value={endValue}
+	      placeholder={$_("keyResults.target")}
+	      class="input w-full"
+	      required
+	    />
+	  </label>
+
+	  <input
+	    type="submit"
+	    value={$_("common.create")}
+	    class="btn btn-primary"
+	  />
+	</form>
+</div>
 
 <div class="p-3">
-    <h1>Key Results for {objectiveName}</h1>
+    <h1>{$_("keyResults.titleForObjective", {values: {objectiveName: objectiveName}})}</h1>
     {#if keyResultList.length > 0}
         <ul id="key-results-list" class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}
@@ -65,6 +135,80 @@ async function handleSubmit(e: SubmitEvent) {
             {/each}
         </ul>
     {:else}
-        <p>Keine Key Results geladen</p>
+        <p>{$_("keyResults.empty")}</p>
     {/if}
 </div>
+
+<div class="p-3">
+	<div class="card bg-base-100 border border-base-300">
+		<div class="card-body gap-4">
+			<div class="flex items-start gap-3">
+				<h2 class="card-title flex-1">{$_("objectives.child")}</h2>
+				<button class="btn btn-primary" onclick={() => showLinkChildrenModal = true}>
+					{$_("objectives.addChild")}
+				</button>
+			</div>
+
+			{#if linkedChildren.length > 0}
+				<ul id="objectives-list" class="grid grid-auto">
+					{#each linkedChildren as objective}
+						<ObjectiveComponent objective={objective} onObjectiveDeleted={() => linkedChildren = linkedChildren.filter(obj => objective.id != obj.id)} />
+					{/each}
+				</ul>
+			{:else}
+				<p class="opacity-70">{$_("objectives.emptyChild")}</p>
+			{/if}
+		</div>
+	</div>
+</div>
+
+<LinkObjectiveDialog
+ title={$_("objectives.childrenForTitle", { values: { objectiveName: objectiveName } })}
+ initialLinked={linkedChildren}
+ excludeObjectiveIds={[objectiveID]}     
+ showErrors={true}                        
+ writeChanges={async (toAdd, toRemove) => { 
+   const addJobs = toAdd.map((obj) => ({
+     obj,
+     promise: linkObjectiveToObjective(objectiveID, obj.id),
+   }));
+
+   const removeJobs = toRemove.map((obj) => ({
+     obj,
+     promise: unlinkObjectiveFromObjective(objectiveID, obj.id),
+   }));
+
+   const jobs = [...addJobs, ...removeJobs];
+   const results = await Promise.allSettled(jobs.map((j) => j.promise));
+
+   const errors: string[] = [];
+
+   for (let i = 0; i < results.length; i++) {
+     const r = results[i];
+     if (r.status === "rejected") {
+       const job = jobs[i];
+       const status = (r.reason as any)?.status;
+       const raw =
+         (r.reason as any)?.detail ??
+         (r.reason instanceof Error ? r.reason.message : undefined) ??
+         "Request failed";
+
+       const detail =
+         status === 400
+           ? $_("objectives.cycleError")
+           : status === 404
+             ? $_("objectives.notFoundError")
+             : raw === "Bad Request"
+               ? $_("objectives.cycleError")
+               : raw;
+
+       errors.push(`${job.obj.name}: ${detail}`);
+     }
+   }
+
+   return errors;
+ }}
+ onLinkedChanged={(children) => (linkedChildren = children)}
+ ondismiss={() => (showLinkChildrenModal = false)}
+ show={showLinkChildrenModal}
+/>

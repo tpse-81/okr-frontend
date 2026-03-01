@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { Archive, Check } from "@lucide/svelte";
 import { getArchivedTasks, getTasks } from "$lib/api";

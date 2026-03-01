@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { Archive, Check } from "@lucide/svelte";
 import { getKeyResults, getArchivedKeyResults } from "$lib/api";
@@ -64,33 +65,39 @@ async function keyResults() {
 
 
 <div class="p-3">
-	<div class="flex justify-between items-center mb-5 gap-5">
-		<h1 class="text-3xl flex-1">Key Results</h1>
+  <div class="flex justify-between items-center mb-5 gap-5">
+    <h1 class="text-3xl flex-1">{$_("keyResults.title")}</h1>
 
-		<div class="join shrink-0">
-			{#each multiOptions as option}
-				<div class="tooltip tooltip-left" data-tip="{option.tooltip}">
-					<button
-						class="btn join-item transition-transform duration-150
-						{activeMultiFilters.includes(option.value) ? 'btn-active scale-110' : ''}" onclick={() => applyMultiFilter(option.value)}
-					>
-						<option.icon size={option.size} />
-						{#if activeMultiFilters.includes(option.value)}
-							<Check class="w-4 h-4 ml-1 inline-block" />
-						{/if}
-					</button>
-				</div>
-			{/each}
-		</div>
-	</div>
+    <div class="join shrink-0">
+      {#each multiOptions as option}
+        <div class="tooltip tooltip-left" data-tip="{option.tooltip}">
+          <button
+            class="btn join-item transition-transform duration-150
+            {activeMultiFilters.includes(option.value) ? 'btn-active scale-110' : ''}"
+            onclick={() => applyMultiFilter(option.value)}
+          >
+            <option.icon size={option.size} />
+            {#if activeMultiFilters.includes(option.value)}
+              <Check class="w-4 h-4 ml-1 inline-block" />
+            {/if}
+          </button>
+        </div>
+      {/each}
+    </div>
+  </div>
 
-	{#if visibleKeyResults.length > 0}
-		<ul id="key-results-list" class="grid grid-auto gap-3">
-			{#each visibleKeyResults as key_result}
-				<KeyResultComponent keyResult={key_result} onKeyResultDeleted={() => { keyResultList = keyResultList.filter((kr) => kr.id !== key_result.id); }} />
-			{/each}
-		</ul>
-	{:else}
-		<p>No Key Results loaded</p>
-	{/if}
+  {#if visibleKeyResults.length > 0}
+    <ul id="key-results-list" class="grid grid-auto gap-3">
+      {#each visibleKeyResults as key_result}
+        <KeyResultComponent
+          keyResult={key_result}
+          onKeyResultDeleted={() => {
+            keyResultList = keyResultList.filter((kr) => kr.id !== key_result.id);
+          }}
+        />
+      {/each}
+    </ul>
+  {:else}
+    <p>{$_("keyResults.empty")}</p>
+  {/if}
 </div>
