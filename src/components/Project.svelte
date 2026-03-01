@@ -8,6 +8,7 @@
 -->
 <script lang="ts">
 import { Archive, Check, Edit, Info, RotateCcw, Trash } from "@lucide/svelte";
+import { onMount } from "svelte";
 import { _, locale } from "svelte-i18n";
 import { deleteProject, getProjectPermission } from "$lib/api";
 import type { Project } from "$lib/types";
@@ -83,18 +84,18 @@ let canDelete = $state(false);
 
 // Load permissions when the component is mounted
 onMount(async () => {
-    try {
-        const permissions = await getProjectPermission(project.id);
-        canEdit = permissions.can_lead;
-        canDelete = permissions.can_lead;
-    } catch (err) {
-        console.error("Failed to load project permissions", err);
-    }
+	try {
+		const permissions = await getProjectPermission(project.id);
+		canEdit = permissions.can_lead;
+		canDelete = permissions.can_lead;
+	} catch (err) {
+		console.error("Failed to load project permissions", err);
+	}
 });
 
 async function onDeleteProject() {
 	showConfirmationDialog = false;
-        if (canDelete && await deleteProject(project.id)) onProjectDeleted();
+	if (canDelete && (await deleteProject(project.id))) onProjectDeleted();
 }
 
 async function onArchiveProject(reason: ArchiveReason) {

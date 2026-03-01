@@ -107,7 +107,7 @@ async function handleSubmit(e: SubmitEvent) {
     <div class="card-body gap-4">
       <div class="flex">
         <h2 class="card-title flex-1">{$_("objectives.title")}</h2>
-        <button class="btn btn-primary" onclick={() => showLinkObjectivesModal = true}>{$_("objectives.manageLinks")}</button>
+        <button class="btn btn-primary" onclick={() => canCreate && (showLinkObjectivesModal = true)} disabled={!canCreate}>{$_("objectives.manageLinks")}</button>
       </div>
 
       {#if objectivelist.length > 0}

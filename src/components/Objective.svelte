@@ -10,10 +10,7 @@
 import { Archive, Edit, Trash } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import {
-	deleteObjective,
-	getObjectivePermission,
-} from "$lib/api";
+import { deleteObjective, getObjectivePermission } from "$lib/api";
 import type { Objective } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditObjectiveComponent from "./EditObjectiveComponent.svelte";
