@@ -5,6 +5,7 @@ const PUBLIC_API_URL = env.PUBLIC_API_URL;
 export const AUTH_TOKEN_NAME = "token";
 
 import type {
+	ArchiveReason,
 	KeyResult,
 	Objective,
 	Project,
@@ -235,6 +236,31 @@ export async function getArchivedProjects() {
 	return response.json();
 }
 
+export async function archiveProject(
+	projectId: string,
+	reason: ArchiveReason,
+): Promise<{ message: string }> {
+	const response = await baseFetch(
+		`/projects/${projectId}/archive?archive_reason=${reason}`,
+		{ method: "PATCH" },
+	);
+
+	return response.json();
+}
+
+export async function unarchiveProject(
+	projectId: string,
+	newDeadline: Date,
+): Promise<{ message: string }> {
+	const deadlineParam = encodeURIComponent(newDeadline.toISOString());
+	const response = await baseFetch(
+		`/projects/${projectId}/unarchive?new_deadline=${deadlineParam}`,
+		{ method: "PATCH" },
+	);
+
+	return response.json();
+}
+
 export async function getProjectsForUser(userID: string) {
 	const response = await baseFetch(`/users/${userID}/projects`);
 
@@ -305,6 +331,16 @@ export async function getObjectives() {
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
 	}
+	return response.json();
+}
+
+export async function getArchivedObjectives() {
+	const response = await baseFetch("/objectives/archived");
+
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
+
 	return response.json();
 }
 
@@ -423,6 +459,11 @@ export async function getKeyResult(
 	return response.json();
 }
 
+export async function getArchivedKeyResults() {
+	const response = await baseFetch("/key_results/archived");
+	return response.json();
+}
+
 export async function updateKeyResult(
 	keyResult: KeyResult,
 ): Promise<KeyResult> {
@@ -508,6 +549,11 @@ export async function updateTask(task: Task): Promise<Task> {
 
 export async function getTasks(): Promise<Task[]> {
 	const response = await baseFetch("/tasks");
+	return response.json();
+}
+
+export async function getArchivedTasks() {
+	const response = await baseFetch("/tasks/archived");
 	return response.json();
 }
 

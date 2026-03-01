@@ -41,7 +41,16 @@
 		"tooltipSortByDeadlineAscending": "Sort by deadline (latest first)",
 		"tooltipSortbyDeadlineDescending": "Sort by deadline (earliest first)",
 		"overdue": "overdue",
-		"dueIn": "due in"
+		"dueIn": "due in",
+		"archivingTitle": "Archive project",
+		"archivingBody": "You are archiving {projectName}. Please select a reason.",
+		"archivedWithReason": "Archived: {reason}",
+		"archiveReason": {
+			"on_break": "On break",
+			"finalized": "Finished",
+			"give_up": "Cancelled"
+		},
+		"unarchiveNewDeadline": "New deadline"
 	},
 
 	"objectives": {
@@ -232,6 +241,8 @@
 		"years": "{count} year(s)",
 		"days": "{count} day(s)",
 		"warning": "Warning!",
-		"continueQuestion": "Continue?"
+		"continueQuestion": "Continue?",
+		"archived": "Archived",
+		"done": "Done"
 	}
 }

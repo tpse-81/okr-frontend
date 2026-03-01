@@ -5,7 +5,11 @@ export interface Project {
 	deadline: Date;
 	done: boolean;
 	icon?: string | null;
+	is_archived?: boolean;
+	archive_reason?: ArchiveReason | null;
 }
+
+export type ArchiveReason = "on_break" | "finalized" | "give_up";
 
 export interface ProjectContainer {
 	project: Project;
@@ -17,6 +21,8 @@ export interface Objective {
 	id: string;
 	name: string;
 	description: string;
+	parent_id: string;
+	is_archived?: boolean;
 }
 
 export interface KeyResult {
@@ -26,6 +32,7 @@ export interface KeyResult {
 	start_value: number;
 	current_value: number;
 	end_value: number;
+	is_archived?: boolean;
 }
 
 export type TaskState =
@@ -41,6 +48,7 @@ export interface Task {
 	description: string;
 	task_state: TaskState;
 	key_result_id: string;
+	is_archived?: boolean;
 }
 
 export interface User {

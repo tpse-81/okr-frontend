@@ -7,7 +7,7 @@
   ```
 -->
 <script lang="ts">
-import { Edit, MinusCircle, PlusCircle, Trash } from "@lucide/svelte";
+import { Archive, Edit, MinusCircle, PlusCircle, Trash } from "@lucide/svelte";
 import { _ } from "svelte-i18n";
 import { deleteKeyResult, updateKeyResultCurrentValue } from "$lib/api";
 import type { KeyResult } from "$lib/types";
@@ -35,6 +35,8 @@ let progress = $derived.by(() => {
 
 	return Number((position * 100).toFixed(2));
 });
+
+const isArchived = $derived(keyResult.is_archived === true);
 
 async function incrementCurrentValue() {
 	await updateCurrentValue(keyResult.current_value + 1);
@@ -77,6 +79,11 @@ async function onDeleteKeyResult() {
 		  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
         </div>
     <a href={`/key_results/${keyResult.id}`} class="card-body">
+		{#if isArchived}
+			<div class="badge badge-warning">
+				<Archive size="16" /> {$_("common.archived")}
+			</div>
+		{/if}
         <h2 class="card-title">{keyResult.description}</h2>
         <div class="flex gap-4">
             <div class="radial-progress" style={`--value:${progress};`} aria-valuenow={progress} role="progressbar">{progress}%</div>
