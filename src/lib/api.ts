@@ -7,10 +7,10 @@ export const AUTH_TOKEN_NAME = "token";
 
 import type {
 	ArchiveReason,
+	Dashboard,
 	KeyResult,
 	Objective,
 	Project,
-	ProjectContainer,
 	Task,
 	TaskState,
 } from "$lib/types";
@@ -520,8 +520,12 @@ export async function updateKeyResult(
 	return response.json();
 }
 
-export async function getDashboard(): Promise<ProjectContainer[]> {
-	const response = await baseFetch("/dashboard");
+export async function getDashboard(
+	user_id: string | null = null,
+): Promise<Dashboard> {
+	const response = await baseFetch(
+		user_id ? `/dashboard?user_id=${user_id}` : "/dashboard",
+	);
 	return response.json();
 }
 

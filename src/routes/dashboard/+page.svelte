@@ -2,13 +2,9 @@
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
+import { getDashboard } from "$lib/api";
 import {
-	getDashboard,
-	getProjectsForUser,
-	getTasks,
-	getTasksForUser,
-} from "$lib/api";
-import {
+	type Dashboard,
 	type Project,
 	type ProjectContainer,
 	type Task,
@@ -24,38 +20,22 @@ let projectsList: Project[] = $state([]);
 let closestDeadlineProjects: Project[] = $state([]);
 let taskList: Task[] = $state([]);
 
-let allProjectContainers: ProjectContainer[] = $state([]);
-let allTasksList: Task[] = $state([]);
+let publicDashboard: Dashboard = $state({ projects: [], tasks: [] });
+let privateDashboard: Dashboard = $state({ projects: [], tasks: [] });
 
 // toggle
 let showOnlyMine = $state(false);
 
-// ids of projects the user is part of
-let myProjectIds = $state<Set<string>>(new Set());
-let myTasksList: Task[] = $state([]);
-
 onMount(async () => {
 	try {
-		allProjectContainers = await getDashboard();
+		publicDashboard = await getDashboard();
 
-		const rawProjects = allProjectContainers.map((pc) => pc.project);
+		const rawProjects = publicDashboard.projects.map((pc) => pc.project);
 		projectsList = rawProjects.map((p) => ({
 			...p,
 			creation_date: new Date(p.creation_date),
 			deadline: new Date(p.deadline),
 		}));
-
-		projectContainers = allProjectContainers;
-	} catch (err) {
-		console.error(err);
-	}
-
-	try {
-		allTasksList = (await getTasks()).toSorted(
-			(a, b) => taskStateIndex(a.task_state) - taskStateIndex(b.task_state),
-		);
-
-		taskList = allTasksList;
 	} catch (err) {
 		console.error(err);
 		await goto("/expected");
@@ -63,22 +43,19 @@ onMount(async () => {
 
 	// load user's projects once
 	if ($userInfoStore?.id) {
-		const myProjects: Project[] = await getProjectsForUser($userInfoStore.id);
-		myProjectIds = new Set(myProjects.map((p) => p.id));
-		myTasksList = await getTasksForUser($userInfoStore.id);
+		privateDashboard = await getDashboard($userInfoStore.id);
 	}
 });
 
 $effect(() => {
-	if (!showOnlyMine) {
-		projectContainers = allProjectContainers;
-		taskList = allTasksList;
-	} else {
-		projectContainers = allProjectContainers.filter((pc) =>
-			myProjectIds.has(pc.project.id),
-		);
-		taskList = myTasksList;
-	}
+	// trigger reload whenever one of the dashboards changes
+	if (!publicDashboard && !privateDashboard) return;
+
+	const dashboard = showOnlyMine ? privateDashboard : publicDashboard;
+	projectContainers = dashboard.projects;
+	taskList = dashboard.tasks.toSorted(
+		(a, b) => taskStateIndex(a.task_state) - taskStateIndex(b.task_state),
+	);
 });
 
 $effect(() => {
