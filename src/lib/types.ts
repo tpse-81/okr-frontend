@@ -11,6 +11,11 @@ export interface Project {
 
 export type ArchiveReason = "on_break" | "finalized" | "give_up";
 
+export interface Dashboard {
+	projects: ProjectContainer[];
+	tasks: Task[];
+}
+
 export interface ProjectContainer {
 	project: Project;
 	objectives: Objective[];
