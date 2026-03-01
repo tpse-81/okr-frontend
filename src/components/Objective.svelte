@@ -39,7 +39,7 @@ async function onDeleteObjective() {
     <a href={`/objectives/${objective.id}`} class="card-body">
 		{#if isArchived}
 			<div class="badge badge-warning">
-				<Archive size="16" /> Archived
+				<Archive size="16" /> {$_("common.archived")}
 			</div>
 		{/if}
         <h2 class="card-title">{objective.name}</h2>

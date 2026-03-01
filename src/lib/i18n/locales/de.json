@@ -41,7 +41,16 @@
 		"tooltipSortByDeadlineAscending": "Nach Frist sortieren (späteste zuerst)",
 		"tooltipSortbyDeadlineDescending": "Nach Frist sortieren (früheste zuerst)",
 		"overdue": "überfällig",
-		"dueIn": "fällig in"
+		"dueIn": "fällig in",
+		"archivingTitle": "Projekt archivieren",
+		"archivingBody": "Du archivierst {projectName}. Bitte wähle einen Grund.",
+		"archivedWithReason": "Archiviert: {reason}",
+		"archiveReason": {
+			"on_break": "Pause",
+			"finalized": "Abgeschlossen",
+			"give_up": "Aufgegeben"
+		},
+		"unarchiveNewDeadline": "Neue Frist"
 	},
 
 	"objectives": {
@@ -232,6 +241,8 @@
 		"years": "{count} Jahr(en)",
 		"days": "{count} Tag(en)",
 		"warning": "Achtung!",
-		"continueQuestion": "Fortfahren?"
+		"continueQuestion": "Fortfahren?",
+		"archived": "Archiviert",
+		"done": "Erledigt"
 	}
 }

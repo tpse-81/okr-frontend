@@ -3,46 +3,48 @@
 - Modal dialog for unarchiving a project with a new deadline.
 -->
 <script lang="ts">
-	let {
-		show,
-		projectName,
-		initialDeadline,
-		onconfirm,
-		ondismiss,
-	}: {
-		show: boolean;
-		projectName: string;
-		initialDeadline: Date;
-		onconfirm: (newDeadline: Date) => void;
-		ondismiss: () => void;
-	} = $props();
+import { _ } from "svelte-i18n";
 
-	let modal: HTMLDialogElement;
+let {
+	show,
+	projectName,
+	initialDeadline,
+	onconfirm,
+	ondismiss,
+}: {
+	show: boolean;
+	projectName: string;
+	initialDeadline: Date;
+	onconfirm: (newDeadline: Date) => void;
+	ondismiss: () => void;
+} = $props();
 
-	function toDateInputValue(date: Date): string {
-		return new Date(date).toISOString().slice(0, 10);
+let modal: HTMLDialogElement;
+
+function toDateInputValue(date: Date): string {
+	return new Date(date).toISOString().slice(0, 10);
+}
+
+let deadlineStr: string = $state("");
+
+$effect(() => {
+	if (!modal) return;
+
+	if (show) {
+		deadlineStr = toDateInputValue(initialDeadline);
+		modal.showModal();
+	} else {
+		modal.close();
 	}
+});
 
-	let deadlineStr: string = $state("");
+function confirm() {
+	if (!deadlineStr) return;
+	const newDeadline = new Date(deadlineStr);
 
-	$effect(() => {
-		if (!modal) return;
-
-		if (show) {
-			deadlineStr = toDateInputValue(initialDeadline);
-			modal.showModal();
-		} else {
-			modal.close();
-		}
-	});
-
-	function confirm() {
-		if (!deadlineStr) return;
-		const newDeadline = new Date(deadlineStr);
-
-		onconfirm(newDeadline);
-		ondismiss();
-	}
+	onconfirm(newDeadline);
+	ondismiss();
+}
 </script>
 
 <dialog bind:this={modal} class="modal">
@@ -54,7 +56,7 @@
 
 		<div class="form-control mt-4">
 			<label class="label" for="unarchive-deadline">
-				<span class="label-text">New deadline</span>
+				<span class="label-text">{$_("projects.unarchiveNewDeadline")}</span>
 			</label>
 
 			<input

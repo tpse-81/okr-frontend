@@ -1,9 +1,9 @@
 <script lang="ts">
+import { Archive, Check } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
-import { Archive, Check } from "@lucide/svelte";
-import { getKeyResults, getArchivedKeyResults } from "$lib/api";
+import { getArchivedKeyResults, getKeyResults } from "$lib/api";
 import type { KeyResult } from "$lib/types";
 import KeyResultComponent from "../../components/KeyResult.svelte";
 

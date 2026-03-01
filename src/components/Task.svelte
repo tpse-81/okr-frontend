@@ -8,8 +8,8 @@
 -->
 <script lang="ts">
 import { Archive, Edit, Info, Trash } from "@lucide/svelte";
-import { deleteTask, updateTask } from "$lib/api";
 import { _ } from "svelte-i18n";
+import { deleteTask, updateTask } from "$lib/api";
 import { type Task, type TaskState, taskStates } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
@@ -84,7 +84,7 @@ async function setTaskState(newState: TaskState) {
   <div class="card-body pt-12">
     {#if isArchived}
       <div class="badge badge-warning mb-2">
-        <Archive size="16" /> Archived
+        <Archive size="16" /> {$_("common.archived")}
       </div>
     {/if}
 

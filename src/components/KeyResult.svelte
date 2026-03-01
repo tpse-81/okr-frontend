@@ -81,7 +81,7 @@ async function onDeleteKeyResult() {
     <a href={`/key_results/${keyResult.id}`} class="card-body">
 		{#if isArchived}
 			<div class="badge badge-warning">
-				<Archive size="16" /> Archived
+				<Archive size="16" /> {$_("common.archived")}
 			</div>
 		{/if}
         <h2 class="card-title">{keyResult.description}</h2>

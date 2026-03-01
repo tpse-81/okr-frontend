@@ -9,10 +9,7 @@ export interface Project {
 	archive_reason?: ArchiveReason | null;
 }
 
-export type ArchiveReason = 
-	| "on_break" 
-	| "finalized" 
-	| "give_up";
+export type ArchiveReason = "on_break" | "finalized" | "give_up";
 
 export interface ProjectContainer {
 	project: Project;

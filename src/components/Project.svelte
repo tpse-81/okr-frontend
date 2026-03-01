@@ -7,22 +7,26 @@
   ```
 -->
 <script lang="ts">
-import { Archive, Check, Edit, Info, Trash, RotateCcw } from "@lucide/svelte";
-import { archiveProject, unarchiveProject, deleteProject } from "$lib/api";
-import type { ArchiveReason, Project } from "$lib/types";
+import { Archive, Check, Edit, Info, RotateCcw, Trash } from "@lucide/svelte";
 import { _, locale } from "svelte-i18n";
+import { archiveProject, deleteProject, unarchiveProject } from "$lib/api";
+import type { ArchiveReason, Project } from "$lib/types";
 import { formatDate, formatDeadline } from "$lib/utils";
+import ArchiveProjectDialog from "./ArchiveProjectDialog.svelte";
 import AvatarComponent from "./Avatar.svelte";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditProjectComponent from "./EditProjectComponent.svelte";
-import ArchiveProjectDialog from "./ArchiveProjectDialog.svelte";
-import UnarchiveProjectDialog from "./UnarchiveProjectDialog.svelte"
+import UnarchiveProjectDialog from "./UnarchiveProjectDialog.svelte";
 
 let {
 	project,
 	onProjectDeleted,
-    onProjectUpdated,
-}: { project: Project; onProjectDeleted: () => void; onProjectUpdated?: () => void; } = $props();
+	onProjectUpdated,
+}: {
+	project: Project;
+	onProjectDeleted: () => void;
+	onProjectUpdated?: () => void;
+} = $props();
 
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
@@ -34,9 +38,21 @@ let isUnarchiving = $state(false);
 type ArchiveMeta = { reason: ArchiveReason; format: string; badge: string };
 
 const archiveReasons: ArchiveMeta[] = [
-	{ reason: "finalized", format: "Finished", badge: "badge-success" },
-	{ reason: "on_break", format: "On Break", badge: "badge-warning" },
-	{ reason: "give_up", format: "Cancelled", badge: "badge-error" },
+	{
+		reason: "finalized",
+		format: "projects.archiveReason.finalized",
+		badge: "badge-success",
+	},
+	{
+		reason: "on_break",
+		format: "projects.archiveReason.on_break",
+		badge: "badge-warning",
+	},
+	{
+		reason: "give_up",
+		format: "projects.archiveReason.give_up",
+		badge: "badge-error",
+	},
 ];
 
 const archiveReasonMap = archiveReasons.reduce(
@@ -48,8 +64,13 @@ const archiveReasonMap = archiveReasons.reduce(
 );
 
 function getArchiveMeta(reason: ArchiveReason | null | undefined) {
-	if (!reason) return { format: "Archived", badge: "badge-warning" };
-	return archiveReasonMap[reason] ?? { format: reason, badge: "badge-warning" };
+	if (!reason) return { format: "common.archived", badge: "badge-warning" };
+	return (
+		archiveReasonMap[reason] ?? {
+			format: "common.archived",
+			badge: "badge-warning",
+		}
+	);
 }
 
 let archiveMeta = $derived(getArchiveMeta(project.archive_reason));
@@ -114,10 +135,11 @@ async function onUnarchiveProject(newDeadline: Date) {
     <a href={`/projects/${project.id}`} class="card-body">
         {#if project.is_archived}
 			<div class={`badge ${archiveMeta.badge}`}>
-				<Archive size="16" /> Archived: {archiveMeta.format}
+				<Archive size="16" />
+				{$_("projects.archivedWithReason", {values: { reason: $_(archiveMeta.format) },})}
 			</div>
         {:else if project.done}
-            <div class="badge badge-success"><Check size="16" /> Done</div>
+            <div class="badge badge-success"><Check size="16" /> {$_("common.done")}</div>
         {:else}
             <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline), $locale)}</div>
         {/if}

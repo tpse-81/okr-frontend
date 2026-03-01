@@ -108,9 +108,9 @@ let visibleProjects = $derived.by(() => {
 
 	const archivedIds = new Set(archivedProjectsList.map((p) => p.id));
 	if (activeMultiFilters.includes("archived")) {
-	searchedlist = searchedlist.filter((p) => archivedIds.has(p.id));
+		searchedlist = searchedlist.filter((p) => archivedIds.has(p.id));
 	} else {
-	searchedlist = searchedlist.filter((p) => !archivedIds.has(p.id));
+		searchedlist = searchedlist.filter((p) => !archivedIds.has(p.id));
 	}
 
 	if (activeFilter) {
