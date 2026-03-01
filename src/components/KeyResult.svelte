@@ -7,8 +7,8 @@
   ```
 -->
 <script lang="ts">
-import { onMount } from "svelte";
 import { Archive, Edit, MinusCircle, PlusCircle, Trash } from "@lucide/svelte";
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import {
 	deleteKeyResult,

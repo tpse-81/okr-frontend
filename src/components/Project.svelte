@@ -10,16 +10,18 @@
 import { Archive, Check, Edit, Info, RotateCcw, Trash } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _, locale } from "svelte-i18n";
-import { deleteProject, getProjectPermission } from "$lib/api";
-import type { Project } from "$lib/types";
-import { archiveProject, deleteProject, unarchiveProject } from "$lib/api";
+import {
+	archiveProject,
+	deleteProject,
+	getProjectPermission,
+	unarchiveProject,
+} from "$lib/api";
 import type { ArchiveReason, Project } from "$lib/types";
 import { formatDate, formatDeadline } from "$lib/utils";
 import ArchiveProjectDialog from "./ArchiveProjectDialog.svelte";
 import AvatarComponent from "./Avatar.svelte";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditProjectComponent from "./EditProjectComponent.svelte";
-import {onMount} from "svelte";
 import UnarchiveProjectDialog from "./UnarchiveProjectDialog.svelte";
 
 let {
@@ -126,12 +128,13 @@ async function onUnarchiveProject(newDeadline: Date) {
 </script>
 
 <li class="card card-border relative">
-  	<div class="absolute right-2 top-2 flex gap-2">
+  	<div class="absolute right-2 top-2 flex gap-2"
+         title={!canEdit ? $_("common.noPermissions") : ""}>
         {#if project.is_archived}
 			<button
 				class="btn btn-square"
-				disabled={isUnarchiving}
-				onclick={() => (showUnarchiveDialog = true)}
+				disabled={isUnarchiving || !canEdit}
+				onclick={() => canEdit && (showUnarchiveDialog = true)}
 				title="Unarchive"
 			>
 				<RotateCcw size="16" />
@@ -139,17 +142,13 @@ async function onUnarchiveProject(newDeadline: Date) {
         {:else}
 			<button
 				class="btn btn-square"
-				disabled={isArchiving}
-				onclick={() => (showArchiveDialog = true)}
+				disabled={isArchiving || !canEdit}
+				onclick={() => canEdit && (showArchiveDialog = true)}
 				title="Archive"
 			>
 				<Archive size="16" />
 			</button>
 		{/if}
-		  <button class="btn btn-square" onclick={() => showEditDialog = true}><Edit size="16" /></button>
-		  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
-		</div>
-    <div class="absolute right-2 top-2 flex gap-2">
         <button
                 class="btn btn-square"
                 onclick={() => canEdit && (showEditDialog = true)}

@@ -65,29 +65,6 @@ async function setTaskState(newState: TaskState) {
 </script>
 
 <li class="card card-border relative">
-  <div class="dropdown">
-    <div
-      class="absolute left-2 top-2 badge {taskState.badge} cursor-pointer"
-      role="button"
-      tabindex="0"
-    >
-      <Info size="16" />
-      <span>{$_(taskState.label)}</span>
-    </div>
-    <ul
-      bind:this={taskStateDropdown}
-      tabindex="-1"
-      class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-    >
-      {#each taskStates as state}
-        <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <li class="btn btn-ghost" role="button" onclick={() => setTaskState(state.state)}>
-          {$_(state.label)}
-        </li>
-      {/each}
-    </ul>
-  </div>
 	<span
             class="dropdown"
             title={!canEdit ? $_("common.noPermissions") : ""}
@@ -125,14 +102,10 @@ async function setTaskState(newState: TaskState) {
 	</span>
 
   <div class="absolute right-2 top-2 flex gap-2" title={!canEdit ? $_("common.noPermissions") : ""}>
-    <button type="button" class="btn btn-square" onclick={() => canEdit && (showEditDialog = true)}
-            disabled={!canEdit}>
-    <button class="btn btn-square" disabled={isArchived} onclick={() => (showEditDialog = true)}>
+    <button class="btn btn-square" disabled={isArchived || !canEdit} onclick={() => (showEditDialog = true)}>
       <Edit size="16" />
     </button>
-    <button type="button" class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)}
-            disabled={!canEdit}>
-    <button class="btn btn-square" disabled={isArchived} onclick={() => (showConfirmationDialog = true)}>
+    <button class="btn btn-square" disabled={isArchived || !canEdit} onclick={() => (showConfirmationDialog = true)}>
       <Trash size="16" />
     </button>
   </div>
