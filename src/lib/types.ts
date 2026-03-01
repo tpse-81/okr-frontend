@@ -66,3 +66,7 @@ export const taskStates: { state: TaskState; label: string; badge: string }[] =
 		{ state: "done", label: "tasks.done", badge: "badge-success" },
 		{ state: "cancelled", label: "tasks.cancelled", badge: "badge-error" },
 	];
+
+export function taskStateIndex(category: TaskState) {
+	return taskStates.findIndex((state) => state.state === category);
+}

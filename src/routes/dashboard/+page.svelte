@@ -3,7 +3,12 @@ import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { getDashboard, getTasks } from "$lib/api";
-import type { Project, ProjectContainer, Task } from "$lib/types";
+import {
+	type Project,
+	type ProjectContainer,
+	type Task,
+	taskStateIndex,
+} from "$lib/types";
 import { userInfoStore } from "$lib/user_info";
 import DashboardDeadlineComponent from "../../components/DashboardDeadline.svelte";
 import DashboardProjectComponent from "../../components/DashboardProject.svelte";
@@ -28,19 +33,14 @@ onMount(async () => {
 		console.error(err);
 	}
 	try {
-		await tasks();
+		taskList = (await getTasks()).toSorted(
+			(a, b) => taskStateIndex(a.task_state) - taskStateIndex(b.task_state),
+		);
 	} catch (err) {
 		console.error(err);
-	}
-});
-
-async function tasks() {
-	try {
-		taskList = await getTasks();
-	} catch (err) {
 		await goto("/expected");
 	}
-}
+});
 
 $effect(() => {
 	closestDeadlineProjects = [...projectsList]
