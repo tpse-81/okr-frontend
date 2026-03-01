@@ -7,9 +7,14 @@
   ```
 -->
 <script lang="ts">
+import { onMount } from "svelte";
 import { Archive, Edit, MinusCircle, PlusCircle, Trash } from "@lucide/svelte";
 import { _ } from "svelte-i18n";
-import { deleteKeyResult, updateKeyResultCurrentValue } from "$lib/api";
+import {
+	deleteKeyResult,
+	getKeyResultPermission,
+	updateKeyResultCurrentValue,
+} from "$lib/api";
 import type { KeyResult } from "$lib/types";
 import { isBetween } from "$lib/utils";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
@@ -37,6 +42,17 @@ let progress = $derived.by(() => {
 });
 
 const isArchived = $derived(keyResult.is_archived === true);
+
+let canEdit = $state(false);
+
+onMount(async () => {
+	try {
+		const permissions = await getKeyResultPermission(keyResult.id);
+		canEdit = permissions.can_write;
+	} catch (err) {
+		console.error("Failed to load project permissions", err);
+	}
+});
 
 async function incrementCurrentValue() {
 	await updateCurrentValue(keyResult.current_value + 1);
@@ -75,8 +91,8 @@ async function onDeleteKeyResult() {
 
 <li class="card card-border relative">
 		<div class="absolute right-2 top-2 flex gap-2">
-		  <button class="btn btn-square" onclick={() => showEditDialog = true}><Edit size="16" /></button>
-		  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
+		  <button class="btn btn-square" onclick={() => canEdit && (showEditDialog = true)} disabled={!canEdit}><Edit size="16" /></button>
+		  <button class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)} disabled={!canEdit}><Trash size="16" /></button>
         </div>
     <a href={`/key_results/${keyResult.id}`} class="card-body">
 		{#if isArchived}
@@ -95,10 +111,10 @@ async function onDeleteKeyResult() {
         </div>
     </a>
     <div class="-mt-2 ml-5 mb-3">
-        <button class="btn btn-square" onclick={incrementCurrentValue}>
+        <button class="btn btn-square" onclick={incrementCurrentValue} disabled={!canEdit}>
             <PlusCircle size="16" />
         </button>
-        <button class="btn btn-square" onclick={decrementCurrentValue}>
+        <button class="btn btn-square" onclick={decrementCurrentValue} disabled={!canEdit}>
             <MinusCircle size="16" />
         </button>
     </div>

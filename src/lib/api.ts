@@ -88,6 +88,37 @@ export async function createUser(
 	return response.json();
 }
 
+export async function getProjectPermission(project_id: string) {
+	const response = await baseFetch(`/projects/${project_id}/permissions`, {
+		method: "GET",
+	});
+	return response.json();
+}
+
+export async function getObjectivePermission(objective_id: string) {
+	const response = await baseFetch(`/objectives/${objective_id}/permissions`, {
+		method: "GET",
+	});
+	return response.json();
+}
+
+export async function getKeyResultPermission(key_result_id: string) {
+	const response = await baseFetch(
+		`/key_results/${key_result_id}/permissions`,
+		{
+			method: "GET",
+		},
+	);
+	return response.json();
+}
+
+export async function getTaskPermission(task_id: string) {
+	const response = await baseFetch(`/tasks/${task_id}/permissions`, {
+		method: "GET",
+	});
+	return response.json();
+}
+
 export async function promoteUser(user_id: string) {
 	const response = await baseFetch(`/users/${user_id}/promote`, {
 		method: "PATCH",

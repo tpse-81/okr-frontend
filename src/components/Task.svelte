@@ -8,8 +8,14 @@
 -->
 <script lang="ts">
 import { Archive, Edit, Info, Trash } from "@lucide/svelte";
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import { deleteTask, updateTask } from "$lib/api";
+import {
+	deleteTask,
+	getKeyResultPermission,
+	getTaskPermission,
+	updateTask,
+} from "$lib/api";
 import { type Task, type TaskState, taskStates } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
@@ -31,6 +37,17 @@ const taskState = $derived(
 )!;
 
 const isArchived = $derived(task.is_archived === true);
+
+let canEdit = $state(false);
+
+onMount(async () => {
+	try {
+		const permissions = await getTaskPermission(task.id);
+		canEdit = permissions.can_write;
+	} catch (err) {
+		console.error("Failed to load project permissions", err);
+	}
+});
 
 async function onDeleteTask() {
 	showConfirmationDialog = false;
@@ -73,9 +90,13 @@ async function setTaskState(newState: TaskState) {
   </div>
 
   <div class="absolute right-2 top-2 flex gap-2">
+    <button type="button" class="btn btn-square" onclick={() => canEdit && (showEditDialog = true)}
+            disabled={!canEdit}>
     <button class="btn btn-square" disabled={isArchived} onclick={() => (showEditDialog = true)}>
       <Edit size="16" />
     </button>
+    <button type="button" class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)}
+            disabled={!canEdit}>
     <button class="btn btn-square" disabled={isArchived} onclick={() => (showConfirmationDialog = true)}>
       <Trash size="16" />
     </button>

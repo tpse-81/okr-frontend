@@ -9,6 +9,8 @@
 <script lang="ts">
 import { Archive, Check, Edit, Info, RotateCcw, Trash } from "@lucide/svelte";
 import { _, locale } from "svelte-i18n";
+import { deleteProject, getProjectPermission } from "$lib/api";
+import type { Project } from "$lib/types";
 import { archiveProject, deleteProject, unarchiveProject } from "$lib/api";
 import type { ArchiveReason, Project } from "$lib/types";
 import { formatDate, formatDeadline } from "$lib/utils";
@@ -16,6 +18,7 @@ import ArchiveProjectDialog from "./ArchiveProjectDialog.svelte";
 import AvatarComponent from "./Avatar.svelte";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditProjectComponent from "./EditProjectComponent.svelte";
+import {onMount} from "svelte";
 import UnarchiveProjectDialog from "./UnarchiveProjectDialog.svelte";
 
 let {
@@ -75,10 +78,23 @@ function getArchiveMeta(reason: ArchiveReason | null | undefined) {
 
 let archiveMeta = $derived(getArchiveMeta(project.archive_reason));
 
+let canEdit = $state(false);
+let canDelete = $state(false);
+
+// Load permissions when the component is mounted
+onMount(async () => {
+    try {
+        const permissions = await getProjectPermission(project.id);
+        canEdit = permissions.can_lead;
+        canDelete = permissions.can_lead;
+    } catch (err) {
+        console.error("Failed to load project permissions", err);
+    }
+});
+
 async function onDeleteProject() {
 	showConfirmationDialog = false;
-
-	if (await deleteProject(project.id)) onProjectDeleted();
+        if (canDelete && await deleteProject(project.id)) onProjectDeleted();
 }
 
 async function onArchiveProject(reason: ArchiveReason) {
@@ -132,6 +148,23 @@ async function onUnarchiveProject(newDeadline: Date) {
 		  <button class="btn btn-square" onclick={() => showEditDialog = true}><Edit size="16" /></button>
 		  <button class="btn btn-square" onclick={() => showConfirmationDialog = true}><Trash size="16" /></button>
 		</div>
+    <div class="absolute right-2 top-2 flex gap-2">
+        <button
+                class="btn btn-square"
+                onclick={() => canEdit && (showEditDialog = true)}
+                disabled={!canEdit}
+        >
+            <Edit size="16" />
+        </button>
+        <button
+                class="btn btn-square"
+                onclick={() => canDelete && (showConfirmationDialog = true)}
+                disabled={!canDelete}
+        >
+            <Trash size="16" />
+        </button>
+    </div>
+
     <a href={`/projects/${project.id}`} class="card-body">
         {#if project.is_archived}
 			<div class={`badge ${archiveMeta.badge}`}>
@@ -152,6 +185,17 @@ async function onUnarchiveProject(newDeadline: Date) {
     </a>
 </li>
 
+<EditProjectComponent
+        show={showEditDialog}
+        project={project}
+        ondismiss={() => showEditDialog = false}
+/>
+<ConfirmationDialog
+        show={showConfirmationDialog}
+        message={$_("projects.delete")}
+        onconfirm={onDeleteProject}
+        ondismiss={() => showConfirmationDialog = false}
+/>
 <EditProjectComponent show={showEditDialog} project={project} ondismiss={() => showEditDialog = false} />
 <ArchiveProjectDialog show={showArchiveDialog} projectName={project.name} onconfirm={(reason) => onArchiveProject(reason)} ondismiss={() => (showArchiveDialog = false)} />
 <UnarchiveProjectDialog show={showUnarchiveDialog} projectName={project.name} initialDeadline={new Date(project.deadline)} onconfirm={(date) => onUnarchiveProject(date)} ondismiss={() => (showUnarchiveDialog = false)} />
