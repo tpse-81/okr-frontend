@@ -10,12 +10,7 @@
 import { Archive, Edit, Info, Trash } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import {
-	deleteTask,
-	getKeyResultPermission,
-	getTaskPermission,
-	updateTask,
-} from "$lib/api";
+import { deleteTask, getTaskPermission, updateTask } from "$lib/api";
 import { type Task, type TaskState, taskStates } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
@@ -117,8 +112,7 @@ async function setTaskState(newState: TaskState) {
       </div>
     {/if}
 
-    {task.description}<br />
-    <span class="opacity-70">(State: {task.task_state})</span>
+    {task.description}
   </div>
 </li>
 
