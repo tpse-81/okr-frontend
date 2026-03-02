@@ -1,4 +1,5 @@
 // load api url from .env file or runtime environment if provided
+import { goto } from "$app/navigation";
 import { env } from "$env/dynamic/public";
 
 const PUBLIC_API_URL = env.PUBLIC_API_URL;
@@ -13,6 +14,7 @@ import type {
 	Task,
 	TaskState,
 } from "$lib/types";
+import { setUserInfo } from "./user_info";
 
 export class APIError extends Error {
 	status: number;
@@ -56,6 +58,13 @@ const baseFetch = async (
 			...(options.headers ?? {}),
 		},
 	});
+
+	// user is unauthorized - this likely happened because the auth token expired
+	// -> clear stored user data, redirect to login page
+	if (response.status === 401) {
+		setUserInfo(null);
+		await goto("/login");
+	}
 
 	// custom error handler that parses the Litestar JSON error format
 	if (!response.ok) {
