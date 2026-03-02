@@ -14,4 +14,6 @@ export default defineConfig({
 		reuseExistingServer: !process.env.CI,
 		timeout: 120_000,
 	},
+	// if using more workers, this leads to race conditions and makes test fail
+	workers: 1,
 });
