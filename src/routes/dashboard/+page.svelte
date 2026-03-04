@@ -87,8 +87,11 @@ $effect(() => {
 		: projectsList;
 
 	closestDeadlineProjects = [...source]
-		.sort((a, b) => a.deadline.getTime() - b.deadline.getTime())
-		.slice(0, 5);
+        .sort((a, b) => {
+            const da = a.deadline ? new Date(a.deadline).getTime() : Infinity;
+            const db = b.deadline ? new Date(b.deadline).getTime() : Infinity;
+            return da - db;
+        }).slice(0, 5);
 });
 </script>
 
