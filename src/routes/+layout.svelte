@@ -1,7 +1,6 @@
 <script lang="ts">
 import { EllipsisIcon, MenuIcon, Moon, Sun, X } from "@lucide/svelte";
 import arrow from "$lib/assets/arrow-in-the-target.svg";
-import favicon from "$lib/assets/favicon.svg";
 import "../app.css";
 import "$lib/i18n";
 import { onMount } from "svelte";
@@ -15,7 +14,6 @@ import {
 	userInfoStore,
 } from "$lib/user_info";
 import ForcePasswordChangeDialog from "../components/ForcePasswordChangeDialog.svelte";
-import IconSelector from "../components/IconSelector.svelte";
 import LanguageSwitch from "../components/LanguageSwitch.svelte";
 
 const i18nReady = waitLocale();
@@ -23,7 +21,6 @@ const i18nReady = waitLocale();
 let { children } = $props();
 let title = "OKR Project";
 let isDark = $state(false);
-let checkbox: HTMLInputElement;
 
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
 const excludedPaths = ["/login"];
@@ -74,7 +71,6 @@ $effect(() => {
 
 function applyTheme(theme: string) {
 	document.documentElement.setAttribute("data-theme", theme);
-	if (checkbox) checkbox.checked = theme === "luxury";
 }
 
 function getInitialTheme(): string {
@@ -165,7 +161,7 @@ function changeTheme() {
             src={arrow}
             alt="Arrow Logo"
             class="h-8 w-8 ml-3 transition-colors duration-200"
-            class:invert={isDark}
+            class:filter-dark={isDark}
     />
   </a>
 
@@ -225,3 +221,9 @@ function changeTheme() {
 {/if}
 
 {/await}
+
+<style>
+  .filter-dark{
+      filter: invert(78%) sepia(43%) saturate(718%) hue-rotate(335deg) brightness(90%) contrast(91%);
+  }
+</style>
