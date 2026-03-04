@@ -3,7 +3,8 @@
 		"login": "Login",
 		"dashboard": "Dashboard",
 		"account": "Account",
-		"logout": "Log out"
+		"logout": "Log out",
+		"goto": "Go to"
 	},
 
 	"dashboard": {
@@ -68,7 +69,9 @@
 		"emptyChild": "No sub-objectives yet",
 		"cycleError": "Would create a cycle.",
 		"notFoundError": "Objective not found.",
-		"linkingFailedError": "Failed to add sub-objectives:"
+		"linkingFailedError": "Failed to add sub-objectives:",
+		"cantCreate": "Objectives can't be created here.",
+		"selectProject": "To create an Objective, please navigate to a Project from the Projects page."
 	},
 
 	"keyResults": {
@@ -82,7 +85,9 @@
 		"target": "Target value",
 		"outOfBoundsError": "Current value is out of bounds",
 		"updateError": "Current value could not be updated",
-		"delete": "Delete key result"
+		"delete": "Delete key result",
+		"cantCreate": "Key Results can't be created here.",
+		"selectObjective": "To create a key result, please navigate to an objective from the Objectives page."
 	},
 
 	"tasks": {
@@ -99,7 +104,9 @@
 		"cancelled": "Cancelled",
 		"createTitle": "Create a Task",
 		"search": "Search for tasks...",
-		"delete": "Delete task"
+		"delete": "Delete task",
+		"cantCreate": "Tasks can't be created here.",
+		"selectKeyResult": "To create a Task, please navigate to a Key Result from the Key Results page."
 	},
 
 	"users": {

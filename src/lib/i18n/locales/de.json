@@ -3,7 +3,8 @@
 		"login": "Login",
 		"dashboard": "Dashboard",
 		"account": "Konto",
-		"logout": "Abmelden"
+		"logout": "Abmelden",
+		"goto": "Weiter zu"
 	},
 
 	"dashboard": {
@@ -52,7 +53,7 @@
 		},
 		"unarchiveNewDeadline": "Neue Frist",
 		"onlyMine": "Zeige nur meine eigenen Projekte an",
-		"showAll": "Zeige alle Projekte an"
+		"showAll": "Alle Projekte anzeigen"
 	},
 
 	"objectives": {
@@ -68,7 +69,9 @@
 		"emptyChild": "Noch keine Unterziele vorhanden",
 		"cycleError": "Würde einen Zyklus erzeugen.",
 		"notFoundError": "Ziel nicht gefunden.",
-		"linkingFailedError": "Unterziele konnten nicht hinzugefügt werden:"
+		"linkingFailedError": "Fehler beim hinzufügen von Unterzielen:",
+		"cantCreate": "Ziele können hier nicht erstellt werden.",
+		"selectProject": "Wähle ein Projekt aus und erstelle ein Ziel auf der Seite des Projekts."
 	},
 
 	"keyResults": {
@@ -82,7 +85,9 @@
 		"target": "Zielwert",
 		"outOfBoundsError": "Der aktuelle Wert liegt außerhalb des gültigen Bereichs",
 		"updateError": "Der aktuelle Wert konnte nicht übernommen werden",
-		"delete": "Schlüsselergebnis löschen"
+		"delete": "Delete key result",
+		"cantCreate": "Schlüsselergebnisse können hier nicht erstellt werden.",
+		"selectObjective": "Wähle ein Ziel aus und erstelle ein Schlüsselergebniss auf der Seite des Ziels."
 	},
 
 	"tasks": {
@@ -99,7 +104,9 @@
 		"cancelled": "Abgebrochen",
 		"createTitle": "Aufgabe erstellen",
 		"search": "Aufgaben suchen...",
-		"delete": "Aufgabe löschen"
+		"delete": "Delete task",
+		"cantCreate": "Aufgaben können hier nicht erstellt werden.",
+		"selectKeyResult": "Wähle ein Schlüsselergebniss aus und erstelle eine Aufgabe auf der Seite des Schlüsselergebnisses."
 	},
 
 	"users": {
