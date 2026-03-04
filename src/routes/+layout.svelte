@@ -1,6 +1,6 @@
 <script lang="ts">
 import { EllipsisIcon, MenuIcon, Moon, Sun, X } from "@lucide/svelte";
-import favicon from "$lib/assets/favicon.svg";
+import arrow from "$lib/assets/arrow-in-the-target.svg";
 import "../app.css";
 import "$lib/i18n";
 import { onMount } from "svelte";
@@ -21,7 +21,6 @@ const i18nReady = waitLocale();
 let { children } = $props();
 let title = "OKR Project";
 let isDark = $state(false);
-let checkbox: HTMLInputElement;
 
 //if we ever want some paths to be accessible without being logged in we can put them here (help page for example)
 const excludedPaths = ["/login"];
@@ -72,7 +71,6 @@ $effect(() => {
 
 function applyTheme(theme: string) {
 	document.documentElement.setAttribute("data-theme", theme);
-	if (checkbox) checkbox.checked = theme === "luxury";
 }
 
 function getInitialTheme(): string {
@@ -84,14 +82,14 @@ function getInitialTheme(): string {
 }
 
 function changeTheme() {
-	const theme = checkbox.checked ? "luxury" : "cupcake";
+	const theme = isDark ? "luxury" : "cupcake";
 	localStorage.setItem("theme", theme);
 	applyTheme(theme);
 }
 </script>
 
 <svelte:head>
-  <link rel="icon" href={favicon} />
+  <link rel="icon" href={arrow} />
   <title>{title}</title>
 </svelte:head>
 
@@ -158,6 +156,15 @@ function changeTheme() {
     </div>
   </div>
 
+  <a href="/">
+    <img
+            src={arrow}
+            alt="Arrow Logo"
+            class="h-8 w-8 ml-3 transition-colors duration-200"
+            class:filter-dark={isDark}
+    />
+  </a>
+
   <div class="flex-1">
     <a class="btn btn-ghost text-xl" href="/">OKR-ng</a>
   </div>
@@ -171,7 +178,12 @@ function changeTheme() {
     <div class="ml-2">
     <label class="swap swap-rotate">
       <!-- this hidden checkbox controls the state -->
-      <input type="checkbox" class="theme-controller" value="luxury" bind:this={checkbox} onchange={changeTheme} checked={isDark}/>
+      <input
+              type="checkbox"
+              class="theme-controller"
+              bind:checked={isDark}
+              onchange={changeTheme}
+      />
 
       <!-- sun icon -->
       <Sun class="swap-off h-6.5 w-6.5" />
@@ -209,3 +221,9 @@ function changeTheme() {
 {/if}
 
 {/await}
+
+<style>
+  .filter-dark{
+      filter: invert(78%) sepia(43%) saturate(718%) hue-rotate(335deg) brightness(90%) contrast(91%);
+  }
+</style>
