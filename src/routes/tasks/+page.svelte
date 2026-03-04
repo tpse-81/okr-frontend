@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Archive, Check } from "@lucide/svelte";
+import { Archive, Check, InfoIcon } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
@@ -63,8 +63,21 @@ async function tasks() {
 </script>
 
 <div class="p-3">
+	<div role="alert" class="alert alert-vertical alert-outline sm:alert-horizontal">
+		<InfoIcon/>
+		<div>
+			<h3 class="font-bold">{$_("tasks.cantCreate")}</h3>
+			<div class="text-xs">{$_("tasks.selectKeyResult")}</div>
+		</div>
+		<a href="/key_results">
+			<button class="btn btn-sm btn-outline">{$_("nav.goto")} {$_("keyResults.title")}</button>
+		</a>
+	</div>
+</div>
+
+<div class="p-3">
 	<div class="flex justify-between items-center mb-5 gap-5">
-		<h1 class="text-3xl flex-1">Tasks</h1>
+		<h1 class="text-3xl flex-1">{$_("tasks.title")}</h1>
 
 		<div class="join shrink-0">
 			{#each multiOptions as option}

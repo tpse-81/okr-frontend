@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Archive, Check } from "@lucide/svelte";
+import { Archive, Check, InfoIcon } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
@@ -63,6 +63,18 @@ async function keyResults() {
 }
 </script>
 
+<div class="p-3">
+  <div role="alert" class="alert alert-vertical alert-outline sm:alert-horizontal">
+    <InfoIcon/>
+    <div>
+      <h3 class="font-bold">{$_("keyResults.cantCreate")}</h3>
+      <div class="text-xs">{$_("keyResults.selectObjective")}</div>
+    </div>
+    <a href="/objectives">
+      <button class="btn btn-sm btn-outline">{$_("nav.goto")} {$_("objectives.title")}</button>
+    </a>
+  </div>
+</div>
 
 <div class="p-3">
   <div class="flex justify-between items-center mb-5 gap-5">

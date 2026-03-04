@@ -1,5 +1,7 @@
 <script lang="ts">
+import { InfoIcon } from "@lucide/svelte";
 import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import { getObjectives } from "$lib/api";
 import type { Objective } from "$lib/types";
@@ -25,7 +27,20 @@ async function objectives() {
 </script>
 
 <div class="p-3">
-	<h1>Objectives</h1>
+	<div role="alert" class="alert alert-vertical alert-outline sm:alert-horizontal">
+		<InfoIcon/>
+		<div>
+			<h3 class="font-bold">{$_("objectives.cantCreate")}</h3>
+			<div class="text-xs">{$_("objectives.selectProject")}</div>
+		</div>
+		<a href="/projects">
+			<button class="btn btn-sm btn-outline">{$_("nav.goto")} {$_("projects.title")}</button>
+		</a>
+	</div>
+</div>
+
+<div class="p-3">
+	<h1>{$_("objectives.title")}</h1>
 	{#if objectivelist.length > 0}
 	    <ul class="grid grid-auto gap-3">
 	        {#each objectivelist as objective}
@@ -33,6 +48,6 @@ async function objectives() {
 	        {/each}
 	    </ul>
 	{:else}
-	    <p>Keine Objectives geladen</p>
+	    <p>{$_("objectives.empty")}</p>
 	{/if}
 </div>
