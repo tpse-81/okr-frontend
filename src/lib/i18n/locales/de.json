@@ -20,6 +20,7 @@
 	},
 
 	"projects": {
+		"singular": "Projekt",
 		"title": "Projekte",
 		"objectivesForTitle": "Ziele für {projectName}",
 		"orphanConfirm": "Wenn du fortfährst, gehören folgende Ziele zu keinem Projekt mehr und könnten archiviert werden:",
@@ -58,6 +59,7 @@
 	},
 
 	"objectives": {
+		"singular": "Ziel",
 		"title": "Ziele",
 		"createTitle": "Ziel erstellen",
 		"manageLinks": "Verknüpfte Ziele verwalten",
@@ -73,13 +75,13 @@
 		"linkingFailedError": "Fehler beim hinzufügen von Unterzielen:",
 		"cantCreate": "Ziele können hier nicht erstellt werden.",
 		"selectProject": "Wähle ein Projekt aus und erstelle ein Ziel auf der Seite des Projekts.",
-		"success": "Ziel erfolgreich erstellt!"
+		"success": "Ziel erfolgreich erstellt!",
+		"belongsToProjects": "Verknüpfte Projekte"
 	},
 
 	"keyResults": {
 		"title": "Schlüsselergebnisse",
 		"titleForObjective": "Schlüsselergebnisse für {objectiveName}",
-		"createTitleForObjective": "Erstelle ein Schlüsselergebnis für {objectiveName}",
 		"empty": "Keine Schlüsselergebnisse vorhanden",
 		"edit": "Schlüsselergebnis bearbeiten",
 		"start": "Startwert",
@@ -90,8 +92,8 @@
 		"delete": "Delete key result",
 		"cantCreate": "Schlüsselergebnisse können hier nicht erstellt werden.",
 		"selectObjective": "Wähle ein Ziel aus und erstelle ein Schlüsselergebniss auf der Seite des Ziels.",
-		"belongsToObjective": "Parent objective of {keyResultDescription}"
-		"success": "Schlüsselergebniss erfolgreich erstellt!"
+		"success": "Schlüsselergebniss erfolgreich erstellt!",
+		"belongsToObjective": "Übergeordnetes Ziel"
 	},
 
 	"tasks": {

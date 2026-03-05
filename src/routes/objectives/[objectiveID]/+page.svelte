@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ArrowDown, ChevronDown } from "@lucide/svelte";
+import { ChevronDown } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
@@ -17,13 +17,15 @@ import KeyResultComponent from "../../../components/KeyResult.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectComponent from "../../../components/Project.svelte";
+// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
 let successToast: SuccessDialog;
 let { data } = $props();
 
-let objectiveID = $derived(data.objectiveID);
-let objectiveName = $derived(data.objectiveName);
+let objectiveID = $derived(data.objective.id);
+let objectiveName = $derived(data.objective.name);
+let objectiveDescription = $derived(data.objective.description);
 
 let keyResultList: KeyResult[] = $state([]);
 let relatedProjectsList: Project[] = $state([]);
@@ -100,9 +102,36 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
+<!-- Header -->
+<div class="card bg-base-100 border border-base-300 m-3">
+  <div class="card-body relatvie">
+    <div class="absolute top-2 right-2 badge badge-primary">{$_("objectives.singular")}</div>
+    <div class="flex items-center gap-4">
+      <div class="min-w-0">
+        <div class="text-2xl font-bold truncate">{objectiveName}</div>
+        <div class="max-w-full">{objectiveDescription}</div>
+      </div>
+    </div>
+    <!-- Parent projects -->
+		<details class="collapse bg-base-100 border border-base-300">
+		  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
+		  	<span class="max-w-full truncate">{$_("objectives.belongsToProjects")}</span>
+		  	<ChevronDown size="24" />
+		  </summary>
+		  <div class="collapse-content text-sm">
+				<ul id="related-projects-list" class="grid grid-auto gap-3">
+						{#each relatedProjectsList as project}
+							<ProjectComponent project={project} showEditActions={false} />
+						{/each}
+				</ul> 
+		  </div>
+		</details>
+  </div>
+</div>
+
 {#if canCreate}
-	<div class="card bg-base-100 border border-base-300">
-	  <h1 class="ml-4 mt-1">{$_("keyResults.createTitleForObjective", {values: {objectiveName: objectiveName}})}</h1>
+	<div class="card bg-base-100 border border-base-300 m-3">
+	  <h1 class="ml-4 mt-1">{$_("keyResults.createTitle")}</h1>
 
 	  <form
 		id="keyResultSubmit"
@@ -162,8 +191,8 @@ async function handleSubmit(e: SubmitEvent) {
 	</div>
 {/if}
 
-<div class="p-3">
-    <h1>{$_("keyResults.titleForObjective", {values: {objectiveName: objectiveName}})}</h1>
+<div class="m-3">
+    <h1>{$_("keyResults.title")}</h1>
     {#if keyResultList.length > 0}
         <ul id="key-results-list" class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}
@@ -199,22 +228,6 @@ async function handleSubmit(e: SubmitEvent) {
 		</div>
 	</div>
 {/if}
-
-<div class="m-3">
-	<details class="collapse bg-base-100 border border-base-300">
-	  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
-	  	<span class="max-w-full truncate">{$_("objectives.belongsToProjects", {values: {objectiveName: objectiveName}})}</span>
-	  	<ChevronDown size="24" />
-	  </summary>
-	  <div class="collapse-content text-sm">
-			<ul id="related-projects-list" class="grid grid-auto gap-3">
-					{#each relatedProjectsList as project}
-						<ProjectComponent project={project} showEditActions={false} />
-					{/each}
-			</ul>
-	  </div>
-	</details>
-</div>
 
 <LinkObjectiveDialog
  title={$_("objectives.childrenForTitle", { values: { objectiveName: objectiveName } })}

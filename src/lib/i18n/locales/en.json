@@ -20,6 +20,7 @@
 	},
 
 	"projects": {
+		"singular": "Project",
 		"title": "Projects",
 		"objectivesForTitle": "Objectives for {projectName}",
 		"orphanConfirm": "If you continue, the following objectives will no longer belong to any project and might become archived:",
@@ -58,6 +59,7 @@
 	},
 
 	"objectives": {
+		"singular": "Objective",
 		"title": "Objectives",
 		"createTitle": "Create an Objective",
 		"manageLinks": "Manage linked objectives",
@@ -74,13 +76,13 @@
 		"cantCreate": "Objectives can't be created here.",
 		"selectProject": "To create an Objective, please navigate to a Project from the Projects page.",
 		"success": "Objective successfully created!",
-		"belongsToProjects": "Parent projects of {objectiveName}"
+		"belongsToProjects": "Linked projects"
 	},
 
 	"keyResults": {
+		"singular": "Key result",
 		"title": "Key Results",
-		"titleForObjective": "Key Results for {objectiveName}",
-		"createTitleForObjective": "Create a key result for {objectiveName}",
+		"createTitle": "Create a key result",
 		"empty": "No key results available",
 		"edit": "Edit key result",
 		"start": "Start value",
@@ -91,8 +93,8 @@
 		"delete": "Delete key result",
 		"cantCreate": "Key Results can't be created here.",
 		"selectObjective": "To create a key result, please navigate to an objective from the Objectives page.",
-		"belongsToObjective": "Parent objective of {keyResultDescription}",
-		"success": "Key Result successfully created!"
+		"success": "Key Result successfully created!",
+		"belongsToObjective": "Parent objective"
 	},
 
 	"tasks": {

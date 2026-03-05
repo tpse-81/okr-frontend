@@ -15,7 +15,7 @@ let {
 </script>
 
 <div class="avatar">
-    <div class={"rounded bg-base-200 flex items-center justify-center " + (big ? "h-24 w-24" : "h-12 w-12")}>
+    <div class={"rounded bg-base-200 flex items-center justify-center " + (big ? "h-20 w-20" : "h-12 w-12")}>
         {#if icon}
             <img src={icon} alt="Project logo" class="object-contain" />
         {:else}

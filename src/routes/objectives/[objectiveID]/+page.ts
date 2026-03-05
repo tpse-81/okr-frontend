@@ -7,8 +7,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
 	try {
 		const objective: Objective = await getObjective(params.objectiveID, fetch);
 		return {
-			objectiveID: objective.id,
-			objectiveName: objective.name,
+			objective: objective,
 		};
 	} catch (_) {
 		throw error(404, "Not found");

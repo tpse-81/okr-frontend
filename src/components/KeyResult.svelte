@@ -20,6 +20,7 @@ import { isBetween } from "$lib/utils";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditKeyResultComponent from "./EditKeyResultComponent.svelte";
 import ErrorMessage from "./ErrorMessage.svelte";
+import KeyResultProgress from "./KeyResultProgress.svelte";
 
 let errorMessage: string | null = $state(null);
 
@@ -27,19 +28,6 @@ let {
 	keyResult,
 	onKeyResultDeleted,
 }: { keyResult: KeyResult; onKeyResultDeleted: () => void } = $props();
-
-let progress = $derived.by(() => {
-	const current = keyResult.current_value;
-	const start = keyResult.start_value;
-	const end = keyResult.end_value;
-
-	const diff = Math.abs(end - start);
-	if (diff === 0) return 100;
-
-	const position = Math.abs(current - start) / diff;
-
-	return Number((position * 100).toFixed(2));
-});
 
 const isArchived = $derived(keyResult.is_archived === true);
 
@@ -102,7 +90,7 @@ async function onDeleteKeyResult() {
 		{/if}
         <h2 class="card-title">{keyResult.description}</h2>
         <div class="flex gap-4">
-            <div class="radial-progress" style={`--value:${progress};`} aria-valuenow={progress} role="progressbar">{progress}%</div>
+        		<KeyResultProgress keyResult={keyResult} />
             <div>
                 <p>{$_("keyResults.start")}: {keyResult.start_value}</p>
                 <p>{$_("keyResults.current")}: {keyResult.current_value}</p>

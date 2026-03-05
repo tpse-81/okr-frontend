@@ -8,7 +8,7 @@ import {
 	ClockArrowUp,
 	UserRound,
 } from "@lucide/svelte";
-import {onMount, tick} from "svelte";
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import {
 	createProject,
@@ -32,7 +32,9 @@ let archivedProjectsList: Project[] = $state([]);
 let userProjectsList: Project[] = $state([]);
 
 import { restoreUserInfoFromStorage, userInfoStore } from "$lib/user_info";
+// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
 import SuccessDialog from "../../components/SuccessDialog.svelte";
+
 let successToast: SuccessDialog;
 
 let icon: string | null = $state(null);
@@ -180,12 +182,12 @@ onMount(async () => {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-    try {
-        await createProject(name, new Date(deadline), icon);
-        successToast.displayMessage($_("projects.success"));
-    } catch (err) {
-        console.error(err);
-    }
+	try {
+		await createProject(name, new Date(deadline), icon);
+		successToast.displayMessage($_("projects.success"));
+	} catch (err) {
+		console.error(err);
+	}
 	projectsList = await getProjects();
 	name = "";
 	deadline = new Date().toISOString().split("T")[0]; // reset to today after submit
