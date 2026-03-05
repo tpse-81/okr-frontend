@@ -90,7 +90,7 @@ $effect(() => {
         <div class="card card-border relative">
             <div class="p-3">
                 <div class="flex items-center justify-between mb-2">
-                    <h1>{$_("projects.title")}</h1>
+                    <h1><a href="/projects">{$_("projects.title")}</a></h1>
 
                     <button
                             class="btn btn-sm btn-outline"
