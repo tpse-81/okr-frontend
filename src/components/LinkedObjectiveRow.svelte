@@ -20,7 +20,7 @@ $effect(() => {
 </script>
 
 <tr>
-	<td>{ objective.name }</td>
-	<td>{ objective.description }</td>
+	<td class="truncate max-w-64">{objective.name}</td>
+	<td class="truncate max-w-96">{objective.description}</td>
 	<td><input class="checkbox" type="checkbox" bind:checked={isLinkedState} onchange={() => onIsLinkedChange(isLinkedState)} /></td>
 </tr>

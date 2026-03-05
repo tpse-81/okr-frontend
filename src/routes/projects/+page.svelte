@@ -32,7 +32,7 @@ let archivedProjectsList: Project[] = $state([]);
 let userProjectsList: Project[] = $state([]);
 
 import { restoreUserInfoFromStorage, userInfoStore } from "$lib/user_info";
-// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
+// biome-ignore lint/style/useImportType: Svelte component is needed at runtime
 import SuccessDialog from "../../components/SuccessDialog.svelte";
 
 let successToast: SuccessDialog;

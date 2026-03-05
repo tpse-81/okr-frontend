@@ -275,7 +275,7 @@ async function onconfirm() {
 	oncancel={ondismiss}
 >
 	<div class="modal-box">
-		<h3 class="text-lg font-bold">{title}</h3>
+		<h3 class="text-lg font-bold truncate max-w-xl">{title}</h3>
 
 		{#if showOrphanConfirm}
   <div class="alert alert-warning mt-4">
@@ -316,7 +316,7 @@ async function onconfirm() {
 			</div>
 		{/if}
 
-		<table class="table table-zebra w-full">
+		<table class="table table-zebra w-full table-fixed">
 			<thead>
 				<tr>
 					<th>{labels.name}</th>
