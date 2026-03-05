@@ -15,15 +15,17 @@ import {
 	type TaskState,
 	taskStates,
 } from "$lib/types";
+import KeyResultProgress from "../../../components/KeyResultProgress.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
-import TaskColumns from "../../../components/TaskColumns.svelte";
+// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
+import TaskColumns from "../../../components/TaskColumns.svelte";
 
 let successToast: SuccessDialog;
 
 let { data } = $props();
 
-let keyResultID = $derived(data.keyResultID);
+let keyResultID = $derived(data.keyResult.id);
 
 let taskList: Task[] = $state([]);
 let relatedObjective: Objective | null = $state(null);
@@ -74,8 +76,40 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
+<!-- Header -->
+<div class="card bg-base-100 border border-base-300 m-3">
+  <div class="card-body relatvie">
+    <div class="absolute top-2 right-2 badge badge-primary">{$_("keyResults.singular")}</div>
+  	<div class="flex gap-6 items-center my-3">
+  		<KeyResultProgress keyResult={data.keyResult} />
+  		<div>
+	      <div class="text-2xl font-bold truncate">{data.keyResult.description}</div>
+	      <div>
+          <p>{$_("keyResults.start")}: {data.keyResult.start_value}</p>
+          <p>{$_("keyResults.current")}: {data.keyResult.current_value}</p>
+	      </div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-4">
+			<details class="collapse bg-base-100 border border-base-300 w-full">
+			  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
+			  	<span class="truncate max-w-full">{$_("keyResults.belongsToObjective")}</span>
+			  	<ChevronDown size="24" />
+			  </summary>
+			  <div class="collapse-content text-sm">
+					<ul id="related-objectives-list" class="grid grid-auto">
+							{#if relatedObjective}
+								<ObjectiveComponent objective={relatedObjective} showEditActions={false} />
+							{/if}
+					</ul> 
+			  </div>
+			</details>
+    </div>
+  </div>
+</div>
+
 {#if canCreate}
-	<div class="card bg-base-100 border border-base-300">
+	<div class="card bg-base-100 border border-base-300 m-3">
 		<div class="px-3 pt-3 card-title">{$_("tasks.createTitle")}</div>
 
 		<form
@@ -143,22 +177,6 @@ async function handleSubmit(e: SubmitEvent) {
   <div id="tasks-list">
     <TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
   </div>
-</div>
-
-<div class="m-3">
-	<details class="collapse bg-base-100 border border-base-300 m-3">
-	  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
-	  	<span class="truncate max-w-full">{$_("keyResults.belongsToObjective", { values: {keyResultDescription: data.keyResultDescription} })}</span>
-	  	<ChevronDown size="24" />
-	  </summary>
-	  <div class="collapse-content text-sm">
-			<ul id="related-objectives-list" class="grid grid-auto">
-					{#if relatedObjective}
-						<ObjectiveComponent objective={relatedObjective} showEditActions={false} />
-					{/if}
-			</ul>
-	  </div>
-	</details>
 </div>
 
 <SuccessDialog bind:this={successToast}></SuccessDialog>

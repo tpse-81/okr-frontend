@@ -8,7 +8,6 @@ import type { KeyResult } from "$lib/types";
 import KeyResultComponent from "../../components/KeyResult.svelte";
 
 let keyResultList: KeyResult[] = $state([]);
-let archivedKeyResultIds: string[] = $state([]);
 
 let activeMultiFilters = $state<string[]>([]);
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-import {onMount} from "svelte";
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
@@ -15,13 +15,14 @@ import AvatarComponent from "../../../components/Avatar.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectMembers from "../../../components/ProjectMembers.svelte";
+// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
 let { data } = $props();
 
-let project_id = $derived(data.project_id);
-let project_name = $derived(data.project_name);
-let project_icon = $derived(data.project_icon);
+let projectID = $derived(data.project.id);
+let projectName = $derived(data.project.name);
+let projectIcon = $derived(data.project.icon);
 
 let objectivelist: Objective[] = $state([]);
 let name: string = $state("");
@@ -35,7 +36,7 @@ let successToast: SuccessDialog;
 onMount(async () => {
 	try {
 		await objectives();
-		const permissions = await getProjectPermission(project_id);
+		const permissions = await getProjectPermission(projectID);
 		canCreate = permissions.can_write;
 	} catch (err) {
 		console.error(err);
@@ -44,7 +45,7 @@ onMount(async () => {
 
 async function objectives() {
 	try {
-		objectivelist = await getObjectiveProject(project_id);
+		objectivelist = await getObjectiveProject(projectID);
 	} catch (err) {
 		await goto("/expected");
 	}
@@ -52,13 +53,13 @@ async function objectives() {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-    try {
-      await createObjective(name, description, project_id);
-      successToast.displayMessage($_("objectives.success"));
-    } catch (err) {
-      console.error(err);
-    }
-	objectivelist = await getObjectiveProject(project_id);
+	try {
+		await createObjective(name, description, projectID);
+		successToast.displayMessage($_("objectives.success"));
+	} catch (err) {
+		console.error(err);
+	}
+	objectivelist = await getObjectiveProject(projectID);
 	name = "";
 	description = "";
 }
@@ -68,18 +69,18 @@ async function handleSubmit(e: SubmitEvent) {
 
   <!-- Header -->
   <div class="card bg-base-100 border border-base-300">
-    <div class="card-body">
+    <div class="card-body relative">
+      <div class="absolute top-2 right-2 badge badge-primary">{$_("projects.singular")}</div>
       <div class="flex items-center gap-4">
-        <AvatarComponent icon={project_icon ?? null} name={project_name} big={true} />
+        <AvatarComponent icon={projectIcon ?? null} name={projectName} big={true} />
         <div class="min-w-0">
-          <div class="text-2xl font-bold truncate">{project_name}</div>
-          <div class="opacity-70">{$_("objectives.title")}</div>
+          <div class="text-2xl font-bold truncate">{projectName}</div>
         </div>
       </div>
     </div>
   </div>
 
-  <ProjectMembers projectId={project_id} />
+  <ProjectMembers projectId={projectID} />
 
   <!-- Create Objective -->
   {#if canCreate}
@@ -135,17 +136,17 @@ async function handleSubmit(e: SubmitEvent) {
 </div>
 
 <LinkObjectiveDialog
-  title={$_("projects.objectivesForTitle", { values: { projectName: project_name } })}
+  title={$_("projects.objectivesForTitle", { values: { projectName: projectName } })}
   initialLinked={objectivelist}
   showErrors={false} 
 
   writeChanges={async (toAdd, toRemove, confirmOrphan = false) => {
-  const addJobs = toAdd.map((obj) => linkObjectiveToProject(project_id, obj.id));
+  const addJobs = toAdd.map((obj) => linkObjectiveToProject(projectID, obj.id));
   const orphanCandidates: Objective[] = [];
 
  const removeJobs = toRemove.map(async (obj) => {
   try {
-    await unlinkObjectiveFromProject(project_id, obj.id, confirmOrphan);
+    await unlinkObjectiveFromProject(projectID, obj.id, confirmOrphan);
   } catch (e: any) {
     if (!confirmOrphan && e instanceof APIError && e.response.status === 409) {
       orphanCandidates.push(obj);

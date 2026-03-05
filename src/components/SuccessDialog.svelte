@@ -1,22 +1,22 @@
 <script lang="ts">
-    import { fade } from "svelte/transition";
+import { fade } from "svelte/transition";
 
-    let displayedMessage: string | null = null;
-    let timeout: ReturnType<typeof setTimeout> | null = null;
+let displayedMessage: string | null = null;
+let timeout: ReturnType<typeof setTimeout> | null = null;
 
-    function hideMessage() {
-        displayedMessage = null;
-    }
+function hideMessage() {
+	displayedMessage = null;
+}
 
-    export function displayMessage(message: string) {
-        if (timeout) {
-            clearTimeout(timeout);
-            timeout = null;
-        }
+export function displayMessage(message: string) {
+	if (timeout) {
+		clearTimeout(timeout);
+		timeout = null;
+	}
 
-        displayedMessage = message;
-        timeout = setTimeout(hideMessage, 3000);
-    }
+	displayedMessage = message;
+	timeout = setTimeout(hideMessage, 3000);
+}
 </script>
 
 {#if displayedMessage}
