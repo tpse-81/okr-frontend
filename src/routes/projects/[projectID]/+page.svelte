@@ -1,5 +1,5 @@
 <script lang="ts">
-import {onMount, tick} from "svelte";
+import {onMount} from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
@@ -17,9 +17,6 @@ import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectMembers from "../../../components/ProjectMembers.svelte";
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
-
-let SuccessMessage: string | null = $state(null);
-
 let { data } = $props();
 
 let project_id = $derived(data.project_id);
@@ -32,6 +29,8 @@ let description: string = $state("");
 
 let canCreate = $state(false);
 let showLinkObjectivesModal = $state(false);
+
+let successToast: SuccessDialog;
 
 onMount(async () => {
 	try {
@@ -55,9 +54,7 @@ async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
     try {
       await createObjective(name, description, project_id);
-      SuccessMessage = null;
-      await tick();
-      SuccessMessage = $_("objectives.success");
+      successToast.displayMessage($_("objectives.success"));
     } catch (err) {
       console.error(err);
     }
@@ -177,4 +174,4 @@ async function handleSubmit(e: SubmitEvent) {
   show={showLinkObjectivesModal}
 />
 
-<SuccessDialog message={SuccessMessage}></SuccessDialog>
+<SuccessDialog bind:this={successToast}></SuccessDialog>

@@ -19,7 +19,7 @@ import ObjectiveComponent from "../../../components/Objective.svelte";
 import TaskColumns from "../../../components/TaskColumns.svelte";
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
-let SuccessMessage: string | null = $state(null);
+let successToast: SuccessDialog;
 
 let { data } = $props();
 
@@ -64,9 +64,7 @@ async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 	try {
 		await createTaskKeyResult(keyResultID, name, description, taskState);
-		SuccessMessage = null;
-		await tick();
-		SuccessMessage = $_("tasks.success");
+		successToast.displayMessage($_("tasks.success"));
 	} catch (err) {
 		console.error(err);
 	}
@@ -163,4 +161,4 @@ async function handleSubmit(e: SubmitEvent) {
 	</details>
 </div>
 
-<SuccessDialog message={SuccessMessage}></SuccessDialog>
+<SuccessDialog bind:this={successToast}></SuccessDialog>

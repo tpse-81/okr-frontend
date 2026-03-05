@@ -19,8 +19,7 @@ import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectComponent from "../../../components/Project.svelte";
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
-
-let SuccessMessage: string | null = $state(null);
+let successToast: SuccessDialog;
 let { data } = $props();
 
 let objectiveID = $derived(data.objectiveID);
@@ -93,9 +92,7 @@ async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 	try {
 		await createKeyResult(description, endValue, startValue, objectiveID);
-		SuccessMessage = null;
-		await tick();
-		SuccessMessage = $_("keyResults.success");
+		successToast.displayMessage($_("keyResults.success"));
 	} catch (err) {
 		console.error(err);
 	}
@@ -270,4 +267,4 @@ async function handleSubmit(e: SubmitEvent) {
  show={showLinkChildrenModal}
 />
 
-<SuccessDialog message={SuccessMessage}></SuccessDialog>
+<SuccessDialog bind:this={successToast}></SuccessDialog>

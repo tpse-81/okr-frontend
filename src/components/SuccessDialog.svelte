@@ -1,42 +1,32 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
 
-    let { message }: { message: string | null } = $props();
-
-
-    let showMessage = $state(false);
+    let displayedMessage: string | null = null;
     let timeout: ReturnType<typeof setTimeout> | null = null;
 
     function hideMessage() {
-        showMessage = false;
+        displayedMessage = null;
     }
 
-    $effect(() => {
+    export function displayMessage(message: string) {
         if (timeout) {
             clearTimeout(timeout);
             timeout = null;
         }
 
-        if (message) {
-            showMessage = true;
-
-            timeout = setTimeout(() => {
-                hideMessage();
-            }, 3000);
-        } else {
-            hideMessage();
-        }
-    });
+        displayedMessage = message;
+        timeout = setTimeout(hideMessage, 3000);
+    }
 </script>
 
-{#if showMessage && message}
+{#if displayedMessage}
     <div
             in:fade={{ duration: 120 }}
             out:fade={{ duration: 240 }}
             class="toast toast-end p-2 text-sm mb-2"
     >
-            <div class="alert alert-success">
-                <span>{message}</span>
-            </div>
+        <div class="alert alert-success">
+            <span>{displayedMessage}</span>
+        </div>
     </div>
 {/if}
