@@ -41,6 +41,7 @@ let searchTerm = $state("");
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
 let taskPermissions = $state<Record<string, { can_write: boolean }>>({});
+let openStateDropdownForTaskId = $state<string | null>(null);
 
 onMount(loadTaskPermissions);
 
@@ -63,6 +64,26 @@ async function loadTaskPermissions() {
 	);
 
 	taskPermissions = Object.fromEntries(entries);
+}
+
+function toggleTaskStateDropdown(taskId: string) {
+	openStateDropdownForTaskId =
+		openStateDropdownForTaskId === taskId ? null : taskId;
+}
+
+async function setTaskState(task: Task, newState: TaskState) {
+	// optimistisch UI updaten
+	tasks = tasks.map((t) => (t.id === task.id ? { ...t, task_state: newState } : t));
+
+	try {
+		await updateTask({ ...task, task_state: newState });
+	} catch (err) {
+		console.error("Failed to update task state:", err);
+		// optional: rollback (falls du willst)
+		tasks = tasks.map((t) => (t.id === task.id ? { ...t, task_state: task.task_state } : t));
+	}
+
+	openStateDropdownForTaskId = null;
 }
 
 function canWrite(taskId: string) {
@@ -213,9 +234,47 @@ async function deleteSelectedTasks() {
                     </td>
                     <td></td>
                     <td>
-                            <span class="badge badge-soft text-xs sm:text-sm {taskStateMap[task.task_state].badge}">
-                                {$_(taskStateMap[task.task_state].label)}
-                            </span>
+	                    <div
+		                    class="dropdown dropdown-bottom"
+		                    class:dropdown-open={openStateDropdownForTaskId === task.id}
+	                    >
+		                    <!-- trigger badge -->
+		                    <div
+			                    class="badge badge-soft text-xs sm:text-sm {taskStateMap[task.task_state].badge}
+				                    {canWrite(task.id) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}"
+			                    role="button"
+			                    tabindex={canWrite(task.id) ? 0 : -1}
+			                    title={!canWrite(task.id) ? $_("common.noPermissions") : ""}
+			                    onclick={() => canWrite(task.id) && toggleTaskStateDropdown(task.id)}
+			                    onkeydown={(e) => {
+				                    if (!canWrite(task.id)) return;
+				                    if (e.key === "Enter" || e.key === " ") {
+					                    e.preventDefault();
+					                    toggleTaskStateDropdown(task.id);
+				                    }
+				                    if (e.key === "Escape") openStateDropdownForTaskId = null;
+			                    }}
+		                    >
+			                    {$_(taskStateMap[task.task_state].label)}
+		                    </div>
+
+		                    <!-- dropdown menu -->
+		                    {#if canWrite(task.id)}
+			                    <ul class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow-sm">
+				                    {#each taskStates as status}
+					                    <li>
+						                    <button
+							                    type="button"
+							                    class="btn btn-ghost justify-start"
+							                    onclick={() => setTaskState(task, status.state)}
+						                    >
+							                    {$_(status.label)}
+						                    </button>
+					                    </li>
+				                    {/each}
+			                    </ul>
+		                    {/if}
+	                    </div>
                     </td>
                     <td class="text-right">
                         <div class="dropdown dropdown-left">
