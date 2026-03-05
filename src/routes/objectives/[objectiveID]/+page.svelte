@@ -1,4 +1,5 @@
 <script lang="ts">
+import { ArrowDown, ChevronDown } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
@@ -7,13 +8,15 @@ import {
 	getKeyResultObjective,
 	getObjectiveChildren,
 	getObjectivePermission,
+	getProjectsForObjective,
 	linkObjectiveToObjective,
 	unlinkObjectiveFromObjective,
 } from "$lib/api";
-import type { KeyResult, Objective } from "$lib/types";
+import type { KeyResult, Objective, Project } from "$lib/types";
 import KeyResultComponent from "../../../components/KeyResult.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
+import ProjectComponent from "../../../components/Project.svelte";
 
 let { data } = $props();
 
@@ -21,6 +24,7 @@ let objectiveID = $derived(data.objectiveID);
 let objectiveName = $derived(data.objectiveName);
 
 let keyResultList: KeyResult[] = $state([]);
+let relatedProjectsList: Project[] = $state([]);
 
 let showLinkChildrenModal = $state(false);
 let linkedChildren: Objective[] = $state([]);
@@ -46,7 +50,11 @@ $effect(() => {
 
 	(async () => {
 		try {
-			await Promise.all([loadKeyResults(), loadChildren()]);
+			await Promise.all([
+				loadKeyResults(),
+				loadChildren(),
+				loadRelatedProjects(),
+			]);
 		} catch (err) {
 			console.error(err);
 		}
@@ -67,6 +75,14 @@ async function loadChildren() {
 	} catch (err) {
 		console.error("Failed to load children", err);
 		linkedChildren = [];
+	}
+}
+
+async function loadRelatedProjects() {
+	try {
+		relatedProjectsList = await getProjectsForObjective(objectiveID);
+	} catch (err) {
+		console.error(err);
 	}
 }
 
@@ -177,6 +193,22 @@ async function handleSubmit(e: SubmitEvent) {
 		</div>
 	</div>
 {/if}
+
+<div class="m-3">
+	<details class="collapse bg-base-100 border border-base-300">
+	  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
+	  	<span class="max-w-full truncate">{$_("objectives.belongsToProjects", {values: {objectiveName: objectiveName}})}</span>
+	  	<ChevronDown size="24" />
+	  </summary>
+	  <div class="collapse-content text-sm">
+			<ul id="related-projects-list" class="grid grid-auto gap-3">
+					{#each relatedProjectsList as project}
+						<ProjectComponent project={project} showEditActions={false} />
+					{/each}
+			</ul> 
+	  </div>
+	</details>
+</div>
 
 <LinkObjectiveDialog
  title={$_("objectives.childrenForTitle", { values: { objectiveName: objectiveName } })}

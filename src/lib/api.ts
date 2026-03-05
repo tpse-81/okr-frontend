@@ -351,6 +351,14 @@ export async function getObjective(
 	return response.json();
 }
 
+export async function getProjectsForObjective(
+	objective_id: string,
+): Promise<Project[]> {
+	const response = await baseFetch(`/objectives/${objective_id}/projects`);
+
+	return response.json();
+}
+
 export async function updateObjective(
 	objective: Objective,
 ): Promise<Objective> {
@@ -504,6 +512,14 @@ export async function getKeyResult(
 	return response.json();
 }
 
+export async function getObjectiveForKeyResult(
+	key_result_id: string,
+): Promise<Objective> {
+	const response = await baseFetch(`/key_results/${key_result_id}/objective`);
+
+	return response.json();
+}
+
 export async function getArchivedKeyResults() {
 	const response = await baseFetch("/key_results/archived");
 	return response.json();
@@ -583,6 +599,12 @@ export async function createTaskKeyResult(
 
 export async function getTask(task_id: string): Promise<Task> {
 	const response = await baseFetch(`/tasks/${task_id}`);
+
+	return response.json();
+}
+
+export async function getKeyResultForTask(task_id: string): Promise<KeyResult> {
+	const response = await baseFetch(`/tasks/${task_id}/key_result`);
 
 	return response.json();
 }

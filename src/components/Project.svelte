@@ -28,9 +28,11 @@ let {
 	project,
 	onProjectDeleted,
 	onProjectUpdated,
+	showEditActions = true,
 }: {
 	project: Project;
-	onProjectDeleted: () => void;
+	showEditActions?: boolean;
+	onProjectDeleted?: () => void;
 	onProjectUpdated?: () => void;
 } = $props();
 
@@ -97,7 +99,7 @@ onMount(async () => {
 
 async function onDeleteProject() {
 	showConfirmationDialog = false;
-	if (canDelete && (await deleteProject(project.id))) onProjectDeleted();
+	if (canDelete && (await deleteProject(project.id))) onProjectDeleted?.();
 }
 
 async function onArchiveProject(reason: ArchiveReason) {
@@ -128,6 +130,7 @@ async function onUnarchiveProject(newDeadline: Date) {
 </script>
 
 <li class="card card-border relative">
+		{#if showEditActions}
   	<div class="absolute right-2 top-2 flex gap-2"
          title={!canEdit ? $_("common.noPermissions") : ""}>
         {#if project.is_archived}
@@ -164,6 +167,7 @@ async function onUnarchiveProject(newDeadline: Date) {
             <Trash size="16" />
         </button>
     </div>
+    {/if}
 
     <a href={`/projects/${project.id}`} class="card-body">
         {#if project.is_archived}

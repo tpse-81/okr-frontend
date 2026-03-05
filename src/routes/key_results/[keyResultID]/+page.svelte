@@ -1,17 +1,21 @@
 <script lang="ts">
+import { ChevronDown } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
 	createTaskKeyResult,
-	getKeyResultObjective,
 	getKeyResultPermission,
-	getObjectiveProject,
-	getProjectPermission,
-	getTaskPermission,
+	getObjectiveForKeyResult,
 	getTasksKeyResult,
 } from "$lib/api";
-import { type Task, type TaskState, taskStates } from "$lib/types";
+import {
+	type Objective,
+	type Task,
+	type TaskState,
+	taskStates,
+} from "$lib/types";
+import ObjectiveComponent from "../../../components/Objective.svelte";
 import TaskColumns from "../../../components/TaskColumns.svelte";
 
 let { data } = $props();
@@ -19,6 +23,8 @@ let { data } = $props();
 let keyResultID = $derived(data.keyResultID);
 
 let taskList: Task[] = $state([]);
+let relatedObjective: Objective | null = $state(null);
+
 let name: string = $state("");
 let description: string = $state("");
 let taskState: TaskState = $state("open");
@@ -27,7 +33,7 @@ let canCreate = $state(false);
 
 onMount(async () => {
 	try {
-		await loadTasks();
+		await Promise.all([loadTasks(), loadRelatedObjective()]);
 		const permissions = await getKeyResultPermission(keyResultID);
 		canCreate = permissions.can_write;
 	} catch (err) {
@@ -40,6 +46,14 @@ async function loadTasks() {
 		taskList = await getTasksKeyResult(keyResultID);
 	} catch (err) {
 		await goto("/expected");
+	}
+}
+
+async function loadRelatedObjective() {
+	try {
+		relatedObjective = await getObjectiveForKeyResult(keyResultID);
+	} catch (err) {
+		console.error(err);
 	}
 }
 
@@ -122,4 +136,20 @@ async function handleSubmit(e: SubmitEvent) {
   <div id="tasks-list">
     <TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
   </div>
+</div>
+
+<div class="m-3">
+	<details class="collapse bg-base-100 border border-base-300 m-3">
+	  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
+	  	<span class="truncate max-w-full">{$_("keyResults.belongsToObjective", { values: {keyResultDescription: data.keyResultDescription} })}</span>
+	  	<ChevronDown size="24" />
+	  </summary>
+	  <div class="collapse-content text-sm">
+			<ul id="related-objectives-list" class="grid grid-auto">
+					{#if relatedObjective}
+						<ObjectiveComponent objective={relatedObjective} showEditActions={false} />
+					{/if}
+			</ul> 
+	  </div>
+	</details>
 </div>
