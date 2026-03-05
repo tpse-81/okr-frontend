@@ -85,7 +85,7 @@ $effect(() => {
 <div class="flex flex-col lg:flex-row gap-4 ml-2 mr-2 lg:ml-15">
 
     <!-- Main content -->
-    <div class="flex-1">
+    <div class="flex-1 min-w-0">
 
         <div class="card card-border relative">
             <div class="p-3">

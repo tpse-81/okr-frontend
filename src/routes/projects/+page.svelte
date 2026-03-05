@@ -8,7 +8,7 @@ import {
 	ClockArrowUp,
 	UserRound,
 } from "@lucide/svelte";
-import { onMount } from "svelte";
+import {onMount, tick} from "svelte";
 import { _ } from "svelte-i18n";
 import {
 	createProject,
@@ -32,6 +32,8 @@ let archivedProjectsList: Project[] = $state([]);
 let userProjectsList: Project[] = $state([]);
 
 import { restoreUserInfoFromStorage, userInfoStore } from "$lib/user_info";
+import SuccessDialog from "../../components/SuccessDialog.svelte";
+let SuccessMessage: string | null = $state(null);
 
 let icon: string | null = $state(null);
 let iconRequiresConfirmation: boolean = $state(false);
@@ -178,9 +180,14 @@ onMount(async () => {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-
-	await createProject(name, new Date(deadline), icon);
-	await refreshProjects();
+    try {
+        await createProject(name, new Date(deadline), icon);
+        SuccessMessage = null;
+        await tick();
+        SuccessMessage = $_("projects.success");
+    } catch (err) {
+        console.error(err);
+    }
 	projectsList = await getProjects();
 	name = "";
 	deadline = new Date().toISOString().split("T")[0]; // reset to today after submit
@@ -300,3 +307,4 @@ async function handleSubmit(e: SubmitEvent) {
   {/if}
 </div>
 
+<SuccessDialog message={SuccessMessage}></SuccessDialog>
