@@ -14,6 +14,7 @@ import { deleteTask, getTaskPermission, updateTask } from "$lib/api";
 import { type Task, type TaskState, taskStates } from "$lib/types";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditTaskComponent from "./EditTaskComponent.svelte";
+import ExpandableDescription from "./ExpandableDescription.svelte";
 
 let {
 	task,
@@ -111,8 +112,16 @@ async function setTaskState(newState: TaskState) {
         <Archive size="16" /> {$_("common.archived")}
       </div>
     {/if}
+    
+    <h2 class="card-title">
+  <span class="line-clamp-1 break-words">
+    {title}
+  </span>
+</h2>
 
-    {task.description}
+    {#if details}
+      <ExpandableDescription text={details} />
+    {/if}
   </div>
 </li>
 

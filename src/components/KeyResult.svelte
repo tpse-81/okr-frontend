@@ -82,13 +82,17 @@ async function onDeleteKeyResult() {
 		  <button class="btn btn-square" onclick={() => canEdit && (showEditDialog = true)} disabled={!canEdit}><Edit size="16" /></button>
 		  <button class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)} disabled={!canEdit}><Trash size="16" /></button>
         </div>
-    <a href={`/key_results/${keyResult.id}`} class="card-body">
+    <a href={`/key_results/${keyResult.id}`} class="card-body pt-12">
 		{#if isArchived}
 			<div class="badge badge-warning">
 				<Archive size="16" /> {$_("common.archived")}
 			</div>
 		{/if}
-        <h2 class="card-title">{keyResult.description}</h2>
+        <h2 class="card-title">
+  <span class="line-clamp-1 break-words">
+    {keyResult.description}
+  </span>
+</h2>
         <div class="flex gap-4">
         		<KeyResultProgress keyResult={keyResult} />
             <div>

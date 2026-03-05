@@ -169,7 +169,7 @@ async function onUnarchiveProject(newDeadline: Date) {
     </div>
     {/if}
 
-    <a href={`/projects/${project.id}`} class="card-body">
+    <a href={`/projects/${project.id}`} class="card-body pt-12">
         {#if project.is_archived}
 			<div class={`badge ${archiveMeta.badge}`}>
 				<Archive size="16" />
@@ -180,10 +180,14 @@ async function onUnarchiveProject(newDeadline: Date) {
         {:else}
             <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline), $locale)}</div>
         {/if}
-        <div class="card-title flex mt-2">
-            <AvatarComponent icon={project.icon ?? null} name={project.name} big={false} />
-            <h2>{project.name}</h2>
-        </div>
+			<div class="card-title flex mt-2 items-center gap-2">
+  <AvatarComponent icon={project.icon ?? null} name={project.name} big={false} />
+  <h2 class="min-w-0">
+    <span class="line-clamp-1 break-words">
+      {project.name}
+    </span>
+  </h2>
+</div>
         <p>{$_("projects.createdAtLabel")} {formatDate(new Date(project.creation_date), $locale)}</p>
         <p>{$_("projects.dueAtLabel")} {formatDate(new Date(project.deadline), $locale)}</p>
     </a>

@@ -13,11 +13,12 @@ import {
 	unlinkObjectiveFromObjective,
 } from "$lib/api";
 import type { KeyResult, Objective, Project } from "$lib/types";
+import ExpandableDescription from "../../../components/ExpandableDescription.svelte";
 import KeyResultComponent from "../../../components/KeyResult.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectComponent from "../../../components/Project.svelte";
-// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
+// biome-ignore lint/style/useImportType: Svelte component is needed at runtime
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
 let successToast: SuccessDialog;
@@ -108,8 +109,8 @@ async function handleSubmit(e: SubmitEvent) {
     <div class="absolute top-2 right-2 badge badge-primary">{$_("objectives.singular")}</div>
     <div class="flex items-center gap-4">
       <div class="min-w-0">
-        <div class="text-2xl font-bold truncate">{objectiveName}</div>
-        <div class="max-w-full">{objectiveDescription}</div>
+        <div class="text-2xl font-bold truncate max-w-full">{objectiveName}</div>
+        <ExpandableDescription text={objectiveDescription} />
       </div>
     </div>
     <!-- Parent projects -->
@@ -131,7 +132,7 @@ async function handleSubmit(e: SubmitEvent) {
 
 {#if canCreate}
 	<div class="card bg-base-100 border border-base-300 m-3">
-	  <h1 class="ml-4 mt-1">{$_("keyResults.createTitle")}</h1>
+	  <h1 class="ml-4 mt-1 truncate max-w-full">{$_("keyResults.createTitle")}</h1>
 
 	  <form
 		id="keyResultSubmit"
@@ -192,7 +193,7 @@ async function handleSubmit(e: SubmitEvent) {
 {/if}
 
 <div class="m-3">
-    <h1>{$_("keyResults.title")}</h1>
+    <h1 class="truncate max-w-full">{$_("keyResults.title")}</h1>
     {#if keyResultList.length > 0}
         <ul id="key-results-list" class="grid grid-auto gap-3">
             {#each keyResultList as keyResult}

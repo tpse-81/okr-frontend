@@ -15,9 +15,10 @@ import {
 	type TaskState,
 	taskStates,
 } from "$lib/types";
+import ExpandableDescription from "../../../components/ExpandableDescription.svelte";
 import KeyResultProgress from "../../../components/KeyResultProgress.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
-// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
+// biome-ignore lint/style/useImportType: Svelte component is needed at runtime
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 import TaskColumns from "../../../components/TaskColumns.svelte";
 
@@ -83,7 +84,7 @@ async function handleSubmit(e: SubmitEvent) {
   	<div class="flex gap-6 items-center my-3">
   		<KeyResultProgress keyResult={data.keyResult} />
   		<div>
-	      <div class="text-2xl font-bold truncate">{data.keyResult.description}</div>
+      	<ExpandableDescription text={data.keyResult.description} bigText={true} />
 	      <div>
           <p>{$_("keyResults.start")}: {data.keyResult.start_value}</p>
           <p>{$_("keyResults.current")}: {data.keyResult.current_value}</p>

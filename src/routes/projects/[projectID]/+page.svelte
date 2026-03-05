@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount } from "svelte";
-import { _ } from "svelte-i18n";
+import { _, locale } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
 	APIError,
@@ -11,11 +11,12 @@ import {
 	unlinkObjectiveFromProject,
 } from "$lib/api";
 import type { Objective } from "$lib/types";
+import { formatDate } from "$lib/utils";
 import AvatarComponent from "../../../components/Avatar.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectMembers from "../../../components/ProjectMembers.svelte";
-// biome-ignore lint/style/useImportType: IconSelector is a component and not a type
+// biome-ignore lint/style/useImportType: Svelte component is needed at runtime
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
 let { data } = $props();
@@ -69,12 +70,12 @@ async function handleSubmit(e: SubmitEvent) {
 
   <!-- Header -->
   <div class="card bg-base-100 border border-base-300">
-    <div class="card-body relative">
+    <div class="card-body">
       <div class="absolute top-2 right-2 badge badge-primary">{$_("projects.singular")}</div>
       <div class="flex items-center gap-4">
         <AvatarComponent icon={projectIcon ?? null} name={projectName} big={true} />
         <div class="min-w-0">
-          <div class="text-2xl font-bold truncate">{projectName}</div>
+          <div class="text-2xl font-bold truncate max-w-full">{projectName}</div>
         </div>
       </div>
     </div>

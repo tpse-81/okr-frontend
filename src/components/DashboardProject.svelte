@@ -74,7 +74,8 @@ let btn: HTMLButtonElement | null = $state(null);
         {@const r = btn.getBoundingClientRect()}
 
         <div
-                class="fixed bg-base-100 border rounded-lg shadow-lg p-2 sm:p-3 text-xs sm:text-sm"
+                class="fixed z-1 border rounded-lg shadow-lg p-2 sm:p-3 text-xs sm:text-sm bg-base-100"
+                
                 style="
                 left: {r.left}px;
                 top: {r.bottom + 8}px;
@@ -84,12 +85,12 @@ let btn: HTMLButtonElement | null = $state(null);
             <div class="font-semibold mb-1">{$_("objectives.title")}</div>
             <ul class="list-disc list-inside space-y-0.5 sm:space-y-1">
                 {#each projectContainer.objectives as obj}
-                    <a href={`/objectives/${obj.id}`}>
-                        <div>
-                            {obj.name}
-                        </div>
-                    </a>
-                {/each}
+  <a href={`/objectives/${obj.id}`}>
+    <div class="truncate w-full">
+      {obj.name}
+    </div>
+  </a>
+{/each}
             </ul>
         </div>
     {/if}
