@@ -17,8 +17,13 @@ import EditObjectiveComponent from "./EditObjectiveComponent.svelte";
 
 let {
 	objective,
+	showEditActions = true,
 	onObjectiveDeleted,
-}: { objective: Objective; onObjectiveDeleted: () => void } = $props();
+}: {
+	objective: Objective;
+	showEditActions?: boolean;
+	onObjectiveDeleted?: () => void;
+} = $props();
 
 let showConfirmationDialog = $state(false);
 let showEditDialog = $state(false);
@@ -38,16 +43,18 @@ const isArchived = $derived(objective.is_archived === true);
 async function onDeleteObjective() {
 	showConfirmationDialog = false;
 
-	if (await deleteObjective(objective.id)) onObjectiveDeleted();
+	if (await deleteObjective(objective.id)) onObjectiveDeleted?.();
 }
 </script>
 
 <li class="card card-border relative">
+		{#if showEditActions}
   	<div class="absolute right-2 top-2 flex gap-2"
          title={!canEdit ? $_("common.noPermissions") : ""}>
 		  <button class="btn btn-square" disabled={isArchived || !canEdit} onclick={() => canEdit && (showEditDialog = true)}><Edit size="16" /></button>
 		  <button class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)} disabled={!canEdit}><Trash size="16" /></button>
 		</div>
+		{/if}
     <a href={`/objectives/${objective.id}`} class="card-body">
 		{#if isArchived}
 			<div class="badge badge-warning">

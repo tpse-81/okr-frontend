@@ -87,7 +87,8 @@
 		"updateError": "Der aktuelle Wert konnte nicht übernommen werden",
 		"delete": "Delete key result",
 		"cantCreate": "Schlüsselergebnisse können hier nicht erstellt werden.",
-		"selectObjective": "Wähle ein Ziel aus und erstelle ein Schlüsselergebniss auf der Seite des Ziels."
+		"selectObjective": "Wähle ein Ziel aus und erstelle ein Schlüsselergebniss auf der Seite des Ziels.",
+		"belongsToObjective": "Parent objective of {keyResultDescription}"
 	},
 
 	"tasks": {

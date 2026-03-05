@@ -6,7 +6,10 @@ import type { PageLoad } from "./$types";
 export const load: PageLoad = async ({ fetch, params }) => {
 	try {
 		const keyResult: KeyResult = await getKeyResult(params.keyResultID, fetch);
-		return { keyResultID: keyResult.id };
+		return {
+			keyResultID: keyResult.id,
+			keyResultDescription: keyResult.description,
+		};
 	} catch (_) {
 		throw error(404, "Not found");
 	}

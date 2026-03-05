@@ -71,7 +71,8 @@
 		"notFoundError": "Objective not found.",
 		"linkingFailedError": "Failed to add sub-objectives:",
 		"cantCreate": "Objectives can't be created here.",
-		"selectProject": "To create an Objective, please navigate to a Project from the Projects page."
+		"selectProject": "To create an Objective, please navigate to a Project from the Projects page.",
+		"belongsToProjects": "Parent projects of {objectiveName}"
 	},
 
 	"keyResults": {
@@ -87,7 +88,8 @@
 		"updateError": "Current value could not be updated",
 		"delete": "Delete key result",
 		"cantCreate": "Key Results can't be created here.",
-		"selectObjective": "To create a key result, please navigate to an objective from the Objectives page."
+		"selectObjective": "To create a key result, please navigate to an objective from the Objectives page.",
+		"belongsToObjective": "Parent objective of {keyResultDescription}"
 	},
 
 	"tasks": {

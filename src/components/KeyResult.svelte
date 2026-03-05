@@ -85,7 +85,7 @@ let showEditDialog = $state(false);
 async function onDeleteKeyResult() {
 	showConfirmationDialog = false;
 
-	if (await deleteKeyResult(keyResult.id)) onKeyResultDeleted();
+	if (await deleteKeyResult(keyResult.id)) onKeyResultDeleted?.();
 }
 </script>
 
