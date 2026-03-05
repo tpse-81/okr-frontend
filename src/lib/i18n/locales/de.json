@@ -53,7 +53,8 @@
 		},
 		"unarchiveNewDeadline": "Neue Frist",
 		"onlyMine": "Zeige nur meine eigenen Projekte an",
-		"showAll": "Alle Projekte anzeigen"
+		"showAll": "Alle Projekte anzeigen",
+		"success": "Projekt erfolgreich erstellt!"
 	},
 
 	"objectives": {
@@ -71,7 +72,8 @@
 		"notFoundError": "Ziel nicht gefunden.",
 		"linkingFailedError": "Fehler beim hinzufügen von Unterzielen:",
 		"cantCreate": "Ziele können hier nicht erstellt werden.",
-		"selectProject": "Wähle ein Projekt aus und erstelle ein Ziel auf der Seite des Projekts."
+		"selectProject": "Wähle ein Projekt aus und erstelle ein Ziel auf der Seite des Projekts.",
+		"success": "Ziel erfolgreich erstellt!"
 	},
 
 	"keyResults": {
@@ -89,6 +91,7 @@
 		"cantCreate": "Schlüsselergebnisse können hier nicht erstellt werden.",
 		"selectObjective": "Wähle ein Ziel aus und erstelle ein Schlüsselergebniss auf der Seite des Ziels.",
 		"belongsToObjective": "Parent objective of {keyResultDescription}"
+		"success": "Schlüsselergebniss erfolgreich erstellt!"
 	},
 
 	"tasks": {
@@ -107,7 +110,8 @@
 		"search": "Aufgaben suchen...",
 		"delete": "Delete task",
 		"cantCreate": "Aufgaben können hier nicht erstellt werden.",
-		"selectKeyResult": "Wähle ein Schlüsselergebniss aus und erstelle eine Aufgabe auf der Seite des Schlüsselergebnisses."
+		"selectKeyResult": "Wähle ein Schlüsselergebniss aus und erstelle eine Aufgabe auf der Seite des Schlüsselergebnisses.",
+		"success": "Aufgabe erfolgreich erstellt!"
 	},
 
 	"users": {

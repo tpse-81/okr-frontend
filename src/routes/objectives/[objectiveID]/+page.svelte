@@ -17,7 +17,9 @@ import KeyResultComponent from "../../../components/KeyResult.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectComponent from "../../../components/Project.svelte";
+import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
+let successToast: SuccessDialog;
 let { data } = $props();
 
 let objectiveID = $derived(data.objectiveID);
@@ -88,8 +90,12 @@ async function loadRelatedProjects() {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-	await createKeyResult(description, endValue, startValue, objectiveID);
-
+	try {
+		await createKeyResult(description, endValue, startValue, objectiveID);
+		successToast.displayMessage($_("keyResults.success"));
+	} catch (err) {
+		console.error(err);
+	}
 	keyResultList = await getKeyResultObjective(objectiveID);
 }
 </script>
@@ -205,7 +211,7 @@ async function handleSubmit(e: SubmitEvent) {
 					{#each relatedProjectsList as project}
 						<ProjectComponent project={project} showEditActions={false} />
 					{/each}
-			</ul> 
+			</ul>
 	  </div>
 	</details>
 </div>
@@ -260,3 +266,5 @@ async function handleSubmit(e: SubmitEvent) {
  ondismiss={() => (showLinkChildrenModal = false)}
  show={showLinkChildrenModal}
 />
+
+<SuccessDialog bind:this={successToast}></SuccessDialog>

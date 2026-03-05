@@ -53,7 +53,8 @@
 		},
 		"unarchiveNewDeadline": "New deadline",
 		"onlyMine": "Show only my Projects",
-		"showAll": "Show all Projects"
+		"showAll": "Show all Projects",
+		"success": "Project successfully created!"
 	},
 
 	"objectives": {
@@ -72,6 +73,7 @@
 		"linkingFailedError": "Failed to add sub-objectives:",
 		"cantCreate": "Objectives can't be created here.",
 		"selectProject": "To create an Objective, please navigate to a Project from the Projects page.",
+		"success": "Objective successfully created!",
 		"belongsToProjects": "Parent projects of {objectiveName}"
 	},
 
@@ -89,7 +91,8 @@
 		"delete": "Delete key result",
 		"cantCreate": "Key Results can't be created here.",
 		"selectObjective": "To create a key result, please navigate to an objective from the Objectives page.",
-		"belongsToObjective": "Parent objective of {keyResultDescription}"
+		"belongsToObjective": "Parent objective of {keyResultDescription}",
+		"success": "Key Result successfully created!"
 	},
 
 	"tasks": {
@@ -108,7 +111,8 @@
 		"search": "Search for tasks...",
 		"delete": "Delete task",
 		"cantCreate": "Tasks can't be created here.",
-		"selectKeyResult": "To create a Task, please navigate to a Key Result from the Key Results page."
+		"selectKeyResult": "To create a Task, please navigate to a Key Result from the Key Results page.",
+		"success": "Task successfully created!"
 	},
 
 	"users": {

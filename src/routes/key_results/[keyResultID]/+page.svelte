@@ -17,6 +17,9 @@ import {
 } from "$lib/types";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import TaskColumns from "../../../components/TaskColumns.svelte";
+import SuccessDialog from "../../../components/SuccessDialog.svelte";
+
+let successToast: SuccessDialog;
 
 let { data } = $props();
 
@@ -59,8 +62,12 @@ async function loadRelatedObjective() {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-	await createTaskKeyResult(keyResultID, name, description, taskState);
-
+	try {
+		await createTaskKeyResult(keyResultID, name, description, taskState);
+		successToast.displayMessage($_("tasks.success"));
+	} catch (err) {
+		console.error(err);
+	}
 	await loadTasks();
 	name = "";
 	description = "";
@@ -149,7 +156,9 @@ async function handleSubmit(e: SubmitEvent) {
 					{#if relatedObjective}
 						<ObjectiveComponent objective={relatedObjective} showEditActions={false} />
 					{/if}
-			</ul> 
+			</ul>
 	  </div>
 	</details>
 </div>
+
+<SuccessDialog bind:this={successToast}></SuccessDialog>

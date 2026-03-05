@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount } from "svelte";
+import {onMount} from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
@@ -15,6 +15,7 @@ import AvatarComponent from "../../../components/Avatar.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
 import ProjectMembers from "../../../components/ProjectMembers.svelte";
+import SuccessDialog from "../../../components/SuccessDialog.svelte";
 
 let { data } = $props();
 
@@ -28,6 +29,8 @@ let description: string = $state("");
 
 let canCreate = $state(false);
 let showLinkObjectivesModal = $state(false);
+
+let successToast: SuccessDialog;
 
 onMount(async () => {
 	try {
@@ -49,7 +52,12 @@ async function objectives() {
 
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
-	await createObjective(name, description, project_id);
+    try {
+      await createObjective(name, description, project_id);
+      successToast.displayMessage($_("objectives.success"));
+    } catch (err) {
+      console.error(err);
+    }
 	objectivelist = await getObjectiveProject(project_id);
 	name = "";
 	description = "";
@@ -165,3 +173,5 @@ async function handleSubmit(e: SubmitEvent) {
   ondismiss={() => (showLinkObjectivesModal = false)}
   show={showLinkObjectivesModal}
 />
+
+<SuccessDialog bind:this={successToast}></SuccessDialog>
