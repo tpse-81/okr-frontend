@@ -73,18 +73,13 @@ function toggleTaskStateDropdown(taskId: string) {
 
 async function setTaskState(task: Task, newState: TaskState) {
 	// optimistisch UI updaten
-	tasks = tasks.map((t) =>
-		t.id === task.id ? { ...t, task_state: newState } : t,
-	);
-
 	try {
 		await updateTask({ ...task, task_state: newState });
+		tasks = tasks.map((t) =>
+		  t.id === task.id ? { ...t, task_state: newState } : t,
+	    );
 	} catch (err) {
 		console.error("Failed to update task state:", err);
-		// optional: rollback (falls du willst)
-		tasks = tasks.map((t) =>
-			t.id === task.id ? { ...t, task_state: task.task_state } : t,
-		);
 	}
 
 	openStateDropdownForTaskId = null;
