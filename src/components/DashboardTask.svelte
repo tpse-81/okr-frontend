@@ -76,8 +76,8 @@ async function setTaskState(task: Task, newState: TaskState) {
 	try {
 		await updateTask({ ...task, task_state: newState });
 		tasks = tasks.map((t) =>
-		  t.id === task.id ? { ...t, task_state: newState } : t,
-	    );
+			t.id === task.id ? { ...t, task_state: newState } : t,
+		);
 	} catch (err) {
 		console.error("Failed to update task state:", err);
 	}
@@ -233,47 +233,52 @@ async function deleteSelectedTasks() {
                     </td>
                     <td></td>
                     <td>
-	                    <div
-		                    class="dropdown dropdown-bottom"
-		                    class:dropdown-open={openStateDropdownForTaskId === task.id}
-	                    >
-		                    <!-- trigger badge -->
-		                    <div
-			                    class="badge badge-soft text-xs sm:text-sm {taskStateMap[task.task_state].badge}
-				                    {canWrite(task.id) ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}"
-			                    role="button"
-			                    tabindex={canWrite(task.id) ? 0 : -1}
-			                    title={!canWrite(task.id) ? $_("common.noPermissions") : ""}
-			                    onclick={() => canWrite(task.id) && toggleTaskStateDropdown(task.id)}
-			                    onkeydown={(e) => {
-				                    if (!canWrite(task.id)) return;
-				                    if (e.key === "Enter" || e.key === " ") {
-					                    e.preventDefault();
-					                    toggleTaskStateDropdown(task.id);
-				                    }
-				                    if (e.key === "Escape") openStateDropdownForTaskId = null;
-			                    }}
-		                    >
-			                    {$_(taskStateMap[task.task_state].label)}
-		                    </div>
+	                    {#if canWrite(task.id)}
+							<div
+								class="dropdown dropdown-end dropdown-bottom"
+								class:dropdown-open={openStateDropdownForTaskId === task.id}
+							>
+								<div
+									class="badge badge-soft text-xs sm:text-sm {taskStateMap[task.task_state].badge} cursor-pointer"
+									role="button"
+									tabindex="0"
+									onclick={() => toggleTaskStateDropdown(task.id)}
+									onkeydown={(e) => {
+										if (e.key === "Enter" || e.key === " ") {
+											e.preventDefault();
+											toggleTaskStateDropdown(task.id);
+										}
+										if (e.key === "Escape") {
+											openStateDropdownForTaskId = null;
+										}
+									}}
+								>
+									{$_(taskStateMap[task.task_state].label)}
+								</div>
 
-		                    <!-- dropdown menu -->
-		                    {#if canWrite(task.id)}
-			                    <ul class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow-sm">
-				                    {#each taskStates as status}
-					                    <li>
-						                    <button
-							                    type="button"
-							                    class="btn btn-ghost justify-start"
-							                    onclick={() => setTaskState(task, status.state)}
-						                    >
-							                    {$_(status.label)}
-						                    </button>
-					                    </li>
-				                    {/each}
-			                    </ul>
-		                    {/if}
-	                    </div>
+								<ul
+									class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow-sm"
+								>
+									{#each taskStates as status}
+										<li>
+											<button
+												type="button"
+												class="btn btn-ghost justify-start"
+												onclick={() => setTaskState(task, status.state)}
+											>
+												{$_(status.label)}
+											</button>
+										</li>
+									{/each}
+								</ul>
+							</div>
+						{:else}
+							<span
+								class="badge badge-soft text-xs sm:text-sm {taskStateMap[task.task_state].badge}"
+							>
+								{$_(taskStateMap[task.task_state].label)}
+							</span>
+                        {/if}
                     </td>
                     <td class="text-right">
                         <div class="dropdown dropdown-left">
