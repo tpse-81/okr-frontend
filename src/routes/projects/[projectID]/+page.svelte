@@ -15,6 +15,7 @@ import { formatDate } from "$lib/utils";
 import AvatarComponent from "../../../components/Avatar.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
+import ProjectBadge from "../../../components/ProjectBadge.svelte";
 import ProjectMembers from "../../../components/ProjectMembers.svelte";
 // biome-ignore lint/style/useImportType: Svelte component is needed at runtime
 import SuccessDialog from "../../../components/SuccessDialog.svelte";
@@ -72,10 +73,12 @@ async function handleSubmit(e: SubmitEvent) {
   <div class="card bg-base-100 border border-base-300">
     <div class="card-body">
       <div class="absolute top-2 right-2 badge badge-primary">{$_("projects.singular")}</div>
-      <div class="flex items-center gap-4">
+      <div class="absolute top-2 left-2 z-1"><ProjectBadge project={data.project} /></div>
+      <div class="flex items-center gap-4 mt-5">
         <AvatarComponent icon={projectIcon ?? null} name={projectName} big={true} />
         <div class="min-w-0">
           <div class="text-2xl font-bold truncate max-w-full">{projectName}</div>
+          <p>{$_("projects.createdAtLabel")} {formatDate(new Date(data.project.creation_date), $locale)}</p>
         </div>
       </div>
     </div>
