@@ -22,6 +22,7 @@ import ArchiveProjectDialog from "./ArchiveProjectDialog.svelte";
 import AvatarComponent from "./Avatar.svelte";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
 import EditProjectComponent from "./EditProjectComponent.svelte";
+import ProjectBadge from "./ProjectBadge.svelte";
 import UnarchiveProjectDialog from "./UnarchiveProjectDialog.svelte";
 
 let {
@@ -42,46 +43,6 @@ let showArchiveDialog = $state(false);
 let isArchiving = $state(false);
 let showUnarchiveDialog = $state(false);
 let isUnarchiving = $state(false);
-
-type ArchiveMeta = { reason: ArchiveReason; format: string; badge: string };
-
-const archiveReasons: ArchiveMeta[] = [
-	{
-		reason: "finalized",
-		format: "projects.archiveReason.finalized",
-		badge: "badge-success",
-	},
-	{
-		reason: "on_break",
-		format: "projects.archiveReason.on_break",
-		badge: "badge-warning",
-	},
-	{
-		reason: "give_up",
-		format: "projects.archiveReason.give_up",
-		badge: "badge-error",
-	},
-];
-
-const archiveReasonMap = archiveReasons.reduce(
-	(acc, r) => {
-		acc[r.reason] = r;
-		return acc;
-	},
-	{} as Record<ArchiveReason, ArchiveMeta>,
-);
-
-function getArchiveMeta(reason: ArchiveReason | null | undefined) {
-	if (!reason) return { format: "common.archived", badge: "badge-warning" };
-	return (
-		archiveReasonMap[reason] ?? {
-			format: "common.archived",
-			badge: "badge-warning",
-		}
-	);
-}
-
-let archiveMeta = $derived(getArchiveMeta(project.archive_reason));
 
 let canEdit = $state(false);
 let canDelete = $state(false);
@@ -170,16 +131,7 @@ async function onUnarchiveProject(newDeadline: Date) {
     {/if}
 
     <a href={`/projects/${project.id}`} class="card-body pt-12">
-        {#if project.is_archived}
-			<div class={`badge ${archiveMeta.badge}`}>
-				<Archive size="16" />
-				{$_("projects.archivedWithReason", {values: { reason: $_(archiveMeta.format) },})}
-			</div>
-        {:else if project.done}
-            <div class="badge badge-success"><Check size="16" /> {$_("common.done")}</div>
-        {:else}
-            <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline), $locale)}</div>
-        {/if}
+    	<ProjectBadge project={project} />
 			<div class="card-title flex mt-2 items-center gap-2">
   <AvatarComponent icon={project.icon ?? null} name={project.name} big={false} />
   <h2 class="min-w-0">
