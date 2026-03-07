@@ -10,6 +10,8 @@ import {
 import type { TwoFaRequiredResponse, User } from "$lib/types";
 import { setUserInfo as setUserInfoWithStorageCache } from "$lib/user_info";
 
+const TWO_FA_CODE_REGEX = "^\\d{3}[\\- ]?\\d{3}$";
+
 let username: string = $state("");
 let password: string = $state("");
 let infoMessage: string = $state("");
@@ -28,7 +30,8 @@ let hasValid2FAInput = $derived.by(() => {
 	// in order to log in, if both are set up, only a webauthn credential
 	// or a totp code are required, but not both at the same time!
 	if (webauthnRequired && webauthnCredential) return true;
-	if (totpRequired && twoFaCode.trim() !== "") return true;
+	const validTotpCode = twoFaCode.trim().match(new RegExp(TWO_FA_CODE_REGEX));
+	if (totpRequired && validTotpCode) return true;
 	return !totpRequired && !webauthnRequired;
 });
 
@@ -156,7 +159,7 @@ async function loadWebauthn() {
 						type="text"
 						id="two_fa_code"
 						bind:value={twoFaCode}
-						pattern={'\\d{3}[\\- ]?\\d{3}'}
+						pattern={TWO_FA_CODE_REGEX}
 						autocomplete="one-time-code"
 						placeholder={$_('account.totp.twoFaCode')}
 						class="input w-full"
