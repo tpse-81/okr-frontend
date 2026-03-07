@@ -24,6 +24,14 @@ let webauthnRequired: boolean = $state(false);
 let userId: string | null = $state(null);
 let webauthnCredential: Credential | null = $state(null);
 
+let hasValid2FAInput = $derived.by(() => {
+	// in order to log in, if both are set up, only a webauthn credential
+	// or a totp code are required, but not both at the same time!
+	if (webauthnRequired && webauthnCredential) return true;
+	if (totpRequired && twoFaCode.trim() !== "") return true;
+	return !totpRequired && !webauthnRequired;
+});
+
 async function login(e: SubmitEvent) {
 	e.preventDefault();
 	errorMessage = "";
@@ -55,23 +63,27 @@ async function login(e: SubmitEvent) {
 			).extra;
 			userId = twoFaRequiredResponse.user_id;
 
-			if (twoFaRequiredResponse.type === "webauthn") {
+			if (twoFaRequiredResponse.webauthn_supported) {
 				webauthnRequired = true;
 				infoMessage = $_("users.login.passkey");
 			}
 
-			if (twoFaRequiredResponse.type === "totp") {
+			if (twoFaRequiredResponse.totp_supported) {
 				totpRequired = true;
 				infoMessage = $_("users.login.totp");
 			}
+
+			if (
+				twoFaRequiredResponse.totp_supported &&
+				twoFaRequiredResponse.webauthn_supported
+			) {
+				infoMessage = $_("users.login.totpOrWebauthn");
+			}
+
 			return;
 		}
 
 		console.error(e);
-		if (totpRequired) {
-			errorMessage = $_("users.login.invalidTotp");
-			return;
-		}
 		errorMessage = $_("users.login.wrong");
 	}
 }
@@ -148,7 +160,7 @@ async function loadWebauthn() {
 						autocomplete="one-time-code"
 						placeholder={$_('two_fa_code')}
 						class="input w-full"
-						required
+						required={!hasValid2FAInput}
 				/>
 			{/if}
 
@@ -156,7 +168,7 @@ async function loadWebauthn() {
 					type="submit"
 					value={$_("users.login.button")}
 					class="btn btn-primary mt-6 w-full"
-					disabled={(webauthnRequired && !webauthnCredential) || (totpRequired && twoFaCode.trim() === "")}
+					disabled={!hasValid2FAInput}
 			/>
 		</fieldset>
 	</form>

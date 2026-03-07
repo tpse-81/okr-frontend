@@ -167,7 +167,7 @@
 			"empty": "Please enter a username and password.",
 			"passkey": "Please use your passkey.",
 			"totp": "Please enter your 2FA code.",
-			"invalidTotp": "Invalid 2FA code.",
+			"totpOrWebauthn": "Please use your passkey or enter your 2FA code.",
 			"wrong": "Incorrect username or password.",
 			"loadPasskey": "Load passkey",
 			"name": "Username",
