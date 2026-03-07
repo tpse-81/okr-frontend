@@ -122,7 +122,7 @@ async function onDeleteObjective() {
 <!-- Header -->
 <div class="card bg-base-100 border border-base-300 m-3">
 	<div class="card-body relatvie">
-		<div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
+		<div class="absolute top-2 right-3 flex flex-col items-end gap-2">
 			<span class="badge badge-primary">{$_("objectives.singular")}</span>
 			<!-- Edit actions -->
 			<div

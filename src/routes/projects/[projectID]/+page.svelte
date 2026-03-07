@@ -128,7 +128,7 @@ async function onDeleteProject() {
 	<!-- Header -->
 	<div class="card bg-base-100 border border-base-300">
 		<div class="card-body">
-			<div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
+			<div class="absolute top-2 right-3 flex flex-col items-end gap-2">
 				<span class="badge badge-primary">{$_("projects.singular")}</span>
 
 				<div
