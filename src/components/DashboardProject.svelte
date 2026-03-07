@@ -19,7 +19,7 @@ let btn: HTMLButtonElement | null = $state(null);
 
 
 <li class="card card-border relative w-44 sm:w-52 lg:w-60 shrink-0 overflow-visible">
-
+    <a href={`/projects/${projectContainer.project.id}`} class="block rounded-lg overflow-hidden">
     <figure
             class="w-full h-24 sm:h-28 lg:h-32 overflow-hidden bg-base-200 flex items-center justify-center"
     >
@@ -38,23 +38,22 @@ let btn: HTMLButtonElement | null = $state(null);
         {/if}
     </figure>
 
-    <a href={`/projects/${projectContainer.project.id}`}>
-        <div class="card-body p-2 sm:p-3 flex flex-col gap-1.5 sm:gap-2">
-            <h2 class="card-title text-xs sm:text-sm lg:text-base font-bold truncate">
-                {projectContainer.project.name}
-            </h2>
+    <div class="card-body p-2 sm:p-3 flex flex-col gap-1.5 sm:gap-2">
+        <h2 class="card-title text-xs sm:text-sm lg:text-base font-bold truncate">
+            {projectContainer.project.name}
+        </h2>
 
-            <div class="flex items-center gap-1.5 sm:gap-2">
-                <progress
-                        class="progress progress-primary h-1.5 sm:h-2 w-full"
-                        value="{(projectContainer.progress * 100).toFixed(0)}"
-                        max="100">
-                </progress>
-                <span class="text-[10px] sm:text-xs lg:text-sm font-medium">
-                    {(projectContainer.progress * 100).toFixed(0)}%
-                </span>
-            </div>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+            <progress
+                    class="progress progress-primary h-1.5 sm:h-2 w-full"
+                    value="{(projectContainer.progress * 100).toFixed(0)}"
+                    max="100">
+            </progress>
+            <span class="text-[10px] sm:text-xs lg:text-sm font-medium">
+                {(projectContainer.progress * 100).toFixed(0)}%
+            </span>
         </div>
+    </div>
     </a>
 
     <div class="divider my-1 sm:my-2 flex text-xs sm:text-sm">
