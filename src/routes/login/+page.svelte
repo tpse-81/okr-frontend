@@ -151,14 +151,14 @@ async function loadWebauthn() {
 			{/if}
 
 			{#if totpRequired}
-				<label class="label mt-4" for="two_fa_code">{$_('two_fa_code')}</label>
+				<label class="label mt-4" for="two_fa_code">{$_('account.totp.twoFaCode')}</label>
 				<input
 						type="text"
 						id="two_fa_code"
 						bind:value={twoFaCode}
 						pattern={'\\d{3}[\\- ]?\\d{3}'}
 						autocomplete="one-time-code"
-						placeholder={$_('two_fa_code')}
+						placeholder={$_('account.totp.twoFaCode')}
 						class="input w-full"
 						required={!hasValid2FAInput}
 				/>
