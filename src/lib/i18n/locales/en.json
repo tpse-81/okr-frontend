@@ -203,6 +203,7 @@
 			"confirm": "Confirm token",
 			"disable": "Disable 2FA",
 			"qrAlt": "TOTP setup QR code",
+			"twoFaCode": "2FA code (TOTP)",
 
 			"enabledInfo": "Two-factor authentication is enabled.",
 			"createdSuccess": "New 2FA token created. Add it to your authenticator app, then confirm with a code.",

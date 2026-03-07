@@ -201,6 +201,7 @@
 			"confirm": "Token bestätigen",
 			"disable": "2FA deaktivieren",
 			"qrAlt": "QR-Code für die TOTP-Einrichtung",
+			"twoFaCode": "2FA Code (TOTP)",
 
 			"enabledInfo": "Zwei-Faktor-Authentifizierung ist aktiviert.",
 			"createdSuccess": "Neuer 2FA-Token erstellt. Füge ihn in deiner Authenticator-App hinzu und bestätige anschließend mit einem Code.",
