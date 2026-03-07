@@ -278,30 +278,38 @@ async function onconfirm() {
 		<h3 class="text-lg font-bold truncate max-w-xl">{title}</h3>
 
 		{#if showOrphanConfirm}
-  <div class="alert alert-warning mt-4">
-    <div>
-      <span class="font-bold">{$_("common.warning")}</span>
-      <p class="mt-2">{$_("projects.orphanConfirm")}</p>
+			<div class="alert alert-warning mt-4">
+				<div>
+					<span class="font-bold">{$_("common.warning")}</span>
+					<p class="mt-2">{$_("projects.orphanConfirm")}</p>
 
-	  <ul class="list-disc pl-5 mt-2">
-  		{#each orphanObjectives as objective (objective.id)}
-    		<li>{objective.name ?? objective.id}</li>
-  		{/each}
-	  </ul>
+					<ul class="list-disc pl-5 mt-2">
+						{#each orphanObjectives as objective (objective.id)}
+							<li>{objective.name ?? objective.id}</li>
+						{/each}
+					</ul>
 
-	  <p class="mt-2">{$_("common.continueQuestion")}</p>
+					<p class="mt-2">{$_("common.continueQuestion")}</p>
 
-      <div class="flex gap-2 mt-4 justify-end">
-        <button type="button" class="btn btn-sm" onclick={cancelOrphanConfirm}>
-          {labels.cancel}
-        </button>
-        <button type="button" class="btn btn-sm btn-primary" onclick={acceptOrphanConfirm}>
-          {labels.confirm}
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
+					<div class="flex gap-2 mt-4 justify-end">
+						<button
+							type="button"
+							class="btn btn-sm"
+							onclick={cancelOrphanConfirm}
+						>
+							{labels.cancel}
+						</button>
+						<button
+							type="button"
+							class="btn btn-sm btn-primary"
+							onclick={acceptOrphanConfirm}
+						>
+							{labels.confirm}
+						</button>
+					</div>
+				</div>
+			</div>
+		{/if}
 
 		{#if showErrors && errorMessages.length > 0}
 			<div class="alert alert-error mt-3">
@@ -327,7 +335,7 @@ async function onconfirm() {
 			<tbody>
 				{#each renderLinkedInitial as objective (objective.id)}
 					<LinkedObjectiveRow
-						objective={objective}
+						{objective}
 						isLinked={isCurrentlyLinked(objective.id)}
 						onIsLinkedChange={(isLinked) =>
 							onIsLinkedChanged(objective, isLinked)}
@@ -336,7 +344,7 @@ async function onconfirm() {
 
 				{#each renderUnlinkedInitial as objective (objective.id)}
 					<LinkedObjectiveRow
-						objective={objective}
+						{objective}
 						isLinked={isCurrentlyLinked(objective.id)}
 						onIsLinkedChange={(isLinked) =>
 							onIsLinkedChanged(objective, isLinked)}

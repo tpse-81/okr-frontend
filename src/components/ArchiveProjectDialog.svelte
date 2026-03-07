@@ -37,7 +37,7 @@ function confirm() {
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">{$_("projects.archivingTitle")}</h3>
 		<p class="opacity-70 mt-1">
-  			{$_("projects.archivingBody", { values: { projectName } })}
+			{$_("projects.archivingBody", { values: { projectName } })}
 		</p>
 
 		<div class="form-control mt-4">
@@ -50,8 +50,12 @@ function confirm() {
 				class="select select-bordered w-full"
 				bind:value={reason}
 			>
-				<option value="on_break">{$_("projects.archiveReason.on_break")}</option>
-				<option value="finalized">{$_("projects.archiveReason.finalized")}</option>
+				<option value="on_break">
+					{$_("projects.archiveReason.on_break")}
+				</option>
+				<option value="finalized">
+					{$_("projects.archiveReason.finalized")}
+				</option>
 				<option value="give_up">{$_("projects.archiveReason.give_up")}</option>
 			</select>
 		</div>

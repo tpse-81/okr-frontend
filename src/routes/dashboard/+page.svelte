@@ -73,66 +73,58 @@ $effect(() => {
 });
 </script>
 
-
 <h1 class="ml-2 sm:ml-15">
-    {#if $userInfoStore?.name}
-        {$_("dashboard.greeting", { values: {name: $userInfoStore?.name ?? "" } })}
-    {:else}
-        {$_("dashboard.greetingNoName")}
-    {/if}
+	{#if $userInfoStore?.name}
+		{$_("dashboard.greeting", { values: {name: $userInfoStore?.name ?? "" } })}
+	{:else}
+		{$_("dashboard.greetingNoName")}
+	{/if}
 </h1>
 
 <div class="flex flex-col lg:flex-row gap-4 ml-2 mr-2 lg:ml-15">
+	<!-- Main content -->
+	<div class="flex-1 min-w-0">
+		<div class="card card-border relative">
+			<div class="p-3">
+				<div class="flex items-center justify-between mb-2">
+					<h1><a href="/projects">{$_("projects.title")}</a></h1>
 
-    <!-- Main content -->
-    <div class="flex-1 min-w-0">
-
-        <div class="card card-border relative">
-            <div class="p-3">
-                <div class="flex items-center justify-between mb-2">
-                    <h1><a href="/projects">{$_("projects.title")}</a></h1>
-
-                    <button
-                            class="btn btn-sm btn-outline"
-                            onclick={() => (showOnlyMine = !showOnlyMine)}
-                    >
-                        {showOnlyMine
+					<button
+						class="btn btn-sm btn-outline"
+						onclick={() => (showOnlyMine = !showOnlyMine)}
+					>
+						{showOnlyMine
                             ? $_("projects.showAll")
                             : $_("projects.onlyMine")}
-                    </button>
-                </div>
-                {#if projectContainers.length > 0}
-                    <ul class="flex gap-3 overflow-x-auto pb-2">
-                        {#each projectContainers as projectContainer}
-                            <div
-                                    class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors shrink-0"
-                            >
-                                <DashboardProjectComponent
-                                        projectContainer={projectContainer}
-                                />
-                            </div>
-                        {/each}
-                    </ul>
-                {:else}
-                    <p>{$_("projects.empty")}</p>
-                {/if}
-            </div>
-        </div>
+					</button>
+				</div>
+				{#if projectContainers.length > 0}
+					<ul class="flex gap-3 overflow-x-auto pb-2">
+						{#each projectContainers as projectContainer}
+							<div
+								class="card card-compact card-bordered p-2 bg-base-100 hover:bg-base-200 transition-colors shrink-0"
+							>
+								<DashboardProjectComponent {projectContainer} />
+							</div>
+						{/each}
+					</ul>
+				{:else}
+					<p>{$_("projects.empty")}</p>
+				{/if}
+			</div>
+		</div>
 
-        <div class="mt-6">
-            {#if taskList.length > 0}
-                <DashboardTaskComponent tasks={taskList} />
-            {:else}
-                <div class="card card-bordered p-4">
-                    {$_("tasks.empty")}
-                </div>
-            {/if}
-        </div>
-    </div>
+		<div class="mt-6">
+			{#if taskList.length > 0}
+				<DashboardTaskComponent tasks={taskList} />
+			{:else}
+				<div class="card card-bordered p-4">{$_("tasks.empty")}</div>
+			{/if}
+		</div>
+	</div>
 
-    <!-- Deadline / side panel -->
-    <div class="w-full lg:w-auto">
-        <DashboardDeadlineComponent projects={closestDeadlineProjects} />
-    </div>
-
+	<!-- Deadline / side panel -->
+	<div class="w-full lg:w-auto">
+		<DashboardDeadlineComponent projects={closestDeadlineProjects} />
+	</div>
 </div>

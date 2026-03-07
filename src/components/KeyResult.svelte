@@ -78,40 +78,73 @@ async function onDeleteKeyResult() {
 </script>
 
 <li class="card card-border relative">
-		<div class="absolute right-2 top-2 flex gap-2" title={!canEdit ? $_("common.noPermissions") : ""}>
-		  <button class="btn btn-square" onclick={() => canEdit && (showEditDialog = true)} disabled={!canEdit}><Edit size="16" /></button>
-		  <button class="btn btn-square" onclick={() => canEdit && (showConfirmationDialog = true)} disabled={!canEdit}><Trash size="16" /></button>
-        </div>
-    <a href={`/key_results/${keyResult.id}`} class="card-body pt-12">
+	<div
+		class="absolute right-2 top-2 flex gap-2"
+		title={!canEdit ? $_("common.noPermissions") : ""}
+	>
+		<button
+			class="btn btn-square"
+			onclick={() => canEdit && (showEditDialog = true)}
+			disabled={!canEdit}
+		>
+			<Edit size="16" />
+		</button>
+		<button
+			class="btn btn-square"
+			onclick={() => canEdit && (showConfirmationDialog = true)}
+			disabled={!canEdit}
+		>
+			<Trash size="16" />
+		</button>
+	</div>
+	<a href={`/key_results/${keyResult.id}`} class="card-body pt-12">
 		{#if isArchived}
 			<div class="badge badge-warning">
 				<Archive size="16" /> {$_("common.archived")}
 			</div>
 		{/if}
-        <h2 class="card-title">
-  <span class="line-clamp-1 break-words">
-    {keyResult.description}
-  </span>
-</h2>
-        <div class="flex gap-4">
-        		<KeyResultProgress keyResult={keyResult} />
-            <div>
-                <p>{$_("keyResults.start")}: {keyResult.start_value}</p>
-                <p>{$_("keyResults.current")}: {keyResult.current_value}</p>
-                <p>{$_("keyResults.target")}: {keyResult.end_value}</p>
-            </div>
-        </div>
-    </a>
-    <div class="-mt-2 ml-5 mb-3" title={!canEdit ? $_("common.noPermissions") : ""}>
-        <button class="btn btn-square" onclick={incrementCurrentValue} disabled={!canEdit}>
-            <PlusCircle size="16" />
-        </button>
-        <button class="btn btn-square" onclick={decrementCurrentValue} disabled={!canEdit}>
-            <MinusCircle size="16" />
-        </button>
-    </div>
-    <ErrorMessage message={errorMessage} />
+		<h2 class="card-title">
+			<span class="line-clamp-1 break-words"> {keyResult.description} </span>
+		</h2>
+		<div class="flex gap-4">
+			<KeyResultProgress {keyResult} />
+			<div>
+				<p>{$_("keyResults.start")}: {keyResult.start_value}</p>
+				<p>{$_("keyResults.current")}: {keyResult.current_value}</p>
+				<p>{$_("keyResults.target")}: {keyResult.end_value}</p>
+			</div>
+		</div>
+	</a>
+	<div
+		class="-mt-2 ml-5 mb-3"
+		title={!canEdit ? $_("common.noPermissions") : ""}
+	>
+		<button
+			class="btn btn-square"
+			onclick={incrementCurrentValue}
+			disabled={!canEdit}
+		>
+			<PlusCircle size="16" />
+		</button>
+		<button
+			class="btn btn-square"
+			onclick={decrementCurrentValue}
+			disabled={!canEdit}
+		>
+			<MinusCircle size="16" />
+		</button>
+	</div>
+	<ErrorMessage message={errorMessage} />
 </li>
 
-<EditKeyResultComponent show={showEditDialog} keyResult={keyResult} ondismiss={() => showEditDialog = false} />
-<ConfirmationDialog show={showConfirmationDialog} message={$_("keyResults.delete")} onconfirm={onDeleteKeyResult} ondismiss={() => showConfirmationDialog = false} />
+<EditKeyResultComponent
+	show={showEditDialog}
+	{keyResult}
+	ondismiss={() => showEditDialog = false}
+/>
+<ConfirmationDialog
+	show={showConfirmationDialog}
+	message={$_("keyResults.delete")}
+	onconfirm={onDeleteKeyResult}
+	ondismiss={() => showConfirmationDialog = false}
+/>

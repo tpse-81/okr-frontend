@@ -121,11 +121,14 @@ async function onDeleteObjective() {
 
 <!-- Header -->
 <div class="card bg-base-100 border border-base-300 m-3">
-  <div class="card-body relatvie">
-    <div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
-    	<span class="badge badge-primary">{$_("objectives.singular")}</span>
+	<div class="card-body relatvie">
+		<div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
+			<span class="badge badge-primary">{$_("objectives.singular")}</span>
 			<!-- Edit actions -->
-			<div class="flex gap-2" title={!canCreate ? $_("common.noPermissions") : ""}>
+			<div
+				class="flex gap-2"
+				title={!canCreate ? $_("common.noPermissions") : ""}
+			>
 				<button
 					class="btn btn-square"
 					disabled={!canCreate}
@@ -141,103 +144,110 @@ async function onDeleteObjective() {
 					<Trash size="16" />
 				</button>
 			</div>
-	  </div>
-    <div class="flex items-center gap-4">
-      <div class="min-w-0">
-        <div class="text-2xl font-bold truncate max-w-full">{objective.name}</div>
-        <ExpandableDescription text={objective.description} />
-      </div>
-    </div>
-    <!-- Parent projects -->
+		</div>
+		<div class="flex items-center gap-4">
+			<div class="min-w-0">
+				<div class="text-2xl font-bold truncate max-w-full">
+					{objective.name}
+				</div>
+				<ExpandableDescription text={objective.description} />
+			</div>
+		</div>
+		<!-- Parent projects -->
 		<details class="collapse bg-base-100 border border-base-300">
-		  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
-		  	<span class="max-w-full truncate">{$_("objectives.belongsToProjects")}</span>
-		  	<ChevronDown size="24" />
-		  </summary>
-		  <div class="collapse-content text-sm">
+			<summary
+				class="collapse-title font-semibold w-full flex justify-between items-center"
+			>
+				<span class="max-w-full truncate"
+					>{$_("objectives.belongsToProjects")}</span
+				>
+				<ChevronDown size="24" />
+			</summary>
+			<div class="collapse-content text-sm">
 				<ul id="related-projects-list" class="grid grid-auto gap-3">
-						{#each relatedProjectsList as project}
-							<ProjectComponent project={project} showEditActions={false} />
-						{/each}
-				</ul> 
-		  </div>
+					{#each relatedProjectsList as project}
+						<ProjectComponent {project} showEditActions={false} />
+					{/each}
+				</ul>
+			</div>
 		</details>
-  </div>
+	</div>
 </div>
 
 {#if canCreate}
 	<div class="card bg-base-100 border border-base-300 m-3">
-	  <h1 class="ml-4 mt-1 truncate max-w-full">{$_("keyResults.createTitle")}</h1>
+		<h1 class="ml-4 mt-1 truncate max-w-full">
+			{$_("keyResults.createTitle")}
+		</h1>
 
-	  <form
-		id="keyResultSubmit"
-		onsubmit={handleSubmit}
-		class="flex flex-col lg:flex-row gap-3 p-3 items-end"
+		<form
+			id="keyResultSubmit"
+			onsubmit={handleSubmit}
+			class="flex flex-col lg:flex-row gap-3 p-3 items-end"
 		>
-		  <label class="form-control w-full">
-			<div class="label">
-			  <span class="label-text">{$_("common.description")}</span>
-			</div>
-			<input
-			  type="text"
-			  id="description"
-			  bind:value={description}
-			  placeholder={$_("common.description")}
-			  class="input w-full"
-			  required
-			/>
-		  </label>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("common.description")}</span>
+				</div>
+				<input
+					type="text"
+					id="description"
+					bind:value={description}
+					placeholder={$_("common.description")}
+					class="input w-full"
+					required
+				>
+			</label>
 
-		  <label class="form-control w-full">
-			<div class="label">
-			  <span class="label-text">{$_("keyResults.start")}</span>
-			</div>
-			<input
-			  type="number"
-			  step="any"
-			  id="start-value"
-			  bind:value={startValue}
-			  placeholder={$_("keyResults.start")}
-			  class="input w-full"
-			  required
-			/>
-		  </label>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("keyResults.start")}</span>
+				</div>
+				<input
+					type="number"
+					step="any"
+					id="start-value"
+					bind:value={startValue}
+					placeholder={$_("keyResults.start")}
+					class="input w-full"
+					required
+				>
+			</label>
 
-		  <label class="form-control w-full">
-			<div class="label">
-			  <span class="label-text">{$_("keyResults.target")}</span>
-			</div>
-			<input
-			  type="number"
-			  step="any"
-			  id="end-value"
-			  bind:value={endValue}
-			  placeholder={$_("keyResults.target")}
-			  class="input w-full"
-			  required
-			/>
-		  </label>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("keyResults.target")}</span>
+				</div>
+				<input
+					type="number"
+					step="any"
+					id="end-value"
+					bind:value={endValue}
+					placeholder={$_("keyResults.target")}
+					class="input w-full"
+					required
+				>
+			</label>
 
-		  <input
-			type="submit"
-			value={$_("common.create")}
-			class="btn btn-primary"
-		  />
+			<input type="submit" value={$_("common.create")} class="btn btn-primary">
 		</form>
 	</div>
 {/if}
 
 <div class="m-3">
-    <h1 class="truncate max-w-full">{$_("keyResults.title")}</h1>
-    {#if keyResultList.length > 0}
-        <ul id="key-results-list" class="grid grid-auto gap-3">
-            {#each keyResultList as keyResult}
-			 	    	<KeyResultComponent keyResult={keyResult} onKeyResultDeleted={() => keyResultList = keyResultList.filter(kr => kr.id != keyResult.id)} />
-            {/each}
-        </ul>
-    {:else}
-        <p>{$_("keyResults.empty")}</p>
-    {/if}
+	<h1 class="truncate max-w-full">{$_("keyResults.title")}</h1>
+	{#if keyResultList.length > 0}
+		<ul id="key-results-list" class="grid grid-auto gap-3">
+			{#each keyResultList as keyResult}
+				<KeyResultComponent
+					{keyResult}
+					onKeyResultDeleted={() => keyResultList = keyResultList.filter(kr => kr.id != keyResult.id)}
+				/>
+			{/each}
+		</ul>
+	{:else}
+		<p>{$_("keyResults.empty")}</p>
+	{/if}
 </div>
 
 {#if canCreate}
@@ -246,7 +256,10 @@ async function onDeleteObjective() {
 			<div class="card-body gap-4">
 				<div class="flex items-start gap-3">
 					<h2 class="card-title flex-1">{$_("objectives.child")}</h2>
-					<button class="btn btn-primary" onclick={() => showLinkChildrenModal = true}>
+					<button
+						class="btn btn-primary"
+						onclick={() => showLinkChildrenModal = true}
+					>
 						{$_("objectives.addChild")}
 					</button>
 				</div>
@@ -254,7 +267,10 @@ async function onDeleteObjective() {
 				{#if linkedChildren.length > 0}
 					<ul id="objectives-list" class="grid grid-auto">
 						{#each linkedChildren as objective}
-							<ObjectiveComponent objective={objective} onObjectiveDeleted={() => linkedChildren = linkedChildren.filter(obj => objective.id != obj.id)} />
+							<ObjectiveComponent
+								{objective}
+								onObjectiveDeleted={() => linkedChildren = linkedChildren.filter(obj => objective.id != obj.id)}
+							/>
 						{/each}
 					</ul>
 				{:else}
@@ -266,11 +282,11 @@ async function onDeleteObjective() {
 {/if}
 
 <LinkObjectiveDialog
- title={$_("objectives.childrenForTitle", { values: { objectiveName: objective.name } })}
- initialLinked={linkedChildren}
- excludeObjectiveIds={[objective.id]}     
- showErrors={true}                        
- writeChanges={async (toAdd, toRemove) => { 
+	title={$_("objectives.childrenForTitle", { values: { objectiveName: objective.name } })}
+	initialLinked={linkedChildren}
+	excludeObjectiveIds={[objective.id]}
+	showErrors={true}
+	writeChanges={async (toAdd, toRemove) => { 
    const addJobs = toAdd.map((obj) => ({
      obj,
      promise: linkObjectiveToObjective(objective.id, obj.id),
@@ -311,14 +327,14 @@ async function onDeleteObjective() {
 
    return errors;
  }}
- onLinkedChanged={(children) => (linkedChildren = children)}
- ondismiss={() => (showLinkChildrenModal = false)}
- show={showLinkChildrenModal}
+	onLinkedChanged={(children) => (linkedChildren = children)}
+	ondismiss={() => (showLinkChildrenModal = false)}
+	show={showLinkChildrenModal}
 />
 
 <EditObjectiveComponent
 	show={showEditDialog}
-	objective={objective}
+	{objective}
 	ondismiss={() => (showEditDialog = false)}
 />
 

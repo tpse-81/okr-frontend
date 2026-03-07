@@ -63,14 +63,19 @@ async function tasks() {
 </script>
 
 <div class="p-3">
-	<div role="alert" class="alert alert-vertical alert-outline sm:alert-horizontal">
-		<InfoIcon/>
+	<div
+		role="alert"
+		class="alert alert-vertical alert-outline sm:alert-horizontal"
+	>
+		<InfoIcon />
 		<div>
 			<h3 class="font-bold">{$_("tasks.cantCreate")}</h3>
 			<div class="text-xs">{$_("tasks.selectKeyResult")}</div>
 		</div>
 		<a href="/key_results">
-			<button class="btn btn-sm btn-outline">{$_("nav.goto")} {$_("keyResults.title")}</button>
+			<button class="btn btn-sm btn-outline">
+				{$_("nav.goto")} {$_("keyResults.title")}
+			</button>
 		</a>
 	</div>
 </div>
@@ -97,5 +102,8 @@ async function tasks() {
 		</div>
 	</div>
 
-	<TaskColumns tasks={visibleTasks} onTaskDeleted={(id) => { tasklist = tasklist.filter((t) => t.id !== id); }} />
+	<TaskColumns
+		tasks={visibleTasks}
+		onTaskDeleted={(id) => { tasklist = tasklist.filter((t) => t.id !== id); }}
+	/>
 </div>

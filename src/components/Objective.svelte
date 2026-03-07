@@ -98,9 +98,7 @@ async function onDeleteObjective() {
 			{/if}
 
 			<h2 class="card-title">
-				<span class="line-clamp-1 break-words">
-					{objective.name}
-				</span>
+				<span class="line-clamp-1 break-words"> {objective.name} </span>
 			</h2>
 
 			<ExpandableDescription text={objective.description} />
@@ -108,5 +106,14 @@ async function onDeleteObjective() {
 	</div>
 </li>
 
-<EditObjectiveComponent show={showEditDialog} objective={objective} ondismiss={() => showEditDialog = false} />
-<ConfirmationDialog show={showConfirmationDialog} message={$_("objectives.delete")} onconfirm={onDeleteObjective} ondismiss={() => showConfirmationDialog = false} />
+<EditObjectiveComponent
+	show={showEditDialog}
+	{objective}
+	ondismiss={() => showEditDialog = false}
+/>
+<ConfirmationDialog
+	show={showConfirmationDialog}
+	message={$_("objectives.delete")}
+	onconfirm={onDeleteObjective}
+	ondismiss={() => showConfirmationDialog = false}
+/>

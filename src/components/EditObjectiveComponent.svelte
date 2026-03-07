@@ -41,41 +41,45 @@ async function onUpdateObjective() {
 </script>
 
 <dialog id="edit-objective-modal" bind:this={modal} class="modal">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">{$_("objectives.edit")}</h3>
-   <form class="flex flex-col gap-3 mt-3">
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("common.name")}</span>
-    </div>
-    <input
-      type="text"
-      bind:value={name}
-      placeholder={$_("common.name")}
-      class="input w-full"
-    />
-  </label>
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">{$_("objectives.edit")}</h3>
+		<form class="flex flex-col gap-3 mt-3">
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("common.name")}</span>
+				</div>
+				<input
+					type="text"
+					bind:value={name}
+					placeholder={$_("common.name")}
+					class="input w-full"
+				>
+			</label>
 
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("common.description")}</span>
-    </div>
-    <input
-      type="text"
-      bind:value={description}
-      placeholder={$_("common.description")}
-      class="input w-full"
-    />
-  </label>
-</form>
-    <div class="modal-action">
-      <form method="dialog" class="flex gap-3 w-full justify-end">
-        <button class="btn" onclick={ondismiss}>{$_("common.close")}</button>
-        <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-primary" disabled={objective.is_archived} onclick={onUpdateObjective}>
-          {$_("common.confirm")}
-        </button>
-      </form>
-    </div>
-  </div>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("common.description")}</span>
+				</div>
+				<input
+					type="text"
+					bind:value={description}
+					placeholder={$_("common.description")}
+					class="input w-full"
+				>
+			</label>
+		</form>
+		<div class="modal-action">
+			<form method="dialog" class="flex gap-3 w-full justify-end">
+				<button class="btn" onclick={ondismiss}>{$_("common.close")}</button>
+				<!-- if there is a button in form, it will close the modal -->
+				<button
+					class="btn btn-primary"
+					disabled={objective.is_archived}
+					onclick={onUpdateObjective}
+				>
+					{$_("common.confirm")}
+				</button>
+			</form>
+		</div>
+	</div>
 </dialog>

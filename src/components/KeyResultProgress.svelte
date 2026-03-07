@@ -17,4 +17,11 @@ let progress = $derived.by(() => {
 });
 </script>
 
-<div class="radial-progress" style={`--value:${progress};`} aria-valuenow={progress} role="progressbar">{progress}%</div>
+<div
+	class="radial-progress"
+	style={`--value:${progress};`}
+	aria-valuenow={progress}
+	role="progressbar"
+>
+	{progress}%
+</div>

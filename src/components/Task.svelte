@@ -61,35 +61,32 @@ async function setTaskState(newState: TaskState) {
 </script>
 
 <li class="card card-border relative">
-	<span
-            class="dropdown"
-            title={!canEdit ? $_("common.noPermissions") : ""}
-    >
+	<span class="dropdown" title={!canEdit ? $_("common.noPermissions") : ""}>
 		<!-- trigger -->
 		<div
-                class="absolute left-2 top-2 badge {taskState.badge}
+			class="absolute left-2 top-2 badge {taskState.badge}
 			       {canEdit ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}"
-                role="button"
-                tabindex={canEdit ? 0 : -1}
-                onclick={() => canEdit && taskStateDropdown?.classList.toggle("dropdown-open")}
-        >
+			role="button"
+			tabindex={canEdit ? 0 : -1}
+			onclick={() => canEdit && taskStateDropdown?.classList.toggle("dropdown-open")}
+		>
 			<Info size="16" />
 			<span>{$_(taskState.label)}</span>
 		</div>
 
-      <!-- dropdown -->
-      {#if canEdit}
+		<!-- dropdown -->
+		{#if canEdit}
 			<ul
-                    bind:this={taskStateDropdown}
-                    tabindex="-1"
-                    class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-            >
+				bind:this={taskStateDropdown}
+				tabindex="-1"
+				class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+			>
 				{#each taskStates as state}
 					<li
-                            class="btn btn-ghost"
-                            role="button"
-                            onclick={() => setTaskState(state.state)}
-                    >
+						class="btn btn-ghost"
+						role="button"
+						onclick={() => setTaskState(state.state)}
+					>
 						{$_(state.label)}
 					</li>
 				{/each}
@@ -97,33 +94,51 @@ async function setTaskState(newState: TaskState) {
 		{/if}
 	</span>
 
-  <div class="absolute right-2 top-2 flex gap-2" title={!canEdit ? $_("common.noPermissions") : ""}>
-    <button class="btn btn-square" disabled={isArchived || !canEdit} onclick={() => (showEditDialog = true)}>
-      <Edit size="16" />
-    </button>
-    <button class="btn btn-square" disabled={isArchived || !canEdit} onclick={() => (showConfirmationDialog = true)}>
-      <Trash size="16" />
-    </button>
-  </div>
+	<div
+		class="absolute right-2 top-2 flex gap-2"
+		title={!canEdit ? $_("common.noPermissions") : ""}
+	>
+		<button
+			class="btn btn-square"
+			disabled={isArchived || !canEdit}
+			onclick={() => (showEditDialog = true)}
+		>
+			<Edit size="16" />
+		</button>
+		<button
+			class="btn btn-square"
+			disabled={isArchived || !canEdit}
+			onclick={() => (showConfirmationDialog = true)}
+		>
+			<Trash size="16" />
+		</button>
+	</div>
 
-  <div class="card-body pt-12">
-    {#if isArchived}
-      <div class="badge badge-warning mb-2">
-        <Archive size="16" /> {$_("common.archived")}
-      </div>
-    {/if}
-    
-    <h2 class="card-title">
-  <span class="line-clamp-1 break-words">
-    {title}
-  </span>
-</h2>
+	<div class="card-body pt-12">
+		{#if isArchived}
+			<div class="badge badge-warning mb-2">
+				<Archive size="16" /> {$_("common.archived")}
+			</div>
+		{/if}
 
-    {#if details}
-      <ExpandableDescription text={details} />
-    {/if}
-  </div>
+		<h2 class="card-title">
+			<span class="line-clamp-1 break-words"> {title} </span>
+		</h2>
+
+		{#if details}
+			<ExpandableDescription text={details} />
+		{/if}
+	</div>
 </li>
 
-<EditTaskComponent show={showEditDialog} task={task} ondismiss={() => showEditDialog = false} />
-<ConfirmationDialog show={showConfirmationDialog} message={$_("tasks.delete")} onconfirm={onDeleteTask} ondismiss={() => showConfirmationDialog = false} />
+<EditTaskComponent
+	show={showEditDialog}
+	{task}
+	ondismiss={() => showEditDialog = false}
+/>
+<ConfirmationDialog
+	show={showConfirmationDialog}
+	message={$_("tasks.delete")}
+	onconfirm={onDeleteTask}
+	ondismiss={() => showConfirmationDialog = false}
+/>

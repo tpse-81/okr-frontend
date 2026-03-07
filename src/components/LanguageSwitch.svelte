@@ -14,10 +14,10 @@ function toggle() {
 </script>
 
 <button
-        type="button"
-        class="btn btn-ghost text-base"
-        on:click={toggle}
-        aria-label={$_("account.switchLanguage")}
+	type="button"
+	class="btn btn-ghost text-base"
+	on:click={toggle}
+	aria-label={$_("account.switchLanguage")}
 >
-  {short.toUpperCase()}
+	{short.toUpperCase()}
 </button>

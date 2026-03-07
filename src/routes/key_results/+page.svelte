@@ -63,52 +63,57 @@ async function keyResults() {
 </script>
 
 <div class="p-3">
-  <div role="alert" class="alert alert-vertical alert-outline sm:alert-horizontal">
-    <InfoIcon/>
-    <div>
-      <h3 class="font-bold">{$_("keyResults.cantCreate")}</h3>
-      <div class="text-xs">{$_("keyResults.selectObjective")}</div>
-    </div>
-    <a href="/objectives">
-      <button class="btn btn-sm btn-outline">{$_("nav.goto")} {$_("objectives.title")}</button>
-    </a>
-  </div>
+	<div
+		role="alert"
+		class="alert alert-vertical alert-outline sm:alert-horizontal"
+	>
+		<InfoIcon />
+		<div>
+			<h3 class="font-bold">{$_("keyResults.cantCreate")}</h3>
+			<div class="text-xs">{$_("keyResults.selectObjective")}</div>
+		</div>
+		<a href="/objectives">
+			<button class="btn btn-sm btn-outline">
+				{$_("nav.goto")} {$_("objectives.title")}
+			</button>
+		</a>
+	</div>
 </div>
 
 <div class="p-3">
-  <div class="flex justify-between items-center mb-5 gap-5">
-    <h1 class="text-3xl flex-1">{$_("keyResults.title")}</h1>
+	<div class="flex justify-between items-center mb-5 gap-5">
+		<h1 class="text-3xl flex-1">{$_("keyResults.title")}</h1>
 
-    <div class="join shrink-0">
-      {#each multiOptions as option}
-        <div class="tooltip tooltip-left" data-tip="{option.tooltip}">
-          <button
-            class="btn join-item transition-transform duration-150
+		<div class="join shrink-0">
+			{#each multiOptions as option}
+				<div class="tooltip tooltip-left" data-tip="{option.tooltip}">
+					<button
+						class="btn join-item transition-transform duration-150
             {activeMultiFilters.includes(option.value) ? 'btn-active scale-110' : ''}"
-            onclick={() => applyMultiFilter(option.value)}
-          >
-            <option.icon size={option.size} />
-            {#if activeMultiFilters.includes(option.value)}
-              <Check class="w-4 h-4 ml-1 inline-block" />
-            {/if}
-          </button>
-        </div>
-      {/each}
-    </div>
-  </div>
+						onclick={() => applyMultiFilter(option.value)}
+					>
+						<option.icon size={option.size} />
+						{#if activeMultiFilters.includes(option.value)}
+							<Check class="w-4 h-4 ml-1 inline-block" />
+						{/if}
+					</button>
+				</div>
+			{/each}
+		</div>
+	</div>
 
-  {#if visibleKeyResults.length > 0}
-    <ul id="key-results-list" class="grid grid-auto gap-3">
-      {#each visibleKeyResults as key_result}
-        <KeyResultComponent
-          keyResult={key_result}
-          onKeyResultDeleted={() => {
+	{#if visibleKeyResults.length > 0}
+		<ul id="key-results-list" class="grid grid-auto gap-3">
+			{#each visibleKeyResults as key_result}
+				<KeyResultComponent
+					keyResult={key_result}
+					onKeyResultDeleted={() => {
             keyResultList = keyResultList.filter((kr) => kr.id !== key_result.id);
           }}
-        />
-      {/each}
-    </ul>
-  {:else}
-    <p>{$_("keyResults.empty")}</p>
-  {/if}
+				/>
+			{/each}
+		</ul>
+	{:else}
+		<p>{$_("keyResults.empty")}</p>
+	{/if}
 </div>

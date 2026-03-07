@@ -44,59 +44,61 @@ async function onUpdateTask() {
 </script>
 
 <dialog id="edit-task-modal" bind:this={modal} class="modal">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">{$_("tasks.edit")}</h3>
-    
-   <form class="flex flex-col gap-3 mt-3" onsubmit={onUpdateTask}>
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("tasks.name")}</span>
-    </div>
-    <input
-      type="text"
-      bind:value={name}
-      placeholder={$_("tasks.name")}
-      class="input input-bordered w-full"
-      required
-    />
-  </label>
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">{$_("tasks.edit")}</h3>
 
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("common.description")}</span>
-    </div>
-    <textarea
-      bind:value={description}
-      placeholder={$_("common.description")}
-      class="textarea textarea-bordered w-full"
-      rows="3"
-    ></textarea>
-  </label>
+		<form class="flex flex-col gap-3 mt-3" onsubmit={onUpdateTask}>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("tasks.name")}</span>
+				</div>
+				<input
+					type="text"
+					bind:value={name}
+					placeholder={$_("tasks.name")}
+					class="input input-bordered w-full"
+					required
+				>
+			</label>
 
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("tasks.state")}</span>
-    </div>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("common.description")}</span>
+				</div>
+				<textarea
+					bind:value={description}
+					placeholder={$_("common.description")}
+					class="textarea textarea-bordered w-full"
+					rows="3"
+				></textarea>
+			</label>
 
-    <!-- gleiche Layout-Logik wie vorher, nur mit Label -->
-    <div class="flex w-full items-center justify-between gap-3">
-      <select bind:value={taskState} class="select select-bordered w-44 sm:w-56">
-        {#each taskStates as state}
-          <option value={state.state}>{$_(state.label)}</option>
-        {/each}
-      </select>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("tasks.state")}</span>
+				</div>
 
-      <div class="flex gap-3">
-        <button type="button" class="btn" onclick={ondismiss}>
-          {$_("common.close")}
-        </button>
-        <button type="submit" class="btn btn-primary">
-          {$_("common.confirm")}
-        </button>
-      </div>
-    </div>
-  </label>
-</form>
-  </div>
+				<!-- gleiche Layout-Logik wie vorher, nur mit Label -->
+				<div class="flex w-full items-center justify-between gap-3">
+					<select
+						bind:value={taskState}
+						class="select select-bordered w-44 sm:w-56"
+					>
+						{#each taskStates as state}
+							<option value={state.state}>{$_(state.label)}</option>
+						{/each}
+					</select>
+
+					<div class="flex gap-3">
+						<button type="button" class="btn" onclick={ondismiss}>
+							{$_("common.close")}
+						</button>
+						<button type="submit" class="btn btn-primary">
+							{$_("common.confirm")}
+						</button>
+					</div>
+				</div>
+			</label>
+		</form>
+	</div>
 </dialog>
-

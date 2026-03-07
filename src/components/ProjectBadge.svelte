@@ -48,12 +48,14 @@ let archiveMeta = $derived(getArchiveMeta(project.archive_reason));
 </script>
 
 {#if project.is_archived}
-<div class={`badge ${archiveMeta.badge}`}>
-  <Archive size="16" />
-  {$_("projects.archivedWithReason", {values: { reason: $_(archiveMeta.format) },})}
-</div>
+	<div class={`badge ${archiveMeta.badge}`}>
+		<Archive size="16" />
+		{$_("projects.archivedWithReason", {values: { reason: $_(archiveMeta.format) },})}
+	</div>
 {:else if project.done}
-    <div class="badge badge-success"><Check size="16" /> {$_("common.done")}</div>
+	<div class="badge badge-success"><Check size="16" /> {$_("common.done")}</div>
 {:else}
-    <div class="badge badge-info"><Info size="16" /> {formatDeadline(new Date(project.deadline), $locale)}</div>
+	<div class="badge badge-info">
+		<Info size="16" /> {formatDeadline(new Date(project.deadline), $locale)}
+	</div>
 {/if}

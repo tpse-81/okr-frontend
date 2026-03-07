@@ -30,12 +30,12 @@ $effect(() => {
 </script>
 
 {#if showMessage && message}
-    <div
-            in:fade={{ duration: 120 }}
-            out:fade={{ duration: 240 }}
-            class="alert alert-error p-2 text-sm mb-2"
-    >
-    		<CircleX size="20" />
-        <span>{message}</span>
-    </div>
+	<div
+		in:fade={{ duration: 120 }}
+		out:fade={{ duration: 240 }}
+		class="alert alert-error p-2 text-sm mb-2"
+	>
+		<CircleX size="20" />
+		<span>{message}</span>
+	</div>
 {/if}

@@ -88,7 +88,9 @@ async function handleSubmit(e: SubmitEvent) {
 >
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">{$_("account.password.title")}</h3>
-		<p class="opacity-80 mt-2">{$_("account.password.temporaryPasswordWarning")}</p>
+		<p class="opacity-80 mt-2">
+			{$_("account.password.temporaryPasswordWarning")}
+		</p>
 
 		{#if errorMessage}
 			<div class="alert alert-error mt-4">
@@ -105,17 +107,17 @@ async function handleSubmit(e: SubmitEvent) {
 				class="input input-bordered w-full"
 				bind:value={oldPassword}
 				required
-			/>
+			>
 
 			<PasswordStrengthInput
 				bind:password={newPassword}
-				userInfo={userInfo}
+				{userInfo}
 				placeholder={$_("account.password.new")}
 				class="w-full"
 			/>
 			<PasswordStrengthInput
 				bind:password={newPasswordRepeat}
-				userInfo={userInfo}
+				{userInfo}
 				placeholder={$_("account.password.repeat")}
 				class="w-full"
 			/>

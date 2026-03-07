@@ -203,108 +203,119 @@ async function handleSubmit(e: SubmitEvent) {
 <h1 class="p-3">{$_("projects.createTitle")}</h1>
 
 <form id="project-submit" onsubmit={handleSubmit} class="p-3">
-  <div class="card bg-base-100 border border-base-300">
-    <div class="card-body gap-4">
+	<div class="card bg-base-100 border border-base-300">
+		<div class="card-body gap-4">
+			<h2 class="card-title">{$_("projects.createTitle")}</h2>
 
-      <h2 class="card-title">{$_("projects.createTitle")}</h2>
+			<IconSelector
+				bind:this={iconSelectorRef}
+				initialIcon={null}
+				onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}}
+			/>
 
-      <IconSelector bind:this={iconSelectorRef} initialIcon={null} onStateChanged={(newIcon, needsConfirm) => {icon = newIcon; iconRequiresConfirmation = needsConfirm;}} />
+			<!-- Inputs: nice grid -->
+			<div class="grid grid-auto gap-3">
+				<div class="form-control">
+					<label for="project-name" class="label">
+						<span class="label-text">{$_("common.name")}</span>
+					</label>
+					<input
+						id="project-name"
+						type="text"
+						bind:value={name}
+						placeholder={$_("common.name")}
+						class="input input-bordered w-full"
+						required
+					>
+				</div>
 
-      <!-- Inputs: nice grid -->
-      <div class="grid grid-auto gap-3">
-        <div class="form-control">
-            <label for="project-name" class="label">
-                <span class="label-text">{$_("common.name")}</span>
-            </label>
-            <input
-                id="project-name"
-                type="text"
-                bind:value={name}
-                placeholder={$_("common.name")}
-                class="input input-bordered w-full"
-                required
-            />
-        </div>
+				<div class="form-control">
+					<label for="project-deadline" class="label">
+						<span class="label-text">{$_("projects.deadline")}</span>
+					</label>
+					<input
+						id="project-deadline"
+						type="date"
+						bind:value={deadline}
+						placeholder={$_("projects.deadline")}
+						class="input input-bordered w-full"
+						required
+					>
+				</div>
+			</div>
 
-        <div class="form-control">
-            <label for="project-deadline" class="label">
-                <span class="label-text">{$_("projects.deadline")}</span>
-            </label>
-            <input
-                id="project-deadline"
-                type="date"
-                bind:value={deadline}
-                placeholder={$_("projects.deadline")}
-                class="input input-bordered w-full"
-                required
-            />
-        </div>
-      </div>
-
-      <div class="card-actions justify-end">
-        <button class="btn btn-primary" type="submit" disabled={iconRequiresConfirmation}>
-          {$_("common.create")}
-        </button>
-      </div>
-    </div>
-  </div>
+			<div class="card-actions justify-end">
+				<button
+					class="btn btn-primary"
+					type="submit"
+					disabled={iconRequiresConfirmation}
+				>
+					{$_("common.create")}
+				</button>
+			</div>
+		</div>
+	</div>
 </form>
 
 <div class="p-3">
-    <div class="flex justify-between items-center mb-5 gap-5">
-        <div class="flex gap-5 items-center flex-1">
-            <h1 class="text-3xl">{$_("projects.title")}</h1>
-            <div class="join">
-                <input
-                        type="text"
-                        bind:value={searchTerm}
-                        placeholder={$_("common.searchName")}
-                        class="input"
-                        style="border-radius: 10px 0 0 10px;"
-                />
-                {#each singleOptions as option}
-                    <div class="tooltip" data-tip={$_(option.tooltip)}>
-                        <button
-                                class="btn join-item transition-transform duration-150
+	<div class="flex justify-between items-center mb-5 gap-5">
+		<div class="flex gap-5 items-center flex-1">
+			<h1 class="text-3xl">{$_("projects.title")}</h1>
+			<div class="join">
+				<input
+					type="text"
+					bind:value={searchTerm}
+					placeholder={$_("common.searchName")}
+					class="input"
+					style="border-radius: 10px 0 0 10px;"
+				>
+				{#each singleOptions as option}
+					<div class="tooltip" data-tip={$_(option.tooltip)}>
+						<button
+							class="btn join-item transition-transform duration-150
                                 {activeFilter === option.value ? 'btn-active scale-110' : ''}"
-                                onclick={() => applySingleFilter(option.value)}
-                        >
-                            <option.icon size={option.size} />
-                            {#if activeFilter === option.value}
-                                <Check class="w-4 h-4 ml-1 inline-block" />
-                            {/if}
-                        </button>
-                    </div>
-                {/each}
-            </div>
-        </div>
-        <div class="join shrink-0">
-            {#each multiOptions as option}
-                <div class="tooltip tooltip-left" data-tip={$_(option.tooltip)}>
-                    <button
-                            class="btn join-item transition-transform duration-150
+							onclick={() => applySingleFilter(option.value)}
+						>
+							<option.icon size={option.size} />
+							{#if activeFilter === option.value}
+								<Check class="w-4 h-4 ml-1 inline-block" />
+							{/if}
+						</button>
+					</div>
+				{/each}
+			</div>
+		</div>
+		<div class="join shrink-0">
+			{#each multiOptions as option}
+				<div class="tooltip tooltip-left" data-tip={$_(option.tooltip)}>
+					<button
+						class="btn join-item transition-transform duration-150
                             {activeMultiFilters.includes(option.value) ? 'btn-active scale-110' : ''}"
-                            onclick={() => applyMultiFilter(option.value)}
-                    >
-                        <option.icon size={option.size} />
-                        {#if activeMultiFilters.includes(option.value)}
-                            <Check class="w-4 h-4 ml-1 inline-block" />
-                        {/if}
-                    </button>
-                </div>
-            {/each}
-        </div>
-    </div>
+						onclick={() => applyMultiFilter(option.value)}
+					>
+						<option.icon size={option.size} />
+						{#if activeMultiFilters.includes(option.value)}
+							<Check class="w-4 h-4 ml-1 inline-block" />
+						{/if}
+					</button>
+				</div>
+			{/each}
+		</div>
+	</div>
 
-    {#if visibleProjects.length > 0}
-      <ul id="projects-list" class="grid gap-3 grid-auto">
-          {#each visibleProjects as project}
-            <ProjectComponent project={project} onProjectDeleted={() => projectsList = projectsList.filter(proj => proj.id != project.id)} onProjectUpdated={refreshProjects}/>
-          {/each}
-      </ul>
-  {:else}
-      <p>{$_("projects.empty")}</p>
-  {/if}
+	{#if visibleProjects.length > 0}
+		<ul id="projects-list" class="grid gap-3 grid-auto">
+			{#each visibleProjects as project}
+				<ProjectComponent
+					{project}
+					onProjectDeleted={() => projectsList = projectsList.filter(proj => proj.id != project.id)}
+					onProjectUpdated={refreshProjects}
+				/>
+			{/each}
+		</ul>
+	{:else}
+		<p>{$_("projects.empty")}</p>
+	{/if}
 </div>
 
 <SuccessDialog bind:this={successToast}></SuccessDialog>

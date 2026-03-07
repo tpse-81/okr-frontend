@@ -18,8 +18,17 @@ let passwordStrength: ZXCVBNResult = $derived(
 );
 </script>
 
-<input type="password" class="input input-bordered {extraClasses}" placeholder={placeholder} bind:value={password} />
+<input
+	type="password"
+	class="input input-bordered {extraClasses}"
+	{placeholder}
+	bind:value={password}
+>
 {#if password}
-<progress class={"progress w-full " + (passwordStrength.score >= 3 ? "progress-success" : "progress-error")} value={passwordStrength.score} max="4"></progress>
-<div>{passwordStrength.feedback.warning}</div>
+	<progress
+		class={"progress w-full " + (passwordStrength.score >= 3 ? "progress-success" : "progress-error")}
+		value={passwordStrength.score}
+		max="4"
+	></progress>
+	<div>{passwordStrength.feedback.warning}</div>
 {/if}

@@ -91,72 +91,102 @@ async function onUnarchiveProject(newDeadline: Date) {
 </script>
 
 <li class="card card-border relative">
-		{#if showEditActions}
-  	<div class="absolute right-2 top-2 flex gap-2"
-         title={!canEdit ? $_("common.noPermissions") : ""}>
-        {#if project.is_archived}
+	{#if showEditActions}
+		<div
+			class="absolute right-2 top-2 flex gap-2"
+			title={!canEdit ? $_("common.noPermissions") : ""}
+		>
+			{#if project.is_archived}
+				<button
+					class="btn btn-square"
+					disabled={isUnarchiving || !canEdit}
+					onclick={() => canEdit && (showUnarchiveDialog = true)}
+					title="Unarchive"
+				>
+					<RotateCcw size="16" />
+				</button>
+			{:else}
+				<button
+					class="btn btn-square"
+					disabled={isArchiving || !canEdit}
+					onclick={() => canEdit && (showArchiveDialog = true)}
+					title="Archive"
+				>
+					<Archive size="16" />
+				</button>
+			{/if}
 			<button
 				class="btn btn-square"
-				disabled={isUnarchiving || !canEdit}
-				onclick={() => canEdit && (showUnarchiveDialog = true)}
-				title="Unarchive"
+				onclick={() => canEdit && (showEditDialog = true)}
+				disabled={!canEdit}
 			>
-				<RotateCcw size="16" />
+				<Edit size="16" />
 			</button>
-        {:else}
 			<button
 				class="btn btn-square"
-				disabled={isArchiving || !canEdit}
-				onclick={() => canEdit && (showArchiveDialog = true)}
-				title="Archive"
+				onclick={() => canDelete && (showConfirmationDialog = true)}
+				disabled={!canDelete}
 			>
-				<Archive size="16" />
+				<Trash size="16" />
 			</button>
-		{/if}
-        <button
-                class="btn btn-square"
-                onclick={() => canEdit && (showEditDialog = true)}
-                disabled={!canEdit}
-        >
-            <Edit size="16" />
-        </button>
-        <button
-                class="btn btn-square"
-                onclick={() => canDelete && (showConfirmationDialog = true)}
-                disabled={!canDelete}
-        >
-            <Trash size="16" />
-        </button>
-    </div>
-    {/if}
+		</div>
+	{/if}
 
-    <a href={`/projects/${project.id}`} class="card-body pt-12">
-    	<ProjectBadge project={project} />
-			<div class="card-title flex mt-2 items-center gap-2">
-  <AvatarComponent icon={project.icon ?? null} name={project.name} big={false} />
-  <h2 class="min-w-0">
-    <span class="line-clamp-1 break-words">
-      {project.name}
-    </span>
-  </h2>
-</div>
-        <p>{$_("projects.createdAtLabel")} {formatDate(new Date(project.creation_date), $locale)}</p>
-        <p>{$_("projects.dueAtLabel")} {formatDate(new Date(project.deadline), $locale)}</p>
-    </a>
+	<a href={`/projects/${project.id}`} class="card-body pt-12">
+		<ProjectBadge {project} />
+		<div class="card-title flex mt-2 items-center gap-2">
+			<AvatarComponent
+				icon={project.icon ?? null}
+				name={project.name}
+				big={false}
+			/>
+			<h2 class="min-w-0">
+				<span class="line-clamp-1 break-words"> {project.name} </span>
+			</h2>
+		</div>
+		<p>
+			{$_("projects.createdAtLabel")}
+			{formatDate(new Date(project.creation_date), $locale)}
+		</p>
+		<p>
+			{$_("projects.dueAtLabel")}
+			{formatDate(new Date(project.deadline), $locale)}
+		</p>
+	</a>
 </li>
 
 <EditProjectComponent
-        show={showEditDialog}
-        project={project}
-        ondismiss={() => showEditDialog = false}
+	show={showEditDialog}
+	{project}
+	ondismiss={() => showEditDialog = false}
 />
 <ConfirmationDialog
-        show={showConfirmationDialog}
-        message={$_("projects.delete")}
-        onconfirm={onDeleteProject}
-        ondismiss={() => showConfirmationDialog = false}
+	show={showConfirmationDialog}
+	message={$_("projects.delete")}
+	onconfirm={onDeleteProject}
+	ondismiss={() => showConfirmationDialog = false}
 />
-<EditProjectComponent show={showEditDialog} project={project} ondismiss={() => showEditDialog = false} />
-<ArchiveProjectDialog show={showArchiveDialog} projectName={project.name} onconfirm={(reason) => onArchiveProject(reason)} ondismiss={() => (showArchiveDialog = false)} />
-<UnarchiveProjectDialog show={showUnarchiveDialog} projectName={project.name} initialDeadline={new Date(project.deadline)} onconfirm={(date) => onUnarchiveProject(date)} ondismiss={() => (showUnarchiveDialog = false)} />
-<ConfirmationDialog show={showConfirmationDialog} message="Delete project" onconfirm={onDeleteProject} ondismiss={() => showConfirmationDialog = false} />
+<EditProjectComponent
+	show={showEditDialog}
+	{project}
+	ondismiss={() => showEditDialog = false}
+/>
+<ArchiveProjectDialog
+	show={showArchiveDialog}
+	projectName={project.name}
+	onconfirm={(reason) => onArchiveProject(reason)}
+	ondismiss={() => (showArchiveDialog = false)}
+/>
+<UnarchiveProjectDialog
+	show={showUnarchiveDialog}
+	projectName={project.name}
+	initialDeadline={new Date(project.deadline)}
+	onconfirm={(date) => onUnarchiveProject(date)}
+	ondismiss={() => (showUnarchiveDialog = false)}
+/>
+<ConfirmationDialog
+	show={showConfirmationDialog}
+	message="Delete project"
+	onconfirm={onDeleteProject}
+	ondismiss={() => showConfirmationDialog = false}
+/>
