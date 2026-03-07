@@ -84,7 +84,7 @@ loginBaseTest(
 		const logo = page.locator("#project-submit #project-logo");
 
 		await name.fill(uniq("e2e-project"));
-		await logo.setInputFiles("./src/lib/assets/favicon.svg");
+		await logo.setInputFiles("./src/lib/assets/arrow-in-the-target.svg");
 		await page.locator("#project-submit button[type=submit]").isDisabled();
 	},
 );
