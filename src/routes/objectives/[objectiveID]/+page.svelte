@@ -1,10 +1,11 @@
 <script lang="ts">
-import { ChevronDown } from "@lucide/svelte";
+import { ChevronDown, Edit, Trash } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
 	createKeyResult,
+	deleteObjective,
 	getKeyResultObjective,
 	getObjectiveChildren,
 	getObjectivePermission,
@@ -13,6 +14,8 @@ import {
 	unlinkObjectiveFromObjective,
 } from "$lib/api";
 import type { KeyResult, Objective, Project } from "$lib/types";
+import ConfirmationDialog from "../../../components/ConfirmationDialog.svelte";
+import EditObjectiveComponent from "../../../components/EditObjectiveComponent.svelte";
 import ExpandableDescription from "../../../components/ExpandableDescription.svelte";
 import KeyResultComponent from "../../../components/KeyResult.svelte";
 import LinkObjectiveDialog from "../../../components/LinkObjectiveDialog.svelte";
@@ -24,9 +27,8 @@ import SuccessDialog from "../../../components/SuccessDialog.svelte";
 let successToast: SuccessDialog;
 let { data } = $props();
 
-let objectiveID = $derived(data.objective.id);
-let objectiveName = $derived(data.objective.name);
-let objectiveDescription = $derived(data.objective.description);
+// svelte-ignore state_referenced_locally
+let objective = $state(data.objective);
 
 let keyResultList: KeyResult[] = $state([]);
 let relatedProjectsList: Project[] = $state([]);
@@ -40,9 +42,12 @@ let endValue: number = $state(100);
 
 let canCreate = $state(false);
 
+let showEditDialog = $state(false);
+let showConfirmationDialog = $state(false);
+
 onMount(async () => {
 	try {
-		const permissions = await getObjectivePermission(objectiveID);
+		const permissions = await getObjectivePermission(objective.id);
 		canCreate = permissions.can_write;
 	} catch (err) {
 		console.error(err);
@@ -51,7 +56,7 @@ onMount(async () => {
 
 $effect(() => {
 	// Always reload when the objective ID changes
-	if (!objectiveID) return;
+	if (!objective.id) return;
 
 	(async () => {
 		try {
@@ -68,7 +73,7 @@ $effect(() => {
 
 async function loadKeyResults() {
 	try {
-		keyResultList = await getKeyResultObjective(objectiveID);
+		keyResultList = await getKeyResultObjective(objective.id);
 	} catch (err) {
 		await goto("/expected");
 	}
@@ -76,7 +81,7 @@ async function loadKeyResults() {
 
 async function loadChildren() {
 	try {
-		linkedChildren = await getObjectiveChildren(objectiveID);
+		linkedChildren = await getObjectiveChildren(objective.id);
 	} catch (err) {
 		console.error("Failed to load children", err);
 		linkedChildren = [];
@@ -85,7 +90,7 @@ async function loadChildren() {
 
 async function loadRelatedProjects() {
 	try {
-		relatedProjectsList = await getProjectsForObjective(objectiveID);
+		relatedProjectsList = await getProjectsForObjective(objective.id);
 	} catch (err) {
 		console.error(err);
 	}
@@ -94,23 +99,53 @@ async function loadRelatedProjects() {
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 	try {
-		await createKeyResult(description, endValue, startValue, objectiveID);
+		await createKeyResult(description, endValue, startValue, objective.id);
 		successToast.displayMessage($_("keyResults.success"));
 	} catch (err) {
 		console.error(err);
 	}
-	keyResultList = await getKeyResultObjective(objectiveID);
+	keyResultList = await getKeyResultObjective(objective.id);
+}
+
+async function onDeleteObjective() {
+	showConfirmationDialog = false;
+
+	try {
+		await deleteObjective(objective.id);
+		await goto("/objectives");
+	} catch (err) {
+		console.error(err);
+	}
 }
 </script>
 
 <!-- Header -->
 <div class="card bg-base-100 border border-base-300 m-3">
   <div class="card-body relatvie">
-    <div class="absolute top-2 right-2 badge badge-primary">{$_("objectives.singular")}</div>
+    <div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
+    	<span class="badge badge-primary">{$_("objectives.singular")}</span>
+			<!-- Edit actions -->
+			<div class="flex gap-2" title={!canCreate ? $_("common.noPermissions") : ""}>
+				<button
+					class="btn btn-square"
+					disabled={!canCreate}
+					onclick={() => canCreate && (showEditDialog = true)}
+				>
+					<Edit size="16" />
+				</button>
+				<button
+					class="btn btn-square"
+					disabled={!canCreate}
+					onclick={() => canCreate && (showConfirmationDialog = true)}
+				>
+					<Trash size="16" />
+				</button>
+			</div>
+	  </div>
     <div class="flex items-center gap-4">
       <div class="min-w-0">
-        <div class="text-2xl font-bold truncate max-w-full">{objectiveName}</div>
-        <ExpandableDescription text={objectiveDescription} />
+        <div class="text-2xl font-bold truncate max-w-full">{objective.name}</div>
+        <ExpandableDescription text={objective.description} />
       </div>
     </div>
     <!-- Parent projects -->
@@ -231,19 +266,19 @@ async function handleSubmit(e: SubmitEvent) {
 {/if}
 
 <LinkObjectiveDialog
- title={$_("objectives.childrenForTitle", { values: { objectiveName: objectiveName } })}
+ title={$_("objectives.childrenForTitle", { values: { objectiveName: objective.name } })}
  initialLinked={linkedChildren}
- excludeObjectiveIds={[objectiveID]}     
+ excludeObjectiveIds={[objective.id]}     
  showErrors={true}                        
  writeChanges={async (toAdd, toRemove) => { 
    const addJobs = toAdd.map((obj) => ({
      obj,
-     promise: linkObjectiveToObjective(objectiveID, obj.id),
+     promise: linkObjectiveToObjective(objective.id, obj.id),
    }));
 
    const removeJobs = toRemove.map((obj) => ({
      obj,
-     promise: unlinkObjectiveFromObjective(objectiveID, obj.id),
+     promise: unlinkObjectiveFromObjective(objective.id, obj.id),
    }));
 
    const jobs = [...addJobs, ...removeJobs];
@@ -279,6 +314,19 @@ async function handleSubmit(e: SubmitEvent) {
  onLinkedChanged={(children) => (linkedChildren = children)}
  ondismiss={() => (showLinkChildrenModal = false)}
  show={showLinkChildrenModal}
+/>
+
+<EditObjectiveComponent
+	show={showEditDialog}
+	objective={objective}
+	ondismiss={() => (showEditDialog = false)}
+/>
+
+<ConfirmationDialog
+	show={showConfirmationDialog}
+	message={$_("objectives.delete")}
+	onconfirm={onDeleteObjective}
+	ondismiss={() => (showConfirmationDialog = false)}
 />
 
 <SuccessDialog bind:this={successToast}></SuccessDialog>
