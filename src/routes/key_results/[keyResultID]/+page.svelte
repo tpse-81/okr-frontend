@@ -1,20 +1,24 @@
 <script lang="ts">
-import { ChevronDown } from "@lucide/svelte";
+import { ChevronDown, Edit, Trash } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { goto } from "$app/navigation";
 import {
 	createTaskKeyResult,
+	deleteKeyResult,
 	getKeyResultPermission,
 	getObjectiveForKeyResult,
 	getTasksKeyResult,
 } from "$lib/api";
 import {
+	type KeyResult,
 	type Objective,
 	type Task,
 	type TaskState,
 	taskStates,
 } from "$lib/types";
+import ConfirmationDialog from "../../../components/ConfirmationDialog.svelte";
+import EditKeyResultComponent from "../../../components/EditKeyResultComponent.svelte";
 import ExpandableDescription from "../../../components/ExpandableDescription.svelte";
 import KeyResultProgress from "../../../components/KeyResultProgress.svelte";
 import ObjectiveComponent from "../../../components/Objective.svelte";
@@ -26,7 +30,8 @@ let successToast: SuccessDialog;
 
 let { data } = $props();
 
-let keyResultID = $derived(data.keyResult.id);
+// svelte-ignore state_referenced_locally
+let keyResult: KeyResult = $state(data.keyResult);
 
 let taskList: Task[] = $state([]);
 let relatedObjective: Objective | null = $state(null);
@@ -37,10 +42,13 @@ let taskState: TaskState = $state("open");
 
 let canCreate = $state(false);
 
+let showEditDialog = $state(false);
+let showConfirmationDialog = $state(false);
+
 onMount(async () => {
 	try {
 		await Promise.all([loadTasks(), loadRelatedObjective()]);
-		const permissions = await getKeyResultPermission(keyResultID);
+		const permissions = await getKeyResultPermission(keyResult.id);
 		canCreate = permissions.can_write;
 	} catch (err) {
 		console.error(err);
@@ -49,7 +57,7 @@ onMount(async () => {
 
 async function loadTasks() {
 	try {
-		taskList = await getTasksKeyResult(keyResultID);
+		taskList = await getTasksKeyResult(keyResult.id);
 	} catch (err) {
 		await goto("/expected");
 	}
@@ -57,7 +65,7 @@ async function loadTasks() {
 
 async function loadRelatedObjective() {
 	try {
-		relatedObjective = await getObjectiveForKeyResult(keyResultID);
+		relatedObjective = await getObjectiveForKeyResult(keyResult.id);
 	} catch (err) {
 		console.error(err);
 	}
@@ -66,7 +74,7 @@ async function loadRelatedObjective() {
 async function handleSubmit(e: SubmitEvent) {
 	e.preventDefault();
 	try {
-		await createTaskKeyResult(keyResultID, name, description, taskState);
+		await createTaskKeyResult(keyResult.id, name, description, taskState);
 		successToast.displayMessage($_("tasks.success"));
 	} catch (err) {
 		console.error(err);
@@ -75,19 +83,49 @@ async function handleSubmit(e: SubmitEvent) {
 	name = "";
 	description = "";
 }
+
+async function onDeleteKeyResult() {
+	showConfirmationDialog = false;
+
+	try {
+		await deleteKeyResult(keyResult.id);
+		await goto(`/objectives/${keyResult.objective_id}`);
+	} catch (err) {
+		console.error(err);
+	}
+}
 </script>
 
 <!-- Header -->
 <div class="card bg-base-100 border border-base-300 m-3">
   <div class="card-body relatvie">
-    <div class="absolute top-2 right-2 badge badge-primary">{$_("keyResults.singular")}</div>
+    <div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
+	    <span class="badge badge-primary">{$_("keyResults.singular")}</span>
+
+    <div class="flex gap-2" title={!canCreate ? $_("common.noPermissions") : ""}>
+					<button
+						class="btn btn-square"
+						disabled={!canCreate}
+						onclick={() => canCreate && (showEditDialog = true)}
+					>
+						<Edit size="16" />
+					</button>
+					<button
+						class="btn btn-square"
+						disabled={!canCreate}
+						onclick={() => canCreate && (showConfirmationDialog = true)}
+					>
+						<Trash size="16" />
+					</button>
+			</div>
+    </div>
   	<div class="flex gap-6 items-center my-3">
-  		<KeyResultProgress keyResult={data.keyResult} />
+  		<KeyResultProgress keyResult={keyResult} />
   		<div>
-      	<ExpandableDescription text={data.keyResult.description} bigText={true} />
+      	<ExpandableDescription text={keyResult.description} bigText={true} />
 	      <div>
-          <p>{$_("keyResults.start")}: {data.keyResult.start_value}</p>
-          <p>{$_("keyResults.current")}: {data.keyResult.current_value}</p>
+          <p>{$_("keyResults.start")}: {keyResult.start_value}</p>
+          <p>{$_("keyResults.current")}: {keyResult.current_value}</p>
 	      </div>
       </div>
     </div>
@@ -179,5 +217,18 @@ async function handleSubmit(e: SubmitEvent) {
     <TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
   </div>
 </div>
+
+<EditKeyResultComponent
+	show={showEditDialog}
+	keyResult={keyResult}
+	ondismiss={() => (showEditDialog = false)}
+/>
+
+<ConfirmationDialog
+	show={showConfirmationDialog}
+	message={$_("keyResults.delete")}
+	onconfirm={onDeleteKeyResult}
+	ondismiss={() => (showConfirmationDialog = false)}
+/>
 
 <SuccessDialog bind:this={successToast}></SuccessDialog>

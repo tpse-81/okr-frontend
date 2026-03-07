@@ -32,7 +32,7 @@ export interface Objective {
 
 export interface KeyResult {
 	id: string;
-	projectID: string;
+	objective_id: string;
 	description: string;
 	start_value: number;
 	current_value: number;
