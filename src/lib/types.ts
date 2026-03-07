@@ -65,8 +65,9 @@ export interface User {
 }
 
 export interface TwoFaRequiredResponse {
-	type: "webauthn" | "totp";
 	user_id: string;
+	totp_supported: boolean;
+	webauthn_supported: boolean;
 }
 
 export type ProjectRole = "leader" | "member";

@@ -166,7 +166,6 @@
 			"empty": "Bitte gib einen Benutzernamen und Passwort ein.",
 			"passkey": "Bitte verwende deinen Passkey.",
 			"totp": "Bitte gib deinen 2FA-Code ein.",
-			"invalidTotp": "Ungültiger 2FA-Code.",
 			"wrong": "Benutzername oder Passwort ist falsch.",
 			"loadPasskey": "Passkey laden",
 			"name": "Benutzername",
