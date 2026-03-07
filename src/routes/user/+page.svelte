@@ -211,7 +211,11 @@ onMount(() => {
 {#if !$userInfoStore?.is_admin}
 	<p class="p-3 opacity-70">Nur Admins können User verwalten.</p>
 {:else}
-	<form id="user-submit" onsubmit={(e) => void onCreateUser(e)} class="flex gap-3 p-3 m-auto">
+	<form
+		id="user-submit"
+		onsubmit={(e) => void onCreateUser(e)}
+		class="flex gap-3 p-3 m-auto"
+	>
 		<input
 			type="text"
 			pattern="^((?!@).)*$"
@@ -219,7 +223,7 @@ onMount(() => {
 			placeholder={$_("common.name")}
 			class="input w-full"
 			required
-		/>
+		>
 
 		<input
 			type="text"
@@ -228,9 +232,13 @@ onMount(() => {
 			class="input w-full"
 			required
 			title={$_("users.tooltipPasswordChange")}
-		/>
+		>
 
-		<button type="button" class="btn" onclick={() => (password = generatePassword())}>
+		<button
+			type="button"
+			class="btn"
+			onclick={() => (password = generatePassword())}
+		>
 			{$_("users.generatePasswordButton")}
 		</button>
 
@@ -240,9 +248,9 @@ onMount(() => {
 			placeholder={$_("users.email")}
 			class="input w-full"
 			required
-		/>
+		>
 
-		<input type="submit" value="Create" class="btn btn-primary" />
+		<input type="submit" value="Create" class="btn btn-primary">
 	</form>
 
 	<div class="p-3">
@@ -278,13 +286,19 @@ onMount(() => {
 								<td class="text-right">
 									<div class="flex gap-2 justify-end">
 										{#if !u.is_admin}
-										<button class="btn btn-sm" onclick={() => openSetPassword(u)}>
-											{$_("users.setPassword")}
-										</button>
+											<button
+												class="btn btn-sm"
+												onclick={() => openSetPassword(u)}
+											>
+												{$_("users.setPassword")}
+											</button>
 
-										<button class="btn btn-sm btn-warning" onclick={() => openPromoteToAdmin(u)}>
-											{$_("users.promoteToAdmin")}
-										</button>
+											<button
+												class="btn btn-sm btn-warning"
+												onclick={() => openPromoteToAdmin(u)}
+											>
+												{$_("users.promoteToAdmin")}
+											</button>
 										{/if}
 
 										<button
@@ -331,7 +345,8 @@ onMount(() => {
 
 		{#if userForPassword}
 			<p class="opacity-70 mb-3">
-				{userForPassword.name} ({userForPassword.email})
+				{userForPassword.name}
+				({userForPassword.email})
 			</p>
 		{/if}
 
@@ -342,8 +357,12 @@ onMount(() => {
 				bind:value={passwordInput}
 				placeholder={$_("users.account.password.new")}
 				required
-			/>
-			<button type="button" class="btn" onclick={() => (passwordInput = generatePassword())}>
+			>
+			<button
+				type="button"
+				class="btn"
+				onclick={() => (passwordInput = generatePassword())}
+			>
 				{$_("users.random")}
 			</button>
 		</div>
@@ -351,7 +370,10 @@ onMount(() => {
 		<div class="modal-action">
 			<form method="dialog" class="flex gap-3 w-full justify-end">
 				<button class="btn" onclick={dismissSetPassword}>Cancel</button>
-				<button class="btn btn-primary" onclick={() => void confirmSetPassword()}>
+				<button
+					class="btn btn-primary"
+					onclick={() => void confirmSetPassword()}
+				>
 					{$_("common.save")}
 				</button>
 			</form>
@@ -365,10 +387,16 @@ onMount(() => {
 		<p class="py-4 whitespace-pre-line">{passwordDialogText}</p>
 		<div class="modal-action">
 			<form method="dialog" class="flex gap-3 w-full justify-end">
-				<button class="btn" onclick={() => void copyToClipboard(passwordDialogText)}>
+				<button
+					class="btn"
+					onclick={() => void copyToClipboard(passwordDialogText)}
+				>
 					{$_("common.copy")}
 				</button>
-				<button class="btn btn-primary" onclick={() => (showPasswordDialog = false)}>
+				<button
+					class="btn btn-primary"
+					onclick={() => (showPasswordDialog = false)}
+				>
 					OK
 				</button>
 			</form>

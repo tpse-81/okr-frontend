@@ -278,165 +278,195 @@ onMount(async () => {
 </script>
 
 <div class="p-3">
-  <h2>{$_("account.title")}</h2>
-  <div class="card card-border mt-3">
-    <h2 class="card-title">{$_("account.password.title")}</h2>
-    <div class="card-body">
-      <ErrorMessage message={passwordError} />
-      {#if passwordSuccess}
-        <div class="alert alert-success">
-          <Check size="16" />
-          <span>{passwordSuccess}</span>
-        </div>
-      {/if}
+	<h2>{$_("account.title")}</h2>
+	<div class="card card-border mt-3">
+		<h2 class="card-title">{$_("account.password.title")}</h2>
+		<div class="card-body">
+			<ErrorMessage message={passwordError} />
+			{#if passwordSuccess}
+				<div class="alert alert-success">
+					<Check size="16" />
+					<span>{passwordSuccess}</span>
+				</div>
+			{/if}
 
-      <form class="flex flex-col gap-3 w-max" onsubmit={handleChangePassword}>
-        <input
-          type="password"
-          placeholder={$_("account.password.current")}
-          class="input input-bordered"
-          bind:value={oldPassword}
-        />
+			<form class="flex flex-col gap-3 w-max" onsubmit={handleChangePassword}>
+				<input
+					type="password"
+					placeholder={$_("account.password.current")}
+					class="input input-bordered"
+					bind:value={oldPassword}
+				>
 
-        <PasswordStrengthInput
-          bind:password={newPassword}
-        	userInfo={$userInfoStore!}
-          placeholder={$_("account.password.new")}
-		  class="w-full"
-        />
-        <PasswordStrengthInput
-          bind:password={newPasswordRepeat}
-        	userInfo={$userInfoStore!}
-          placeholder={$_("account.password.repeat")}
-		  class="w-full"
-        />
-        <div>
-          <button class="btn btn-primary w-max" type="submit">{$_("account.password.change")}</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div class="card card-border mt-3">
-    <h2 class="card-title">{$_("account.totp.title")}</h2>
-    <div class="card-body">
-      <ErrorMessage message={totpError} />
-      {#if totpSuccess}
-        <div class="alert alert-success">
-          <Check size="16" />
-          <span>{totpSuccess}</span>
-        </div>
-      {/if}
+				<PasswordStrengthInput
+					bind:password={newPassword}
+					userInfo={$userInfoStore!}
+					placeholder={$_("account.password.new")}
+					class="w-full"
+				/>
+				<PasswordStrengthInput
+					bind:password={newPasswordRepeat}
+					userInfo={$userInfoStore!}
+					placeholder={$_("account.password.repeat")}
+					class="w-full"
+				/>
+				<div>
+					<button class="btn btn-primary w-max" type="submit">
+						{$_("account.password.change")}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="card card-border mt-3">
+		<h2 class="card-title">{$_("account.totp.title")}</h2>
+		<div class="card-body">
+			<ErrorMessage message={totpError} />
+			{#if totpSuccess}
+				<div class="alert alert-success">
+					<Check size="16" />
+					<span>{totpSuccess}</span>
+				</div>
+			{/if}
 
-      <div class="flex flex-col gap-3">
-        <div class="text-sm opacity-80">
-          {$_("account.totp.description")}
-        </div>
+			<div class="flex flex-col gap-3">
+				<div class="text-sm opacity-80">{$_("account.totp.description")}</div>
 
-        <div class="flex gap-3 flex-wrap">
-          <button class="btn btn-primary w-max" type="button" onclick={() => startTotpSetup()}>
-            {$_("account.totp.generate")}
-          </button>
-        </div>
+				<div class="flex gap-3 flex-wrap">
+					<button
+						class="btn btn-primary w-max"
+						type="button"
+						onclick={() => startTotpSetup()}
+					>
+						{$_("account.totp.generate")}
+					</button>
+				</div>
 
-        {#if totpSetupData}
-          <div class="alert flex">
-            <div class="flex flex-col gap-2 w-full">
-              <div>
-                <div class="font-semibold">{$_("account.totp.secret")}</div>
-                <code class="break-all">{totpSetupData.secret}</code>
-                <div class="text-xs opacity-70 mt-1">
-                  {$_("account.totp.secretHint")}
-                </div>
-              </div>
+				{#if totpSetupData}
+					<div class="alert flex">
+						<div class="flex flex-col gap-2 w-full">
+							<div>
+								<div class="font-semibold">{$_("account.totp.secret")}</div>
+								<code class="break-all">{totpSetupData.secret}</code>
+								<div class="text-xs opacity-70 mt-1">
+									{$_("account.totp.secretHint")}
+								</div>
+							</div>
 
-              <div class="flex flex-col gap-2">
-                <label class="label" for="token-input"><span class="label-text">{$_("account.totp.confirm")}</span></label>
-                <input
-                  type="text"
-                  id="token-input"
-                  placeholder="123456"
-                  class="input input-bordered"
-                  bind:value={totpConfirmCode}
-                />
-                <div>
-                  <button class="btn btn-primary w-max" type="button" onclick={() => confirmTotp()}>
-                    {$_("account.totp.confirm")}
-                  </button>
-                </div>
-              </div>
-            </div>
-            {#if totpSetupQrCodeUrl}
-            <img src={totpSetupQrCodeUrl} alt={$_("account.totp.qrAlt")} />
-            {/if}
-          </div>
-        {/if}
+							<div class="flex flex-col gap-2">
+								<label class="label" for="token-input"
+									><span class="label-text"
+										>{$_("account.totp.confirm")}</span
+									></label
+								>
+								<input
+									type="text"
+									id="token-input"
+									placeholder="123456"
+									class="input input-bordered"
+									bind:value={totpConfirmCode}
+								>
+								<div>
+									<button
+										class="btn btn-primary w-max"
+										type="button"
+										onclick={() => confirmTotp()}
+									>
+										{$_("account.totp.confirm")}
+									</button>
+								</div>
+							</div>
+						</div>
+						{#if totpSetupQrCodeUrl}
+							<img src={totpSetupQrCodeUrl} alt={$_("account.totp.qrAlt")}>
+						{/if}
+					</div>
+				{/if}
 
-        {#if isTotpConfigured}
-        <div class="divider divider-neutral"></div>
-        <div class="flex flex-col gap-2">
-          <label class="label"><span class="label-text">{$_("account.totp.disable")}</span></label>
-          <input
-            type="text"
-            placeholder="123456"
-            class="input input-bordered"
-            bind:value={totpDisableCode}
-          />
-          <button class="btn w-max" type="button" onclick={() => disableTotp()}>
-            {$_("account.totp.disable")}
-          </button>
-        </div>
-	      {/if}
-      </div>
-    </div>
-  </div>
+				{#if isTotpConfigured}
+					<div class="divider divider-neutral"></div>
+					<div class="flex flex-col gap-2">
+						<label class="label"
+							><span class="label-text"
+								>{$_("account.totp.disable")}</span
+							></label
+						>
+						<input
+							type="text"
+							placeholder="123456"
+							class="input input-bordered"
+							bind:value={totpDisableCode}
+						>
+						<button
+							class="btn w-max"
+							type="button"
+							onclick={() => disableTotp()}
+						>
+							{$_("account.totp.disable")}
+						</button>
+					</div>
+				{/if}
+			</div>
+		</div>
+	</div>
 
-  <div class="card card-border mt-3">
-  	<h2 class="card-title">{$_("account.passkeys.title")}</h2>
+	<div class="card card-border mt-3">
+		<h2 class="card-title">{$_("account.passkeys.title")}</h2>
 
-  	<div class="card-body">
-		  <ErrorMessage message={errorMessage} />
-		  {#if !isWebauthnConfigured}
-			  <button class="btn btn-primary w-max" onclick={() => registerWebauthn()}>{$_("account.passkeys.register")}</button>
-		  {/if}
-		  {#if isWebauthnConfigured}
-		  	<div class="alert alert-success">
-		  		<Check size="16" />
-		  		<span>{ successMessage }</span>
+		<div class="card-body">
+			<ErrorMessage message={errorMessage} />
+			{#if !isWebauthnConfigured}
+				<button
+					class="btn btn-primary w-max"
+					onclick={() => registerWebauthn()}
+				>
+					{$_("account.passkeys.register")}
+				</button>
+			{/if}
+			{#if isWebauthnConfigured}
+				<div class="alert alert-success">
+					<Check size="16" />
+					<span>{successMessage}</span>
 				</div>
 
 				<div class="flex gap-3">
-				  <button class="btn btn-primary w-max" onclick={() => loginWebauthn()}>{$_("account.passkeys.login")}</button>
-				  <button class="btn btn-primary w-max" onclick={() => deleteWebauthnCredentials()}>{$_("account.passkeys.remove")}</button>
-			  </div>
-		  {/if}
-	  </div>
-  </div>
-    <div class="card card-border mt-3">
-    <h2 class="card-title">{$_("account.delete.title")}</h2>
-    <div class="card-body">
-      <ErrorMessage message={deleteError} />
-      <div class="text-sm opacity-80">
-        {$_("account.delete.description")}
-      </div>
-      <button
-        class="btn btn-error w-max mt-2"
-        type="button"
-        onclick={() => (showDeleteDialog = true)}
-      >
-        {$_("account.delete.action")}
-      </button>
-    </div>
-  </div>
+					<button class="btn btn-primary w-max" onclick={() => loginWebauthn()}>
+						{$_("account.passkeys.login")}
+					</button>
+					<button
+						class="btn btn-primary w-max"
+						onclick={() => deleteWebauthnCredentials()}
+					>
+						{$_("account.passkeys.remove")}
+					</button>
+				</div>
+			{/if}
+		</div>
+	</div>
+	<div class="card card-border mt-3">
+		<h2 class="card-title">{$_("account.delete.title")}</h2>
+		<div class="card-body">
+			<ErrorMessage message={deleteError} />
+			<div class="text-sm opacity-80">{$_("account.delete.description")}</div>
+			<button
+				class="btn btn-error w-max mt-2"
+				type="button"
+				onclick={() => (showDeleteDialog = true)}
+			>
+				{$_("account.delete.action")}
+			</button>
+		</div>
+	</div>
 
-  <ConfirmationDialog
-    show={showDeleteDialog}
-    message={$_("account.delete.title")}
-    onconfirm={() => {
+	<ConfirmationDialog
+		show={showDeleteDialog}
+		message={$_("account.delete.title")}
+		onconfirm={() => {
       showDeleteDialog = false;
       confirmDeleteAccount();
     }}
-    ondismiss={() => {
+		ondismiss={() => {
       showDeleteDialog = false;
     }}
-  />
+	/>
 </div>

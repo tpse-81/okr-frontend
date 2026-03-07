@@ -51,67 +51,71 @@ async function onUpdatekeyResult() {
 </script>
 
 <dialog id="edit-key-result-modal" bind:this={modal} class="modal">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">{$_("keyResults.edit")}</h3>
-    <ErrorMessage message={errorMessage} />
-    <form class="flex flex-col gap-3 mt-3">
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("common.description")}</span>
-    </div>
-    <input
-      type="text"
-      bind:value={description}
-      placeholder={$_("common.description")}
-      class="input w-full"
-    />
-  </label>
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">{$_("keyResults.edit")}</h3>
+		<ErrorMessage message={errorMessage} />
+		<form class="flex flex-col gap-3 mt-3">
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("common.description")}</span>
+				</div>
+				<input
+					type="text"
+					bind:value={description}
+					placeholder={$_("common.description")}
+					class="input w-full"
+				>
+			</label>
 
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("keyResults.start")}</span>
-    </div>
-    <input
-      type="number"
-      bind:value={startValue}
-      placeholder={$_("keyResults.start")}
-      class="input w-full"
-    />
-  </label>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("keyResults.start")}</span>
+				</div>
+				<input
+					type="number"
+					bind:value={startValue}
+					placeholder={$_("keyResults.start")}
+					class="input w-full"
+				>
+			</label>
 
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("keyResults.current")}</span>
-    </div>
-    <input
-      type="number"
-      bind:value={currentValue}
-      placeholder={$_("keyResults.current")}
-      class="input w-full"
-    />
-  </label>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("keyResults.current")}</span>
+				</div>
+				<input
+					type="number"
+					bind:value={currentValue}
+					placeholder={$_("keyResults.current")}
+					class="input w-full"
+				>
+			</label>
 
-  <label class="form-control w-full">
-    <div class="label">
-      <span class="label-text">{$_("keyResults.target")}</span>
-    </div>
-    <input
-      type="number"
-      bind:value={endValue}
-      placeholder={$_("keyResults.target")}
-      class="input w-full"
-    />
-  </label>
-</form>
-      <div class="modal-action">
-          <div class="flex gap-3 w-full justify-end">
-              <button type="button" class="btn" onclick={ondismiss}>{$_("common.close")}</button>
-              <button type="button" class="btn btn-primary" onclick={onUpdatekeyResult}>{$_("common.confirm")}</button>
-          </div>
-      </div>
-  </div>
+			<label class="form-control w-full">
+				<div class="label">
+					<span class="label-text">{$_("keyResults.target")}</span>
+				</div>
+				<input
+					type="number"
+					bind:value={endValue}
+					placeholder={$_("keyResults.target")}
+					class="input w-full"
+				>
+			</label>
+		</form>
+		<div class="modal-action">
+			<div class="flex gap-3 w-full justify-end">
+				<button type="button" class="btn" onclick={ondismiss}>
+					{$_("common.close")}
+				</button>
+				<button
+					type="button"
+					class="btn btn-primary"
+					onclick={onUpdatekeyResult}
+				>
+					{$_("common.confirm")}
+				</button>
+			</div>
+		</div>
+	</div>
 </dialog>
-
-
-
-

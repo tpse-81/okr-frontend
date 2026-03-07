@@ -98,53 +98,63 @@ async function onDeleteKeyResult() {
 
 <!-- Header -->
 <div class="card bg-base-100 border border-base-300 m-3">
-  <div class="card-body relatvie">
-    <div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
-	    <span class="badge badge-primary">{$_("keyResults.singular")}</span>
+	<div class="card-body relatvie">
+		<div class="absolute top-2 right-3 flex flex-col items-end gap-2 z-1">
+			<span class="badge badge-primary">{$_("keyResults.singular")}</span>
 
-    <div class="flex gap-2" title={!canCreate ? $_("common.noPermissions") : ""}>
-					<button
-						class="btn btn-square"
-						disabled={!canCreate}
-						onclick={() => canCreate && (showEditDialog = true)}
-					>
-						<Edit size="16" />
-					</button>
-					<button
-						class="btn btn-square"
-						disabled={!canCreate}
-						onclick={() => canCreate && (showConfirmationDialog = true)}
-					>
-						<Trash size="16" />
-					</button>
+			<div
+				class="flex gap-2"
+				title={!canCreate ? $_("common.noPermissions") : ""}
+			>
+				<button
+					class="btn btn-square"
+					disabled={!canCreate}
+					onclick={() => canCreate && (showEditDialog = true)}
+				>
+					<Edit size="16" />
+				</button>
+				<button
+					class="btn btn-square"
+					disabled={!canCreate}
+					onclick={() => canCreate && (showConfirmationDialog = true)}
+				>
+					<Trash size="16" />
+				</button>
 			</div>
-    </div>
-  	<div class="flex gap-6 items-center my-3">
-  		<KeyResultProgress keyResult={keyResult} />
-  		<div>
-      	<ExpandableDescription text={keyResult.description} bigText={true} />
-	      <div>
-          <p>{$_("keyResults.start")}: {keyResult.start_value}</p>
-          <p>{$_("keyResults.current")}: {keyResult.current_value}</p>
-	      </div>
-      </div>
-    </div>
-    <div class="flex flex-col gap-4">
+		</div>
+		<div class="flex gap-6 items-center my-3">
+			<KeyResultProgress {keyResult} />
+			<div>
+				<ExpandableDescription text={keyResult.description} bigText={true} />
+				<div>
+					<p>{$_("keyResults.start")}: {keyResult.start_value}</p>
+					<p>{$_("keyResults.current")}: {keyResult.current_value}</p>
+				</div>
+			</div>
+		</div>
+		<div class="flex flex-col gap-4">
 			<details class="collapse bg-base-100 border border-base-300 w-full">
-			  <summary class="collapse-title font-semibold w-full flex justify-between items-center">
-			  	<span class="truncate max-w-full">{$_("keyResults.belongsToObjective")}</span>
-			  	<ChevronDown size="24" />
-			  </summary>
-			  <div class="collapse-content text-sm">
+				<summary
+					class="collapse-title font-semibold w-full flex justify-between items-center"
+				>
+					<span class="truncate max-w-full"
+						>{$_("keyResults.belongsToObjective")}</span
+					>
+					<ChevronDown size="24" />
+				</summary>
+				<div class="collapse-content text-sm">
 					<ul id="related-objectives-list" class="grid grid-auto">
-							{#if relatedObjective}
-								<ObjectiveComponent objective={relatedObjective} showEditActions={false} />
-							{/if}
-					</ul> 
-			  </div>
+						{#if relatedObjective}
+							<ObjectiveComponent
+								objective={relatedObjective}
+								showEditActions={false}
+							/>
+						{/if}
+					</ul>
+				</div>
 			</details>
-    </div>
-  </div>
+		</div>
+	</div>
 </div>
 
 {#if canCreate}
@@ -169,7 +179,7 @@ async function onDeleteKeyResult() {
 						placeholder={$_("tasks.name")}
 						class="input input-bordered w-full"
 						required
-					/>
+					>
 				</div>
 
 				<div class="form-control">
@@ -196,9 +206,9 @@ async function onDeleteKeyResult() {
 							bind:value={taskState}
 							class="select select-bordered w-full"
 						>
-				{#each taskStates as state}
-				  <option value={state.state}>{$_(state.label)}</option>
-				{/each}
+							{#each taskStates as state}
+								<option value={state.state}>{$_(state.label)}</option>
+							{/each}
 						</select>
 
 						<button type="submit" class="btn btn-primary">
@@ -212,15 +222,18 @@ async function onDeleteKeyResult() {
 {/if}
 
 <div class="p-3">
-  <h1>{$_("tasks.title")}</h1>
-  <div id="tasks-list">
-    <TaskColumns tasks={taskList} onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)} />
-  </div>
+	<h1>{$_("tasks.title")}</h1>
+	<div id="tasks-list">
+		<TaskColumns
+			tasks={taskList}
+			onTaskDeleted={id => taskList = taskList.filter(task => task.id != id)}
+		/>
+	</div>
 </div>
 
 <EditKeyResultComponent
 	show={showEditDialog}
-	keyResult={keyResult}
+	{keyResult}
 	ondismiss={() => (showEditDialog = false)}
 />
 

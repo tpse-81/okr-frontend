@@ -256,11 +256,9 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 				placeholder={$_("users.search")}
 				bind:value={filter}
 				class="input input-bordered w-full md:max-w-sm"
-			/>
+			>
 			{#if me && !canManageAnything}
-				<div class="text-sm opacity-70">
-					{$_("users.readOnlyWarning")}
-				</div>
+				<div class="text-sm opacity-70">{$_("users.readOnlyWarning")}</div>
 			{/if}
 		</div>
 
@@ -287,14 +285,14 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 							{@const currentRole = memberRoles[user.id] ?? "member"}
 
 							<ProjectMemberRow
-								user={user}
+								{user}
 								mode="member"
-								currentRole={currentRole}
+								{currentRole}
 								pending={pending[user.id] ?? false}
-								canManageAnything={canManageAnything}
-								manageTarget={manageTarget}
+								{canManageAnything}
+								{manageTarget}
 								viewerIsAdmin={me?.is_admin ?? false}
-								roleLabel={roleLabel}
+								{roleLabel}
 								onChangeRole={changeRole}
 								onToggleMembership={(u, checked) => {
 									if (!checked) removeFromProject(u);
@@ -308,9 +306,12 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 
 		<!-- Non-members collapsible (only for managers) -->
 		{#if canManageAnything}
-			<details class="collapse collapse-arrow border border-base-300 bg-base-100">
+			<details
+				class="collapse collapse-arrow border border-base-300 bg-base-100"
+			>
 				<summary class="collapse-title font-medium">
-					{$_("users.addUsers")} ({nonMembers.length})
+					{$_("users.addUsers")}
+					({nonMembers.length})
 				</summary>
 
 				<div class="collapse-content">
@@ -328,21 +329,23 @@ let nonMembers = $derived(filteredUsers.filter((u) => !isMember(u.id)));
 							<tbody>
 								{#if nonMembers.length === 0}
 									<tr>
-										<td colspan="4" class="opacity-70">{$_("users.noUsersToAdd")}</td>
+										<td colspan="4" class="opacity-70">
+											{$_("users.noUsersToAdd")}
+										</td>
 									</tr>
 								{:else}
 									{#each nonMembers as user (user.id)}
 										{@const manageTarget = canManageTarget(user)}
 
 										<ProjectMemberRow
-											user={user}
+											{user}
 											mode="nonMember"
 											currentRole={"member"}
 											pending={pending[user.id] ?? false}
-											canManageAnything={canManageAnything}
-											manageTarget={manageTarget}
+											{canManageAnything}
+											{manageTarget}
 											viewerIsAdmin={me?.is_admin ?? false}
-											roleLabel={roleLabel}
+											{roleLabel}
 											onChangeRole={changeRole}
 											onToggleMembership={(u, checked) => {
 												if (checked) addToProject(u);

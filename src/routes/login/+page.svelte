@@ -106,8 +106,12 @@ async function loadWebauthn() {
 
 <div class="flex items-center justify-center mt-50">
 	<form id="login-submit" onsubmit={login}>
-		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-100 p-6">
-			<legend class="fieldset-legend text-3xl font-semibold">{$_("users.login.title")}</legend>
+		<fieldset
+			class="fieldset bg-base-200 border-base-300 rounded-box w-100 p-6"
+		>
+			<legend class="fieldset-legend text-3xl font-semibold">
+				{$_("users.login.title")}
+			</legend>
 
 			{#if errorMessage}
 				<div id="login-error" class="alert alert-error">
@@ -123,56 +127,60 @@ async function loadWebauthn() {
 
 			<label class="label" for="username">{$_("users.login.name")}</label>
 			<input
-					type="text"
-					id="username"
-					bind:value={username}
-					autocomplete="username"
-					placeholder={$_("users.login.name")}
-					class="input w-full"
-					required
-			/>
+				type="text"
+				id="username"
+				bind:value={username}
+				autocomplete="username"
+				placeholder={$_("users.login.name")}
+				class="input w-full"
+				required
+			>
 
-			<label class="label mt-4" for="password">{$_("users.login.password")}</label>
+			<label class="label mt-4" for="password"
+				>{$_("users.login.password")}</label
+			>
 			<input
-					type="password"
-					id="password"
-					bind:value={password}
-					autocomplete="current-password"
-					placeholder={$_("users.login.password")}
-					class="input w-full"
-					required
-			/>
+				type="password"
+				id="password"
+				bind:value={password}
+				autocomplete="current-password"
+				placeholder={$_("users.login.password")}
+				class="input w-full"
+				required
+			>
 
 			{#if webauthnRequired}
 				<button
-						type="button"
-						class="btn btn-primary mt-4 w-full"
-						onclick={() => loadWebauthn()}
+					type="button"
+					class="btn btn-primary mt-4 w-full"
+					onclick={() => loadWebauthn()}
 				>
 					{$_("users.login.loadPasskey")}
 				</button>
 			{/if}
 
 			{#if totpRequired}
-				<label class="label mt-4" for="two_fa_code">{$_('account.totp.twoFaCode')}</label>
+				<label class="label mt-4" for="two_fa_code"
+					>{$_('account.totp.twoFaCode')}</label
+				>
 				<input
-						type="text"
-						id="two_fa_code"
-						bind:value={twoFaCode}
-						pattern={TWO_FA_CODE_REGEX}
-						autocomplete="one-time-code"
-						placeholder={$_('account.totp.twoFaCode')}
-						class="input w-full"
-						required={!hasValid2FAInput}
-				/>
+					type="text"
+					id="two_fa_code"
+					bind:value={twoFaCode}
+					pattern={TWO_FA_CODE_REGEX}
+					autocomplete="one-time-code"
+					placeholder={$_('account.totp.twoFaCode')}
+					class="input w-full"
+					required={!hasValid2FAInput}
+				>
 			{/if}
 
 			<input
-					type="submit"
-					value={$_("users.login.button")}
-					class="btn btn-primary mt-6 w-full"
-					disabled={!hasValid2FAInput}
-			/>
+				type="submit"
+				value={$_("users.login.button")}
+				class="btn btn-primary mt-6 w-full"
+				disabled={!hasValid2FAInput}
+			>
 		</fieldset>
 	</form>
 </div>

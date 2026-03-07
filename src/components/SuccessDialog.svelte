@@ -20,13 +20,11 @@ export function displayMessage(message: string) {
 </script>
 
 {#if displayedMessage}
-    <div
-            in:fade={{ duration: 120 }}
-            out:fade={{ duration: 240 }}
-            class="toast toast-end p-2 text-sm mb-2"
-    >
-        <div class="alert alert-success">
-            <span>{displayedMessage}</span>
-        </div>
-    </div>
+	<div
+		in:fade={{ duration: 120 }}
+		out:fade={{ duration: 240 }}
+		class="toast toast-end p-2 text-sm mb-2"
+	>
+		<div class="alert alert-success"><span>{displayedMessage}</span></div>
+	</div>
 {/if}

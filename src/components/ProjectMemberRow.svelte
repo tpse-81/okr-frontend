@@ -42,64 +42,75 @@ const roleSelectDisabled = $derived(
 </script>
 
 <tr>
-  <td>
-    <div class="flex items-center gap-2">
-      <div class="avatar placeholder">
-        <div class="bg-neutral text-neutral-content rounded-full w-8 grid items-center">
-          <span class="text-xs m-auto">{props.user.name?.[0]?.toUpperCase() ?? "?"}</span>
-        </div>
-      </div>
-      <div class="min-w-0">
-        <div class="font-medium truncate">{props.user.name}</div>
-        {#if props.user.is_admin}
-          <div class="badge badge-outline badge-sm">{$_("users.admin")}</div>
-        {/if}
-      </div>
-    </div>
-  </td>
+	<td>
+		<div class="flex items-center gap-2">
+			<div class="avatar placeholder">
+				<div
+					class="bg-neutral text-neutral-content rounded-full w-8 grid items-center"
+				>
+					<span class="text-xs m-auto"
+						>{props.user.name?.[0]?.toUpperCase() ?? "?"}</span
+					>
+				</div>
+			</div>
+			<div class="min-w-0">
+				<div class="font-medium truncate">{props.user.name}</div>
+				{#if props.user.is_admin}
+					<div class="badge badge-outline badge-sm">{$_("users.admin")}</div>
+				{/if}
+			</div>
+		</div>
+	</td>
 
-  <td class="hidden md:table-cell">{props.user.email}</td>
+	<td class="hidden md:table-cell">{props.user.email}</td>
 
-  <td class="w-44">
-    {#if props.user.is_admin}
-      <span class="badge badge-outline badge-sm">{$_("users.admin")}</span>
-    {:else if props.mode === "nonMember"}
-      <span class="opacity-50 text-sm">{$_("users.member")}</span>
-      {#if !manageTarget}
-        <div class="text-xs opacity-60 mt-1">{$_("users.onlyAdminCanAddUser")}</div>
-      {/if}
-    {:else}
-      {#if !canManageAnything || !manageTarget}
-        <span class="badge badge-outline badge-sm">{props.roleLabel(currentRole)}</span>
-        {#if canManageAnything && !manageTarget}
-          <div class="text-xs opacity-60 mt-1">{$_("users.onlyAdminCanEdit")}</div>
-        {/if}
-      {:else}
-        <select
-          class="select select-bordered select-sm w-full"
-          bind:value={currentRole}
-          disabled={roleSelectDisabled}
-          onchange={() => props.onChangeRole(props.user, currentRole)}
-        >
-          <option value="member">{$_("users.member")}</option>
-          <option value="leader">{$_("users.teamlead")}</option>
-        </select>
+	<td class="w-44">
+		{#if props.user.is_admin}
+			<span class="badge badge-outline badge-sm">{$_("users.admin")}</span>
+		{:else if props.mode === "nonMember"}
+			<span class="opacity-50 text-sm">{$_("users.member")}</span>
+			{#if !manageTarget}
+				<div class="text-xs opacity-60 mt-1">
+					{$_("users.onlyAdminCanAddUser")}
+				</div>
+			{/if}
+		{:else}
+			{#if !canManageAnything || !manageTarget}
+				<span class="badge badge-outline badge-sm"
+					>{props.roleLabel(currentRole)}</span
+				>
+				{#if canManageAnything && !manageTarget}
+					<div class="text-xs opacity-60 mt-1">
+						{$_("users.onlyAdminCanEdit")}
+					</div>
+				{/if}
+			{:else}
+				<select
+					class="select select-bordered select-sm w-full"
+					bind:value={currentRole}
+					disabled={roleSelectDisabled}
+					onchange={() => props.onChangeRole(props.user, currentRole)}
+				>
+					<option value="member">{$_("users.member")}</option>
+					<option value="leader">{$_("users.teamlead")}</option>
+				</select>
 
-        {#if !viewerIsAdmin && currentRole === "leader"}
-          <div class="text-xs opacity-60 mt-1">{$_("users.teamleadsCannotEditTeamleads")}</div>
-        {/if}
-      {/if}
-    {/if}
-  </td>
+				{#if !viewerIsAdmin && currentRole === "leader"}
+					<div class="text-xs opacity-60 mt-1">
+						{$_("users.teamleadsCannotEditTeamleads")}
+					</div>
+				{/if}
+			{/if}
+		{/if}
+	</td>
 
-
-  <td class="w-24 text-right">
-      <input
-        type="checkbox"
-        class="checkbox"
-        bind:checked={isChecked}
-        disabled={!canEdit}
-        onchange={() => props.onToggleMembership(props.user, isChecked)}
-      />
-  </td>
+	<td class="w-24 text-right">
+		<input
+			type="checkbox"
+			class="checkbox"
+			bind:checked={isChecked}
+			disabled={!canEdit}
+			onchange={() => props.onToggleMembership(props.user, isChecked)}
+		>
+	</td>
 </tr>

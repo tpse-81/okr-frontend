@@ -27,14 +27,19 @@ async function objectives() {
 </script>
 
 <div class="p-3">
-	<div role="alert" class="alert alert-vertical alert-outline sm:alert-horizontal">
-		<InfoIcon/>
+	<div
+		role="alert"
+		class="alert alert-vertical alert-outline sm:alert-horizontal"
+	>
+		<InfoIcon />
 		<div>
 			<h3 class="font-bold">{$_("objectives.cantCreate")}</h3>
 			<div class="text-xs">{$_("objectives.selectProject")}</div>
 		</div>
 		<a href="/projects">
-			<button class="btn btn-sm btn-outline">{$_("nav.goto")} {$_("projects.title")}</button>
+			<button class="btn btn-sm btn-outline">
+				{$_("nav.goto")} {$_("projects.title")}
+			</button>
 		</a>
 	</div>
 </div>
@@ -42,12 +47,15 @@ async function objectives() {
 <div class="p-3">
 	<h1>{$_("objectives.title")}</h1>
 	{#if objectivelist.length > 0}
-	    <ul class="grid grid-auto gap-3">
-	        {#each objectivelist as objective}
-	        	<ObjectiveComponent objective={objective} onObjectiveDeleted={() => objectivelist = objectivelist.filter(obj => objective.id != obj.id)} />
-	        {/each}
-	    </ul>
+		<ul class="grid grid-auto gap-3">
+			{#each objectivelist as objective}
+				<ObjectiveComponent
+					{objective}
+					onObjectiveDeleted={() => objectivelist = objectivelist.filter(obj => objective.id != obj.id)}
+				/>
+			{/each}
+		</ul>
 	{:else}
-	    <p>{$_("objectives.empty")}</p>
+		<p>{$_("objectives.empty")}</p>
 	{/if}
 </div>

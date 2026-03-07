@@ -12,7 +12,9 @@ function open() {
 </script>
 
 <div class="flex items-start gap-1 min-w-0" data-no-navigation>
-	<p class="w-full break-words whitespace-pre-wrap line-clamp-3 flex-1 min-w-0 {bigText ? 'text-xl font-bold' : ''}">
+	<p
+		class="w-full break-words whitespace-pre-wrap line-clamp-3 flex-1 min-w-0 {bigText ? 'text-xl font-bold' : ''}"
+	>
 		{text}
 	</p>
 

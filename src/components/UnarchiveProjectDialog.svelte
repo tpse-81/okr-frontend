@@ -51,7 +51,8 @@ function confirm() {
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Unarchive project</h3>
 		<p class="opacity-70 mt-1">
-			You are unarchiving <span class="font-semibold">{projectName}</span>. Please set a new deadline.
+			You are unarchiving <span class="font-semibold">{projectName}</span>.
+			Please set a new deadline.
 		</p>
 
 		<div class="form-control mt-4">
@@ -65,13 +66,17 @@ function confirm() {
 				class="input input-bordered w-full"
 				bind:value={deadlineStr}
 				required
-			/>
+			>
 		</div>
 
 		<div class="modal-action">
 			<form method="dialog" class="flex gap-3 w-full justify-end">
 				<button class="btn" onclick={ondismiss}>Cancel</button>
-				<button class="btn btn-success" disabled={!deadlineStr} onclick={confirm}>
+				<button
+					class="btn btn-success"
+					disabled={!deadlineStr}
+					onclick={confirm}
+				>
 					Unarchive
 				</button>
 			</form>
