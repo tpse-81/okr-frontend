@@ -90,7 +90,7 @@ async function onUnarchiveProject(newDeadline: Date) {
 }
 </script>
 
-<li class="card card-border relative">
+<li class="card card-border relative min-w-0">
 	{#if showEditActions}
 		<div
 			class="absolute right-2 top-2 flex gap-2"

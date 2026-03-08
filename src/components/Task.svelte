@@ -60,7 +60,7 @@ async function setTaskState(newState: TaskState) {
 }
 </script>
 
-<li class="card card-border relative">
+<li class="card card-border relative min-w-0">
 	<span class="dropdown" title={!canEdit ? $_("common.noPermissions") : ""}>
 		<!-- trigger -->
 		<div

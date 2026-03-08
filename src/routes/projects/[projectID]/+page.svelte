@@ -129,45 +129,47 @@ async function onDeleteProject() {
 	<div class="card bg-base-100 border border-base-300">
 		<div class="card-body">
 			<div class="absolute top-2 right-3 flex flex-col items-end gap-2">
-				<span class="badge badge-primary">{$_("projects.singular")}</span>
-
 				<div
-					class="flex gap-2"
+					class="flex flex-row sm:flex-col sm:items-end gap-2"
 					title={!canLead ? $_("common.noPermissions") : ""}
 				>
-					{#if project.is_archived}
+					<span class="badge badge-primary">{$_("projects.singular")}</span>
+
+					<div class="flex gap-2">
+						{#if project.is_archived}
+							<button
+								class="btn btn-square"
+								disabled={isUnarchiving || !canLead}
+								onclick={() => canLead && (showUnarchiveDialog = true)}
+							>
+								<RotateCcw size="16" />
+							</button>
+						{:else}
+							<button
+								class="btn btn-square"
+								disabled={isArchiving || !canLead}
+								onclick={() => canLead && (showArchiveDialog = true)}
+							>
+								<Archive size="16" />
+							</button>
+						{/if}
+
 						<button
 							class="btn btn-square"
-							disabled={isUnarchiving || !canLead}
-							onclick={() => canLead && (showUnarchiveDialog = true)}
+							disabled={!canLead}
+							onclick={() => canLead && (showEditDialog = true)}
 						>
-							<RotateCcw size="16" />
+							<Edit size="16" />
 						</button>
-					{:else}
+
 						<button
 							class="btn btn-square"
-							disabled={isArchiving || !canLead}
-							onclick={() => canLead && (showArchiveDialog = true)}
+							disabled={!canLead}
+							onclick={() => canLead && (showConfirmationDialog = true)}
 						>
-							<Archive size="16" />
+							<Trash size="16" />
 						</button>
-					{/if}
-
-					<button
-						class="btn btn-square"
-						disabled={!canLead}
-						onclick={() => canLead && (showEditDialog = true)}
-					>
-						<Edit size="16" />
-					</button>
-
-					<button
-						class="btn btn-square"
-						disabled={!canLead}
-						onclick={() => canLead && (showConfirmationDialog = true)}
-					>
-						<Trash size="16" />
-					</button>
+					</div>
 				</div>
 			</div>
 			<div class="absolute top-2 left-2 z-1"><ProjectBadge {project} /></div>

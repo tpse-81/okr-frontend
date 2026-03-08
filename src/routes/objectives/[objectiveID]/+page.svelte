@@ -146,7 +146,7 @@ async function onDeleteObjective() {
 			</div>
 		</div>
 		<div class="flex items-center gap-4">
-			<div class="min-w-0">
+			<div class="min-w-0 pr-24">
 				<div class="text-2xl font-bold truncate max-w-full">
 					{objective.name}
 				</div>

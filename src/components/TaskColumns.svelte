@@ -25,7 +25,7 @@ let tasksGroupedByStateSorted = $derived(
 {#if Object.keys(tasksGroupedByState).length > 0}
 	<div class="grid grid-auto gap-3">
 		{#each tasksGroupedByStateSorted as [ state, tasks ]}
-			<div class="flex w-full py-3">
+			<div class="flex w-full py-3 overflow-hidden">
 				<div class="w-full">
 					<h2 class="title text-bold text-accent-content">
 						{$_(`tasks.${state}`)}

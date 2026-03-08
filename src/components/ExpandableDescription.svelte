@@ -13,7 +13,7 @@ function open() {
 
 <div class="flex items-start gap-1 min-w-0" data-no-navigation>
 	<p
-		class="w-full break-words whitespace-pre-wrap line-clamp-3 flex-1 min-w-0 {bigText ? 'text-xl font-bold' : ''}"
+		class="w-full break-words whitespace-pre-wrap line-clamp-3 min-w-0 {bigText ? 'font-bold' : ''}"
 	>
 		{text}
 	</p>

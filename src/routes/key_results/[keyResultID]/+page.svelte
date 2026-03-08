@@ -122,9 +122,9 @@ async function onDeleteKeyResult() {
 				</button>
 			</div>
 		</div>
-		<div class="flex gap-6 items-center my-3">
+		<div class="flex gap-6 items-center my-3 max-w-full">
 			<KeyResultProgress {keyResult} />
-			<div>
+			<div class="flex flex-col min-w-0 pr-24">
 				<ExpandableDescription text={keyResult.description} bigText={true} />
 				<div>
 					<p>{$_("keyResults.start")}: {keyResult.start_value}</p>

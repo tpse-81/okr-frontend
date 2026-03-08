@@ -77,7 +77,7 @@ async function onDeleteKeyResult() {
 }
 </script>
 
-<li class="card card-border relative">
+<li class="card card-border relative min-w-0">
 	<div
 		class="absolute right-2 top-2 flex gap-2"
 		title={!canEdit ? $_("common.noPermissions") : ""}
@@ -100,11 +100,12 @@ async function onDeleteKeyResult() {
 	<a href={`/key_results/${keyResult.id}`} class="card-body pt-12">
 		{#if isArchived}
 			<div class="badge badge-warning">
-				<Archive size="16" /> {$_("common.archived")}
+				<Archive size="16" />
+				{$_("common.archived")}
 			</div>
 		{/if}
 		<h2 class="card-title">
-			<span class="line-clamp-1 break-words"> {keyResult.description} </span>
+			<span class="line-clamp-1 break-words"> {keyResult.description}</span>
 		</h2>
 		<div class="flex gap-4">
 			<KeyResultProgress {keyResult} />

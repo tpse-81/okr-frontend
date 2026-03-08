@@ -49,7 +49,7 @@ async function onDeleteObjective() {
 }
 </script>
 
-<li>
+<li class="min-w-0">
 	<div
 		class="card card-border relative cursor-pointer"
 		role="link"
@@ -93,12 +93,13 @@ async function onDeleteObjective() {
 		<div class="card-body pt-12">
 			{#if isArchived}
 				<div class="badge badge-warning">
-					<Archive size="16" /> {$_("common.archived")}
+					<Archive size="16" />
+					{$_("common.archived")}
 				</div>
 			{/if}
 
 			<h2 class="card-title">
-				<span class="line-clamp-1 break-words"> {objective.name} </span>
+				<span class="line-clamp-1 break-words"> {objective.name}</span>
 			</h2>
 
 			<ExpandableDescription text={objective.description} />
