@@ -23,14 +23,16 @@ let tasksGroupedByStateSorted = $derived(
 </script>
 
 {#if Object.keys(tasksGroupedByState).length > 0}
-	<div class="grid grid-auto gap-3">
+	<div class="grid grid-auto">
 		{#each tasksGroupedByStateSorted as [ state, tasks ]}
-			<div class="flex w-full py-3 overflow-hidden">
+			<div
+				class="flex w-full py-3 overflow-hidden md:border-x-[1.5px] first:border-l-0 last:border-r-0 border-neutral px-5"
+			>
 				<div class="w-full">
 					<h2 class="title text-bold text-accent-content">
 						{$_(`tasks.${state}`)}
 					</h2>
-					<ul class="flex flex-col gap-3">
+					<ul class="flex flex-col">
 						{#each tasks as task}
 							<TaskComponent
 								{task}
@@ -39,7 +41,6 @@ let tasksGroupedByStateSorted = $derived(
 						{/each}
 					</ul>
 				</div>
-				<div class="divider divider-neutral divider-horizontal"></div>
 			</div>
 		{/each}
 	</div>
