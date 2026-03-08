@@ -50,7 +50,12 @@ async function onUpdatekeyResult() {
 }
 </script>
 
-<dialog id="edit-key-result-modal" bind:this={modal} class="modal">
+<dialog
+	id="edit-key-result-modal"
+	bind:this={modal}
+	class="modal"
+	oncancel={ondismiss}
+>
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">{$_("keyResults.edit")}</h3>
 		<ErrorMessage message={errorMessage} />

@@ -24,7 +24,12 @@ $effect(() => {
 });
 </script>
 
-<dialog id="confirmation-modal" bind:this={modal} class="modal">
+<dialog
+	id="confirmation-modal"
+	bind:this={modal}
+	class="modal"
+	oncancel={ondismiss}
+>
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">{message}</h3>
 		<p class="py-4">{explanation}</p>

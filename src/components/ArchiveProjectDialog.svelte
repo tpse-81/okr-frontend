@@ -33,7 +33,7 @@ function confirm() {
 }
 </script>
 
-<dialog bind:this={modal} class="modal">
+<dialog bind:this={modal} class="modal" oncancel={ondismiss}>
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">{$_("projects.archivingTitle")}</h3>
 		<p class="opacity-70 mt-1">

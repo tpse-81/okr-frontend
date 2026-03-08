@@ -42,7 +42,12 @@ async function onUpdateproject() {
 }
 </script>
 
-<dialog id="edit-project-modal" bind:this={modal} class="modal">
+<dialog
+	id="edit-project-modal"
+	bind:this={modal}
+	class="modal"
+	oncancel={ondismiss}
+>
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">{$_("projects.edit")}</h3>
 		<form class="flex flex-col gap-3 mt-3">

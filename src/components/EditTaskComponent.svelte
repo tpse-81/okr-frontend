@@ -26,6 +26,7 @@ $effect(() => {
 
 		modal.showModal();
 	} else if (!show && modal.open) {
+		console.log("here");
 		modal.close();
 	}
 });
@@ -43,7 +44,12 @@ async function onUpdateTask() {
 }
 </script>
 
-<dialog id="edit-task-modal" bind:this={modal} class="modal">
+<dialog
+	id="edit-task-modal"
+	bind:this={modal}
+	class="modal"
+	oncancel={ondismiss}
+>
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">{$_("tasks.edit")}</h3>
 
