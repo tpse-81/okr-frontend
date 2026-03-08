@@ -258,39 +258,48 @@ async function handleSubmit(e: SubmitEvent) {
 </form>
 
 <div class="p-3">
-	<div class="flex justify-between items-center mb-5 gap-5">
-		<div class="flex gap-5 items-center flex-1">
+	<div
+		class="flex flex-col md:flex-row md:justify-between md:items-center mb-5 gap-4"
+	>
+		<div
+			class="flex flex-col md:flex-row gap-3 md:gap-5 md:items-center flex-1"
+		>
 			<h1 class="text-3xl">{$_("projects.title")}</h1>
-			<div class="join">
+
+			<!-- Mobile-only wrapper for spacing -->
+			<div class="flex flex-col gap-2 md:flex-row md:gap-0">
 				<input
 					type="text"
 					bind:value={searchTerm}
 					placeholder={$_("common.searchName")}
-					class="input"
-					style="border-radius: 10px 0 0 10px;"
+					class="input w-full md:w-auto"
 				>
-				{#each singleOptions as option}
-					<div class="tooltip" data-tip={$_(option.tooltip)}>
-						<button
-							class="btn join-item transition-transform duration-150
-                                {activeFilter === option.value ? 'btn-active scale-110' : ''}"
-							onclick={() => applySingleFilter(option.value)}
-						>
-							<option.icon size={option.size} />
-							{#if activeFilter === option.value}
-								<Check class="w-4 h-4 ml-1 inline-block" />
-							{/if}
-						</button>
-					</div>
-				{/each}
+
+				<div class="join flex-wrap">
+					{#each singleOptions as option, i}
+						<div class="tooltip" data-tip={$_(option.tooltip)}>
+							<button
+								class="btn join-item transition-transform duration-150
+                     {i === 0 ? 'rounded-l-full md:rounded-l-none' : ''}
+                     {activeFilter === option.value ? 'btn-active scale-110' : ''}"
+								onclick={() => applySingleFilter(option.value)}
+							>
+								<option.icon size={option.size} />
+								{#if activeFilter === option.value}
+									<Check class="w-4 h-4 ml-1 inline-block" />
+								{/if}
+							</button>
+						</div>
+					{/each}
+				</div>
 			</div>
 		</div>
-		<div class="join shrink-0">
+		<div class="join flex-wrap md:shrink-0">
 			{#each multiOptions as option}
 				<div class="tooltip tooltip-left" data-tip={$_(option.tooltip)}>
 					<button
 						class="btn join-item transition-transform duration-150
-                            {activeMultiFilters.includes(option.value) ? 'btn-active scale-110' : ''}"
+                 {activeMultiFilters.includes(option.value) ? 'btn-active scale-110' : ''}"
 						onclick={() => applyMultiFilter(option.value)}
 					>
 						<option.icon size={option.size} />
