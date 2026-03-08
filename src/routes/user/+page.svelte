@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Check, Minus } from "@lucide/svelte";
+import { Check, KeyRound, Minus, Trash, UserStar } from "@lucide/svelte";
 import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import {
@@ -214,7 +214,7 @@ onMount(() => {
 	<form
 		id="user-submit"
 		onsubmit={(e) => void onCreateUser(e)}
-		class="flex gap-3 p-3 m-auto"
+		class="flex flex-col md:flex-row gap-3 p-3 m-auto"
 	>
 		<input
 			type="text"
@@ -225,22 +225,24 @@ onMount(() => {
 			required
 		>
 
-		<input
-			type="text"
-			bind:value={password}
-			placeholder={$_("users.login.password")}
-			class="input w-full"
-			required
-			title={$_("users.tooltipPasswordChange")}
-		>
+		<div class="flex gap-2 w-full">
+			<input
+				type="text"
+				bind:value={password}
+				placeholder={$_("users.login.password")}
+				class="input w-full"
+				required
+				title={$_("users.tooltipPasswordChange")}
+			>
 
-		<button
-			type="button"
-			class="btn"
-			onclick={() => (password = generatePassword())}
-		>
-			{$_("users.generatePasswordButton")}
-		</button>
+			<button
+				type="button"
+				class="btn whitespace-nowrap"
+				onclick={() => (password = generatePassword())}
+			>
+				{$_("users.generatePasswordButton")}
+			</button>
+		</div>
 
 		<input
 			type="email"
@@ -262,7 +264,7 @@ onMount(() => {
 			<p class="opacity-70">{$_("users.empty")}</p>
 		{:else}
 			<div class="overflow-x-auto">
-				<table class="table">
+				<table class="table table-sm w-full">
 					<thead>
 						<tr>
 							<th>{$_("common.name")}</th>
@@ -275,7 +277,7 @@ onMount(() => {
 						{#each users as u}
 							<tr>
 								<td>{u.name}</td>
-								<td>{u.email}</td>
+								<td class="break-all">{u.email}</td>
 								<td>
 									{#if u.is_admin}
 										<Check size={16} />
@@ -287,31 +289,35 @@ onMount(() => {
 									<div class="flex gap-2 justify-end">
 										{#if !u.is_admin}
 											<button
-												class="btn btn-sm"
+												class="btn btn-sm btn-square tooltip tooltip-left"
+												data-tip={$_("users.setPassword")}
 												onclick={() => openSetPassword(u)}
+												title={$_("users.setPassword")}
 											>
-												{$_("users.setPassword")}
+												<KeyRound size={16} />
 											</button>
 
 											<button
-												class="btn btn-sm btn-warning"
+												class="btn btn-sm btn-warning btn-square tooltip tooltip-left"
+												data-tip={$_("users.promoteToAdmin")}
 												onclick={() => openPromoteToAdmin(u)}
+												title={$_("users.promoteToAdmin")}
 											>
-												{$_("users.promoteToAdmin")}
+												<UserStar size={16} />
 											</button>
 										{/if}
 
 										<button
-											class="btn btn-sm btn-error pointer-events-auto"
+											class="btn btn-sm btn-error btn-square pointer-events-auto tooltip tooltip-left"
+											data-tip={u.id === $userInfoStore?.id && adminCount == 1
+													? $_("users.deleteSelfError")
+													: u.id !== $userInfoStore.id && u.is_admin
+													? $_("users.deleteAdminError")
+													: $_("common.delete")}
 											disabled={($userInfoStore.id !== u.id && u.is_admin) || ($userInfoStore.id === u.id && adminCount == 1)}
 											onclick={() => askDelete(u)}
-											title={u.id === $userInfoStore?.id && adminCount == 1
-												? $_("users.deleteSelfError")
-												: u.id !== $userInfoStore.id && u.is_admin
-												? $_("users.deleteAdminError")
-												: ""}
 										>
-											{$_("common.delete")}
+											<Trash size={16} />
 										</button>
 									</div>
 								</td>
