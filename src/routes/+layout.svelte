@@ -97,7 +97,7 @@ function changeTheme() {
 	<div class="p-4">Loading…</div>
 {:then _isReady}
 	<div class="navbar bg-base-100 shadow-sm">
-		<div class="drawer w-auto">
+		<div id="sidebar" class="drawer w-auto">
 			<!-- uses the CSS checkbox hack, see https://daisyui.com/components/drawer/ -->
 			<input id="navigation-drawer" type="checkbox" class="drawer-toggle">
 			<div class="drawer-content">

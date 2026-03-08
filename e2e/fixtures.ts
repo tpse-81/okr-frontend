@@ -31,7 +31,10 @@ export async function navigateViaDrawer(
 	expectedPath: string,
 ): Promise<void> {
 	await openNavigationDrawer(page);
-	await page.getByRole("link", { name: linkName, exact: true }).click();
+	await page
+		.locator("#sidebar")
+		.getByRole("link", { name: linkName, exact: true })
+		.click();
 	await baseExpect(page).toHaveURL(
 		new RegExp(`${expectedPath.replace("/", "\\/")}$`),
 	);
