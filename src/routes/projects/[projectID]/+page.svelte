@@ -260,7 +260,7 @@ async function onDeleteProject() {
 			</div>
 
 			{#if objectivelist.length > 0}
-				<ul id="objectives-list" class="grid grid-auto">
+				<ul id="objectives-list" class="grid grid-auto gap-3">
 					{#each objectivelist as objective}
 						<ObjectiveComponent
 							{objective}
