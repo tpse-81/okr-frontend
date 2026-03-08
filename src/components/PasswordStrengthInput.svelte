@@ -11,7 +11,7 @@ let {
 	password: string;
 	userInfo: User;
 	placeholder: string;
-	class: string;
+	class?: string;
 } = $props();
 let passwordStrength: ZXCVBNResult = $derived(
 	zxcvbn(password, [userInfo.name, userInfo.email]),

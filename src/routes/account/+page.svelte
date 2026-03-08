@@ -280,8 +280,9 @@ onMount(async () => {
 <div class="p-3">
 	<h2>{$_("account.title")}</h2>
 	<div class="card card-border mt-3">
-		<h2 class="card-title">{$_("account.password.title")}</h2>
 		<div class="card-body">
+			<h2 class="card-title">{$_("account.password.title")}</h2>
+
 			<ErrorMessage message={passwordError} />
 			{#if passwordSuccess}
 				<div class="alert alert-success">
@@ -290,7 +291,10 @@ onMount(async () => {
 				</div>
 			{/if}
 
-			<form class="flex flex-col gap-3 w-max" onsubmit={handleChangePassword}>
+			<form
+				class="flex flex-col gap-3 max-w-full"
+				onsubmit={handleChangePassword}
+			>
 				<input
 					type="password"
 					placeholder={$_("account.password.current")}
@@ -302,13 +306,11 @@ onMount(async () => {
 					bind:password={newPassword}
 					userInfo={$userInfoStore!}
 					placeholder={$_("account.password.new")}
-					class="w-full"
 				/>
 				<PasswordStrengthInput
 					bind:password={newPasswordRepeat}
 					userInfo={$userInfoStore!}
 					placeholder={$_("account.password.repeat")}
-					class="w-full"
 				/>
 				<div>
 					<button class="btn btn-primary w-max" type="submit">
@@ -319,8 +321,9 @@ onMount(async () => {
 		</div>
 	</div>
 	<div class="card card-border mt-3">
-		<h2 class="card-title">{$_("account.totp.title")}</h2>
 		<div class="card-body">
+			<h2 class="card-title">{$_("account.totp.title")}</h2>
+
 			<ErrorMessage message={totpError} />
 			{#if totpSuccess}
 				<div class="alert alert-success">
@@ -354,11 +357,9 @@ onMount(async () => {
 							</div>
 
 							<div class="flex flex-col gap-2">
-								<label class="label" for="token-input"
-									><span class="label-text"
-										>{$_("account.totp.confirm")}</span
-									></label
-								>
+								<label class="label" for="token-input">
+									<span class="label-text">{$_("account.totp.confirm")}</span>
+								</label>
 								<input
 									type="text"
 									id="token-input"
@@ -386,11 +387,9 @@ onMount(async () => {
 				{#if isTotpConfigured}
 					<div class="divider divider-neutral"></div>
 					<div class="flex flex-col gap-2">
-						<label class="label"
-							><span class="label-text"
-								>{$_("account.totp.disable")}</span
-							></label
-						>
+						<label class="label">
+							<span class="label-text">{$_("account.totp.disable")}</span>
+						</label>
 						<input
 							type="text"
 							placeholder="123456"
@@ -411,9 +410,9 @@ onMount(async () => {
 	</div>
 
 	<div class="card card-border mt-3">
-		<h2 class="card-title">{$_("account.passkeys.title")}</h2>
-
 		<div class="card-body">
+			<h2 class="card-title">{$_("account.passkeys.title")}</h2>
+
 			<ErrorMessage message={errorMessage} />
 			{#if !isWebauthnConfigured}
 				<button
@@ -444,8 +443,9 @@ onMount(async () => {
 		</div>
 	</div>
 	<div class="card card-border mt-3">
-		<h2 class="card-title">{$_("account.delete.title")}</h2>
 		<div class="card-body">
+			<h2 class="card-title">{$_("account.delete.title")}</h2>
+
 			<ErrorMessage message={deleteError} />
 			<div class="text-sm opacity-80">{$_("account.delete.description")}</div>
 			<button
