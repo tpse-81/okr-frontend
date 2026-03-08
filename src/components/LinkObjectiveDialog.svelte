@@ -279,13 +279,15 @@ async function onconfirm() {
 
 		{#if showOrphanConfirm}
 			<div class="alert alert-warning mt-4">
-				<div>
+				<div class="max-w-full overflow-hidden">
 					<span class="font-bold">{$_("common.warning")}</span>
 					<p class="mt-2">{$_("projects.orphanConfirm")}</p>
 
-					<ul class="list-disc pl-5 mt-2">
+					<ul class="list-disc pl-5 mt-2 max-w-full">
 						{#each orphanObjectives as objective (objective.id)}
-							<li>{objective.name ?? objective.id}</li>
+							<li>
+								<span class="truncate">{objective.name ?? objective.id}</span>
+							</li>
 						{/each}
 					</ul>
 
