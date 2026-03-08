@@ -17,7 +17,7 @@ import {
 	unarchiveProject,
 } from "$lib/api";
 import type { ArchiveReason, Project } from "$lib/types";
-import { formatDate, formatDeadline } from "$lib/utils";
+import { formatDate } from "$lib/utils";
 import ArchiveProjectDialog from "./ArchiveProjectDialog.svelte";
 import AvatarComponent from "./Avatar.svelte";
 import ConfirmationDialog from "./ConfirmationDialog.svelte";
@@ -132,8 +132,9 @@ async function onUnarchiveProject(newDeadline: Date) {
 		</div>
 	{/if}
 
+	<div class="absolute left-2 top-2"><ProjectBadge {project} /></div>
+
 	<a href={`/projects/${project.id}`} class="card-body pt-12">
-		<ProjectBadge {project} />
 		<div class="card-title flex mt-2 items-center gap-2">
 			<AvatarComponent
 				icon={project.icon ?? null}
@@ -141,7 +142,7 @@ async function onUnarchiveProject(newDeadline: Date) {
 				big={false}
 			/>
 			<h2 class="min-w-0">
-				<span class="line-clamp-1 break-words"> {project.name} </span>
+				<span class="line-clamp-1 break-words"> {project.name}</span>
 			</h2>
 		</div>
 		<p>
